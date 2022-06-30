@@ -3,7 +3,7 @@ import messageItem from "./messageItem.vue";
 </script>
 
 <template>
-  <table>
+  <table >
     <thead>
       <tr>
         <th>TIME</th>
@@ -13,7 +13,7 @@ import messageItem from "./messageItem.vue";
         <th>ACTION</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody class="flex flex-col-reverse">
       <tr v-for="(message, index) in messages" :key="index">
         <message-item :message="message" />
       </tr>
@@ -32,26 +32,15 @@ import messageItem from "./messageItem.vue";
 export default {
   components: { messageItem },
   props: ["messages"],
-  mounted() {
-    this.scrollToElement();
-  },
-  mounted() {
-    scrollToBottom();
-  },
-  methods: {
-    scrollToBottom() {
-      const container = this.$refs.container;
-      container.scrollTop = container.scrollHeight;
-    },
-  },
 };
+
 </script>
 
 <style>
 tbody {
   display: block;
   height: 500px;
-  overflow: auto;
+  overflow: scroll;
 }
 thead,
 tbody tr {

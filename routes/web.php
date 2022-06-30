@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\EksesaisController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,9 +38,11 @@ Route::middleware([
 });
 
 
-// Route::get('/test', function () {
-//     return view('welcome');
-// });
+
+
+Route::get('/test', function () {
+    return view('welcome');
+});
 
 // Route::get('/login', function () {
 //     return auth()->login(User::where('name', 'ezzat12')->first());
@@ -55,10 +58,16 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',
     Route::get('/chat', function () {
         return Inertia::render('Chat/container');
     })->name('chat');
+
+    Route::get('/eksesais', function () {
+        return Inertia::render('Eksesais');
+    })->name('eksesais');
 });
 
 
 Route::middleware('auth:sanctum')->get('/chat/rooms', [ChatController::class, 'rooms']);
-
 Route::middleware('auth:sanctum')->get('/chat/room/{roomId}/messages', [ChatController::class, 'messages']);
 Route::middleware('auth:sanctum')->post('/chat/room/{roomId}/message', [ChatController::class, 'newMessage']);
+Route::get('grouper/ajax/meaning', [ChatController::class, 'chatmeaning']);
+
+Route::resource('/eksesaisdata', EksesaisController::class);

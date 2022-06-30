@@ -4,7 +4,7 @@ import Input from "../../Jetstream/Input.vue";
 
 <template>
     <div class="relative h-10 m-1">
-        <div style="border-top: 1px; solid #e6e6e6" class="grid grid-cols-6">
+        <div style="border-top: 1px solid #e6e6e6" class="grid">
             <input
                 type="text"
                 v-model="message"
@@ -12,28 +12,55 @@ import Input from "../../Jetstream/Input.vue";
                 placeholder="Say Something..."
                 class="col-span-5 outline-none p-1"
             />
-            <button
-                @click="sendMessage()"
-                class="place-self-end bg-gray-500 hover:bg-blue-700 p-1 mt-1 rounded text-white"
-            >
-                Send
-            </button>
         </div>
     </div>
+    <div class="m-1">
+        <div style="border-top: 1px solid #e6e6e6" class="grid">
+            <textarea
+                v-model="translatemessage"
+                disabled
+                rows="3"
+            ></textarea>
+        </div>
+    </div>
+    <button
+        @click="sendMessage()"
+        class="place-self-end bg-gray-500 hover:bg-blue-700 p-1 mt-1 rounded text-white"
+    >
+        Send
+    </button>
 </template>
 
 <script>
 export default {
     components: { Input },
+    emits: ["messagesent"],
     props: ["room"],
     data: function () {
         return {
             message: "",
+            translatemessage: "",
         };
+    },
+    watch: {
+        message: function (val, oldval) {
+            axios
+                .get("/grouper/ajax/meaning", {
+                    params: {
+                        message: this.message,
+                    },
+                })
+                .then((response) => {
+                    this.translatemessage = response.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
     },
     methods: {
         sendMessage() {
-            if (this.Message == "") {
+            if (this.Message == " ") {
                 return;
             }
             axios
@@ -43,6 +70,7 @@ export default {
                 .then((response) => {
                     if (response.status == 200) {
                         this.message = "";
+                        this.translatemessage = " ";
                         this.$emit("messagesent");
                     }
                 })
