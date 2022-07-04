@@ -3,7 +3,7 @@
         <td class="text-center"></td>
         <td class="text-center">{{message.user.name}}</td>
         <td class="text-center">{{message.message}}</td>
-        <td class="text-center"></td>
+        <td class="text-center"><button>{{message.action}}</button></td>
 </template>
 
 <script>

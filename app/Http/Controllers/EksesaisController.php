@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ChatRoom;
 use App\Models\Eksesais;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EksesaisController extends Controller
 {
@@ -14,7 +17,12 @@ class EksesaisController extends Controller
      */
     public function index()
     {
-        return Eksesais::all();
+        $user = User::find(Auth::id());
+        return $user->eksesais;
+        // $eksesaislist = Eksesais::with(['users' => function ($query) {
+        //     $query->select('users.id')->where('users.id', Auth::id());
+        // }])->get();
+        // return $eksesaislist->whereNotNull('users');
     }
 
     /**
@@ -24,7 +32,6 @@ class EksesaisController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -35,7 +42,25 @@ class EksesaisController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $senaraiKapalTerlibat = $request->senaraiKapalTerlibat;
+        $eksesais = new Eksesais;
+        $eksesais->Nama = $request->namaEksesais;
+        $eksesais->save();
+
+        // $senaraiKapalTerlibat =[10, 11];
+
+        $eksesais->users()->attach($senaraiKapalTerlibat);
+
+        $generalchatroom = new ChatRoom;
+        $generalchatroom->eksesais_id = $eksesais->id;
+        $generalchatroom->name = 'General';
+        $generalchatroom->save();
+
+        return response()->json([ 'success' => true ]);
+        // return response()->json([
+        //     'data' => $namaEksesais,
+        //     'asdasd' => $senaraiKapalTerlibat
+        // ]);
     }
 
     /**

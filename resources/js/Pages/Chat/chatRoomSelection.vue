@@ -1,5 +1,5 @@
 <template>
-<div class="grid grid-cols-2"> 
+<div class="grid grid-cols-2">
     <div class="font-blod text-xl">
         {{selected.name}} Chat
     </div>
@@ -19,6 +19,7 @@ export default{
  props:['rooms', 'currentRoom'],
  data: function(){
      return {
+        eksesaisname: '',
          selected: '',
      }
  },

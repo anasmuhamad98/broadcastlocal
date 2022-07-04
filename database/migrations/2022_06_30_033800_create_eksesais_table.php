@@ -15,6 +15,7 @@ class CreateEksesaisTable extends Migration
     {
         Schema::create('eksesais', function (Blueprint $table) {
             $table->id();
+            $table->string('Nama');
             $table->timestamps();
         });
     }

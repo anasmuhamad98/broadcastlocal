@@ -17,4 +17,8 @@ class ChatMessage extends Model
     {
         return $this->hasOne('App\Models\User', 'id', 'user_id');
     }
+
+    public function rooms(){
+        return $this->hasMany('App\Models\ChatRoom', 'id', 'chat_room_id');
+    }
 }

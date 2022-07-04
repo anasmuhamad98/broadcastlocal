@@ -58,4 +58,12 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+
+    /**
+     * The roles that belong to the user.
+     */
+    public function eksesais()
+    {
+        return $this->belongsToMany(Eksesais::class, 'eksesais_user');
+    }
 }

@@ -7,31 +7,45 @@ use App\Events\NewChatMessage as EventsNewChatMessage;
 use App\Events\RealTimeMessage;
 use App\Models\ChatMessage;
 use App\Models\ChatRoom;
+use App\Models\Eksesais;
 use App\Models\Grouper;
 use App\Models\ListA;
 use App\Models\ListB;
 use App\Models\Tack;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
 
 class ChatController extends Controller
 {
-    public function rooms(Request $request)
+
+    public function index($eksesaisId)
     {
-        return ChatRoom::all();
+        $eksesais = Eksesais::find($eksesaisId);
+        return Inertia::render('Chat/container', [
+            'eksesaisdetail' => $eksesais,
+        ]);
+        // return ChatMessage::where('eksesais_id', $eksesaisId)->where('chat_room_id', $roomId)->with('user')->orderBy('created_at', 'desc')->get();
     }
 
-    public function messages(Request $request, $roomId)
+    public function rooms($eksesaisId)
     {
-        return ChatMessage::where('chat_room_id', $roomId)->with('user')->orderBy('created_at', 'desc')->get();
+        return ChatRoom::where('eksesais_id', $eksesaisId)->get();
     }
 
-    public function newMessage(Request $request, $roomId)
+    public function messages(Request $request,$eksesaisId, $roomId)
+    {
+        return ChatMessage::with('rooms')->where('eksesais_id', $eksesaisId)->where('chat_room_id', $roomId)->with('user')->orderBy('created_at', 'desc')->get();
+    }
+
+    public function newMessage(Request $request, $eksesaisId, $roomId)
     {
         $newMessage = new ChatMessage();
         $newMessage->user_id = Auth::id();
+        $newMessage->eksesais_id = $eksesaisId;
         $newMessage->chat_room_id = $roomId;
         $newMessage->message = $request->message;
+        $newMessage->action = $request->action;
         $newMessage->save();
 
         broadcast(new EventsNewChatMessage($newMessage))->toOthers();

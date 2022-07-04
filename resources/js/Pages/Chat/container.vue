@@ -9,7 +9,7 @@ import ChatRoomSelection from "./chatRoomSelection.vue";
     <AppLayout title="Dashboard">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                <chat-room-selection
+                <ChatRoomSelection
                     v-if="currentRoom.id"
                     :rooms="chatRooms"
                     :currentRoom="currentRoom"
@@ -24,6 +24,7 @@ import ChatRoomSelection from "./chatRoomSelection.vue";
                     <message-container :messages="messages" />
                     <input-message
                         :room="currentRoom"
+                        :currenteksesais="eksesaisdetail.id"
                         v-on:messagesent="getMessages()"
                     />
                 </div>
@@ -40,6 +41,7 @@ export default {
         AppLayout,
         ChatRoomSelection,
     },
+    props:['eksesaisdetail'],
     data: function () {
         return {
             chatRooms: [],
@@ -73,7 +75,7 @@ export default {
         },
         getRooms() {
             axios
-                .get("/chat/rooms")
+                .get("/chat/rooms/" + this.eksesaisdetail.id)
                 .then((response) => {
                     this.chatRooms = response.data;
                     this.setRoom(response.data[0]);
@@ -87,7 +89,7 @@ export default {
         },
         getMessages() {
             axios
-                .get("/chat/room/" + this.currentRoom.id + "/messages")
+                .get("/chat/eksesais/"+ this.eksesaisdetail.id + '/' + this.currentRoom.id + "/messages")
                 .then((response) => {
                     this.messages = response.data;
                 })
@@ -97,6 +99,7 @@ export default {
         },
     },
     created() {
+        console.log(this.eksesaisdetail);
         this.getRooms();
     },
 };

@@ -14,11 +14,20 @@ class ChatRoomSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('chat_rooms')->insert([
-            'name' => 'General'
+        DB::table('users')->insert([
+            'name' => 'ahmad',
+            'email' => 'ahmad@gmail.com',
+            'password' => bcrypt('12345678')
         ]);
-        DB::table('chat_rooms')->insert([
-            'name' => 'Tech Talk'
+        DB::table('users')->insert([
+            'name' => 'anas',
+            'email' => 'anas@gmail.com',
+            'password' => bcrypt('12345678')
+        ]);
+        DB::table('users')->insert([
+            'name' => 'ezzat',
+            'email' => 'ezzat@gmail.com',
+            'password' => bcrypt('12345678')
         ]);
     }
 }

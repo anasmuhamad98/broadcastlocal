@@ -29,6 +29,7 @@ const logout = () => {
 </script>
 
 <template>
+
     <div>
         <Head :title="title" />
 
@@ -52,6 +53,12 @@ const logout = () => {
                                 <JetNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </JetNavLink>
+                                <JetNavLink :href="route('eksesais')" :active="route().current('eksesais')">
+                                    Eksesais
+                                </JetNavLink>
+                                <!-- <JetNavLink :href="route('chat')" :active="route().current('chat')">
+                                    Chat
+                                </JetNavLink> -->
                             </div>
                         </div>
 

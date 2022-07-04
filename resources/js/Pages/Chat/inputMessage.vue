@@ -24,10 +24,34 @@ import Input from "../../Jetstream/Input.vue";
         </div>
     </div>
     <button
-        @click="sendMessage()"
+        @click="sendMessage('over')"
         class="place-self-end bg-gray-500 hover:bg-blue-700 p-1 mt-1 rounded text-white"
     >
-        Send
+        over
+    </button>
+    <button
+        @click="sendMessage('roger out')"
+        class="place-self-end bg-gray-500 hover:bg-blue-700 p-1 mt-1 rounded text-white"
+    >
+        roger out
+    </button>
+    <button
+        @click="sendMessage('time')"
+        class="place-self-end bg-gray-500 hover:bg-blue-700 p-1 mt-1 rounded text-white"
+    >
+        time
+    </button>
+    <button
+        @click="sendMessage('ix')"
+        class="place-self-end bg-gray-500 hover:bg-blue-700 p-1 mt-1 rounded text-white"
+    >
+        ix
+    </button>
+    <button
+        @click="sendMessage('rix')"
+        class="place-self-end bg-gray-500 hover:bg-blue-700 p-1 mt-1 rounded text-white"
+    >
+        rix
     </button>
 </template>
 
@@ -35,7 +59,7 @@ import Input from "../../Jetstream/Input.vue";
 export default {
     components: { Input },
     emits: ["messagesent"],
-    props: ["room"],
+    props: ["room", "currenteksesais"],
     data: function () {
         return {
             message: "",
@@ -59,13 +83,14 @@ export default {
         },
     },
     methods: {
-        sendMessage() {
+        sendMessage(action) {
             if (this.Message == " ") {
                 return;
             }
             axios
-                .post("/chat/room/" + this.room.id + "/message", {
+                .post("/chat/eksesais/"+ this.currenteksesais+ '/' + this.room.id + "/message", {
                     message: this.message,
+                    action: action,
                 })
                 .then((response) => {
                     if (response.status == 200) {
