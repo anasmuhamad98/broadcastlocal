@@ -56,6 +56,8 @@ class EksesaisController extends Controller
         $generalchatroom->name = 'General';
         $generalchatroom->save();
 
+        $generalchatroom->users()->attach($senaraiKapalTerlibat);
+
         return response()->json([ 'success' => true ]);
         // return response()->json([
         //     'data' => $namaEksesais,

@@ -13,7 +13,7 @@ import ChatRoomSelection from "./chatRoomSelection.vue";
                     v-if="currentRoom.id"
                     :rooms="chatRooms"
                     :currentRoom="currentRoom"
-                    :eksesaisdetail ="eksesaisdetail"
+                    :eksesaisdetail="eksesaisdetail"
                     v-on:roomchanged="setRoom($event)"
                 />
             </h2>
@@ -42,7 +42,7 @@ export default {
         AppLayout,
         ChatRoomSelection,
     },
-    props:['eksesaisdetail'],
+    props: ["eksesaisdetail"],
     data: function () {
         return {
             chatRooms: [],
@@ -50,25 +50,30 @@ export default {
             messages: [],
         };
     },
-    watch: {
-        currentRoom(val, oldval) {
-            if (oldval.id) {
-                this.disconnect(oldval);
+    mounted() {
+        window.Echo.private("eksesais." + this.eksesaisdetail.id).listen(
+            "NewChatMessage",
+            (e) => {
+                this.getMessages();
             }
-            this.connect();
-        },
+        );
+    },
+    unmounted() {
+        window.Echo.leave("eksesais." + this.eksesaisdetail.id);
+    },
+    watch: {
+        // currentRoom(val, oldval) {
+        //     if (oldval.id) {
+        //         this.disconnect(oldval);
+        //     }
+        //     this.connect();
+        // },
     },
     methods: {
         connect() {
             if (this.currentRoom.id) {
                 let vm = this;
                 this.getMessages();
-                window.Echo.private("chat." + this.currentRoom.id).listen(
-                    "NewChatMessage",
-                    (e) => {
-                        vm.getMessages();
-                    }
-                );
             }
         },
         disconnect(room) {
@@ -87,10 +92,17 @@ export default {
         },
         setRoom(room) {
             this.currentRoom = room;
+            this.getMessages();
         },
         getMessages() {
             axios
-                .get("/chat/eksesais/"+ this.eksesaisdetail.id + '/' + this.currentRoom.id + "/messages")
+                .get(
+                    "/chat/eksesais/" +
+                        this.eksesaisdetail.id +
+                        "/" +
+                        this.currentRoom.id +
+                        "/messages"
+                )
                 .then((response) => {
                     this.messages = response.data;
                 })

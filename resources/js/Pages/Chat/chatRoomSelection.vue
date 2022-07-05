@@ -137,11 +137,14 @@ export default{
             axios
                 .post("/chat/eksesais/" + this.eksesaisdetail.id + "/createroom", {
                     roomName: this.newRoom,
+                    senaraiKapalTerlibat: this.senaraiKapalTerlibat,
                 })
                 .then((response) => {
                     if (response.status == 200) {
                         this.newRoom = "";
+                        this.senaraiKapalTerlibat = [];
                         this.showModal = !this.showModal;
+                        console.log(response.data.test)
                     }
                 })
                 .catch((error) => {

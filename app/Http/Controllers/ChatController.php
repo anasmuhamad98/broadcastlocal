@@ -12,6 +12,7 @@ use App\Models\Grouper;
 use App\Models\ListA;
 use App\Models\ListB;
 use App\Models\Tack;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -30,15 +31,21 @@ class ChatController extends Controller
 
     public function rooms($eksesaisId)
     {
-        return ChatRoom::where('eksesais_id', $eksesaisId)->get();
+        $user = User::find(Auth::id());
+        return $user->rooms()->where('eksesais_id', $eksesaisId)->get();
+        // return ChatRoom::where('eksesais_id', $eksesaisId)->get();
     }
 
     public function newRoom(Request $request, $eksesaisId)
     {
+        $senaraiKapalTerlibat = $request->senaraiKapalTerlibat;
         $newRoom = new ChatRoom();
         $newRoom->eksesais_id = $eksesaisId;
         $newRoom->name = $request->roomName;
         $newRoom->save();
+
+        $newRoom->users()->attach($senaraiKapalTerlibat);
+        // return response()->json([ 'test' => $senaraiKapalTerlibat ]);
     }
 
     public function messages(Request $request,$eksesaisId, $roomId)
