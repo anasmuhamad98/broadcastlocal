@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Broadcast;
 
 /*
@@ -22,8 +23,15 @@ Broadcast::channel('events', function ($user) {
 });
 
 Broadcast::channel('chat.{roomId}', function ($user, $roomId) {
-    // if(Auth::check()){
-    //     return ['id' => $user->id, 'name' => $user->name];
-    // }
-    return true;
+    if(Auth::check()){
+        return ['id' => $user->id, 'name' => $user->name];
+    }
+    // return true;
+});
+
+Broadcast::channel('eksesais.{eksesaisId}', function ($user, $eksesaisId) {
+    if(Auth::check()){
+        return ['id' => $user->id, 'name' => $user->name];
+    }
+    // return true;
 });

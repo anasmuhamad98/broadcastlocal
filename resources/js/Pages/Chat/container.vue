@@ -13,6 +13,7 @@ import ChatRoomSelection from "./chatRoomSelection.vue";
                     v-if="currentRoom.id"
                     :rooms="chatRooms"
                     :currentRoom="currentRoom"
+                    :eksesaisdetail ="eksesaisdetail"
                     v-on:roomchanged="setRoom($event)"
                 />
             </h2>
@@ -99,7 +100,6 @@ export default {
         },
     },
     created() {
-        console.log(this.eksesaisdetail);
         this.getRooms();
     },
 };

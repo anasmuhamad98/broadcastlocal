@@ -52,6 +52,10 @@ Route::middleware([
     Route::get('chat/eksesais/{eksesaisId}/{roomId}/messages', [ChatController::class, 'messages'])->name('eksesaismessage');
     Route::get('/chat/rooms/{eksesaisId}', [ChatController::class, 'rooms']);
     Route::post('/chat/eksesais/{eksesaisId}/{roomId}/message', [ChatController::class, 'newMessage']);
+
+    Route::post('/chat/eksesais/{eksesaisId}/createroom', [ChatController::class, 'newRoom']);
+
+    Route::get('/senaraikapal/{eksesaisId}', [KapalController::class, 'senaraikapaldalamrooms']);
 });
 
 

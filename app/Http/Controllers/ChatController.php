@@ -33,6 +33,14 @@ class ChatController extends Controller
         return ChatRoom::where('eksesais_id', $eksesaisId)->get();
     }
 
+    public function newRoom(Request $request, $eksesaisId)
+    {
+        $newRoom = new ChatRoom();
+        $newRoom->eksesais_id = $eksesaisId;
+        $newRoom->name = $request->roomName;
+        $newRoom->save();
+    }
+
     public function messages(Request $request,$eksesaisId, $roomId)
     {
         return ChatMessage::with('rooms')->where('eksesais_id', $eksesaisId)->where('chat_room_id', $roomId)->with('user')->orderBy('created_at', 'desc')->get();
@@ -53,6 +61,7 @@ class ChatController extends Controller
         // event(new EventsNewChatMessage($newMessage));
         // event(new RealTimeMessage('Hello World'));
     }
+
 
     public function chatmeaning(Request $request)
     {

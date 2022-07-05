@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Eksesais;
 use App\Models\Kapal;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -16,6 +17,12 @@ class KapalController extends Controller
     public function index()
     {
         return User::all();
+    }
+
+
+    public function senaraikapaldalamrooms($eksesaisId){
+        $kapaldalameksesais = Eksesais::find($eksesaisId);
+        return $kapaldalameksesais->users;
     }
 
     /**

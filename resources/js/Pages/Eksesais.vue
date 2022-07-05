@@ -182,7 +182,7 @@ export default {
         },
 
         saveEksesais() {
-            if (this.namaEksesais == " ") {
+            if (this.namaEksesais == "") {
                 return;
             }
             axios
