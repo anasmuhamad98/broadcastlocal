@@ -17,6 +17,7 @@ class CreateChatRoomUsersTable extends Migration
             $table->id();
             $table->integer('chat_room_id');
             $table->integer('user_id');
+            $table->boolean('newMessage')->default(false);
             $table->timestamps();
         });
     }

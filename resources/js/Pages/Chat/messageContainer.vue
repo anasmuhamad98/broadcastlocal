@@ -3,18 +3,18 @@ import messageItem from "./messageItem.vue";
 </script>
 
 <template>
-  <table >
-    <thead>
+  <table class="divide-y divide-gray-300 border-y">
+    <thead class="bg-gray-50">
       <tr>
-        <th>TIME</th>
-        <th>TO</th>
-        <th>FROM</th>
-        <th>TEXT</th>
-        <th>ACTION</th>
+        <th class="px-6 py-2 text-md text-gray-500">TIME</th>
+        <th class="px-6 py-2 text-md text-gray-500">TO</th>
+        <th class="px-6 py-2 text-md text-gray-500">FROM</th>
+        <th class="w-2/3 text-left px-6 py-2 text-md text-gray-500">TEXT</th>
+        <th class="px-6 py-2 text-md text-gray-500">ACTION</th>
       </tr>
     </thead>
     <tbody class="flex flex-col-reverse">
-      <tr v-for="(message, index) in messages" :key="index">
+      <tr class="border-b border-gray-300" v-for="(message, index) in messages" :key="index">
         <message-item :message="message" />
       </tr>
     </tbody>

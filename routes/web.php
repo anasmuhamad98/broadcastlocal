@@ -54,16 +54,18 @@ Route::middleware([
     Route::post('/chat/eksesais/{eksesaisId}/{roomId}/message', [ChatController::class, 'newMessage']);
 
     Route::post('/chat/eksesais/{eksesaisId}/createroom', [ChatController::class, 'newRoom']);
-
     Route::get('/senaraikapal/{eksesaisId}', [KapalController::class, 'senaraikapaldalamrooms']);
+
+    Route::post('/eksesais/{eksesaisId}/group/{roomId}/updateseenmessage', [ChatController::class, 'updateseenmessage']);
+    Route::get('/test/{id}/{id2}', [ChatController::class, 'testets']);
 });
 
 
 
 
-Route::get('/test', function () {
-    return view('welcome');
-});
+// Route::get('/test', function () {
+//     return view('welcome');
+// });
 
 
 

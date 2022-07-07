@@ -48,26 +48,18 @@ export default {
             chatRooms: [],
             currentRoom: [],
             messages: [],
+            test: [],
         };
     },
     mounted() {
-        window.Echo.private("eksesais." + this.eksesaisdetail.id).listen(
-            "NewChatMessage",
-            (e) => {
+        window.Echo.private("eksesais." + this.eksesaisdetail.id)
+            .listen("NewChatMessage", (e) => {
                 this.getMessages();
-            }
-        );
+                this.getRooms();
+            });
     },
     unmounted() {
         window.Echo.leave("eksesais." + this.eksesaisdetail.id);
-    },
-    watch: {
-        // currentRoom(val, oldval) {
-        //     if (oldval.id) {
-        //         this.disconnect(oldval);
-        //     }
-        //     this.connect();
-        // },
     },
     methods: {
         connect() {
@@ -79,7 +71,37 @@ export default {
         disconnect(room) {
             window.Echo.leave("chat." + room.id);
         },
+        updateSeenMessage() {
+            axios
+                .post(
+                    "/eksesais/" +
+                        this.eksesaisdetail.id +
+                        "/group/" +
+                        this.currentRoom.id +
+                        "/updateseenmessage",
+                    {}
+                )
+                .then((response) => {
+                    if (response.status == 200) {
+                        this.currentRoom.pivot.newMessage = 0;
+                        console.log( this.currentRoom);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
         getRooms() {
+            axios
+                .get("/chat/rooms/" + this.eksesaisdetail.id)
+                .then((response) => {
+                    this.chatRooms = response.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        getRoomsFirst() {
             axios
                 .get("/chat/rooms/" + this.eksesaisdetail.id)
                 .then((response) => {
@@ -93,6 +115,7 @@ export default {
         setRoom(room) {
             this.currentRoom = room;
             this.getMessages();
+            this.updateSeenMessage();
         },
         getMessages() {
             axios
@@ -112,7 +135,7 @@ export default {
         },
     },
     created() {
-        this.getRooms();
+        this.getRoomsFirst();
     },
 };
 </script>

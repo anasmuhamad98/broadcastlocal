@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewEksesais;
 use App\Models\ChatRoom;
 use App\Models\Eksesais;
 use App\Models\User;
@@ -58,6 +59,8 @@ class EksesaisController extends Controller
 
         $generalchatroom->users()->attach($senaraiKapalTerlibat);
 
+        // broadcast(new EventsNewChatMessage($newMessage))->toOthers();
+        broadcast(new NewEksesais())->toOthers();
         return response()->json([ 'success' => true ]);
         // return response()->json([
         //     'data' => $namaEksesais,

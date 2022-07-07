@@ -10,7 +10,7 @@ import Input from "../../Jetstream/Input.vue";
                 v-model="message"
                 @keyup.enter="sendMessage()"
                 placeholder="Say Something..."
-                class="col-span-5 outline-none p-1"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
             />
         </div>
     </div>
@@ -20,39 +20,42 @@ import Input from "../../Jetstream/Input.vue";
                 v-model="translatemessage"
                 disabled
                 rows="3"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-100 leading-tight focus:outline-none focus:shadow-outline"
             ></textarea>
         </div>
     </div>
-    <button
-        @click="sendMessage('over')"
-        class="place-self-end bg-gray-500 hover:bg-blue-700 p-1 mt-1 rounded text-white"
-    >
-        over
-    </button>
+    <div class="relative p-3 pl-1 flex justify-end">
+        <div class="ml-1 absolute left-0">
+        <select class="block appearance-none w-auto bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+            <option>Free Text</option>
+            <option>Quick Guide</option>
+        </select>
+        </div>
     <button
         @click="sendMessage('roger out')"
-        class="place-self-end bg-gray-500 hover:bg-blue-700 p-1 mt-1 rounded text-white"
+        class="w-2/12 bg-gray-500 hover:bg-gray-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-green-500 hover:border-transparent rounded"
     >
-        roger out
+        Roger Out
     </button>
     <button
         @click="sendMessage('time')"
-        class="place-self-end bg-gray-500 hover:bg-blue-700 p-1 mt-1 rounded text-white"
+        class="w-2/12 mx-2 bg-blue-500 hover:bg-blue-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-blue-500 hover:border-transparent rounded"
     >
-        time
+        TIME
     </button>
     <button
         @click="sendMessage('ix')"
-        class="place-self-end bg-gray-500 hover:bg-blue-700 p-1 mt-1 rounded text-white"
+        class="w-2/12 mx-2 bg-yellow-500 hover:bg-yellow-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-yellow-500 hover:border-transparent rounded"
     >
-        ix
+        IX
     </button>
     <button
         @click="sendMessage('rix')"
-        class="place-self-end bg-gray-500 hover:bg-blue-700 p-1 mt-1 rounded text-white"
+        class="w-2/12 bg-red-500 hover:bg-red-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-red-500 hover:border-transparent rounded"
     >
-        rix
+        RIX
     </button>
+    </div>
 </template>
 
 <script>
