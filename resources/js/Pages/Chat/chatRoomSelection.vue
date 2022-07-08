@@ -1,11 +1,10 @@
 <template>
-    <div class="grid grid-cols-2">
         <div class="font-blod text-xl">
             {{ eksesaisdetail.Nama }}: {{ selected.name }}
         </div>
-        <div class="flex justify-end">
+        <div class="flex flex-wrap">
             <button
-                class="mx-1 h-10 px-5 text-gray-700 text-sm transition-colors duration-150 bg-gray-300 rounded-lg focus:shadow-outline hover:bg-indigo-800 hover:text-white"
+                class="m-1 h-10 px-5 text-gray-700 text-sm transition-colors duration-150 bg-gray-300 rounded-lg focus:shadow-outline hover:bg-indigo-800 hover:text-white"
                 v-for="(room, index) in rooms"
                 :key="index"
                 :class="{active: activeBtn === 'btn'+room.id }"
@@ -19,7 +18,7 @@
                 >
             </button>
             <button
-                class="mx-1 h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"
+                class="m-1 h-10 px-5 text-indigo-100 transition-colors duration-150 bg-indigo-700 rounded-lg focus:shadow-outline hover:bg-indigo-800"
                 type="button"
                 v-on:click="toggleModal()"
             >
@@ -103,7 +102,6 @@
                 class="opacity-25 fixed inset-0 z-40 bg-black"
             ></div>
         </div>
-    </div>
 </template>
 
 <script>
