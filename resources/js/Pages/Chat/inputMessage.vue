@@ -90,9 +90,6 @@ export default {
         },
     },
     methods: {
-        asdasfnafjk(){
-            console.log(this.message)
-        },
         sendMessage(action) {
             if (this.Message == " ") {
                 return;

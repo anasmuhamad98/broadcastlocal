@@ -143,9 +143,12 @@ class ChatController extends Controller
                 $message .= ' ' . $freetextlist;
             }
 
-            $tablegrouper = array_shift($splittext);
-            $tablegroupermeaning = TableGrouper::select('Meaning')->where('Table_Grouper', $tablegrouper)->first()->Meaning ?? null;
-            $message .= ' ' . $tablegroupermeaning;
+            $checkfortablegrouper = TableGrouper::select('Table_Grouper', 'Meaning')->where('Table_Grouper', '1A')->first()->Table_Grouper ?? false;
+            if ($checkfortablegrouper) {
+                $tablegrouper = array_shift($splittext);
+                $tablegroupermeaning = TableGrouper::select('Meaning')->where('Table_Grouper', $tablegrouper)->first()->Meaning ?? null;
+                $message .= ' ' . $tablegroupermeaning;
+            }
         }
         return $message;
     }

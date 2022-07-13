@@ -21618,9 +21618,6 @@ var __default__ = {
     }
   },
   methods: {
-    asdasfnafjk: function asdasfnafjk() {
-      console.log(this.message);
-    },
     sendMessage: function sendMessage(action) {
       var _this2 = this;
 
