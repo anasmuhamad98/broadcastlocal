@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateGroupersTable extends Migration
+class CreateListCSTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,11 @@ class CreateGroupersTable extends Migration
      */
     public function up()
     {
-        Schema::create('groupers', function (Blueprint $table) {
+        Schema::create('list_c_s', function (Blueprint $table) {
             $table->id();
             $table->string('Grouper');
+            $table->string('List_C');
             $table->text('Meaning')->nullable();
-            $table->boolean('Tack');
-            $table->boolean('Free_Text_Tack');
-            $table->boolean('List_A');
-            $table->boolean('List_B');
-            $table->boolean('List_C');
-            $table->boolean('Free_Text_List');
             $table->timestamps();
         });
     }
@@ -34,6 +29,6 @@ class CreateGroupersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('groupers');
+        Schema::dropIfExists('list_c_s');
     }
 }

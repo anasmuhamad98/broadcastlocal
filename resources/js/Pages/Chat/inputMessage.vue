@@ -8,7 +8,6 @@ import Input from "../../Jetstream/Input.vue";
             <input
                 type="text"
                 v-model="message"
-                @keyup.enter="sendMessage()"
                 placeholder="Say Something..."
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
             />
@@ -20,41 +19,43 @@ import Input from "../../Jetstream/Input.vue";
                 v-model="translatemessage"
                 disabled
                 rows="3"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-100 leading-tight focus:outline-none focus:shadow-outline"
+                class="shadow appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline"
             ></textarea>
         </div>
     </div>
     <div class="relative p-3 pl-1 flex justify-end">
         <div class="ml-1 absolute left-0">
-        <select class="block appearance-none w-auto bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
-            <option>Free Text</option>
-            <option>Quick Guide</option>
-        </select>
+            <select
+                class="block appearance-none w-auto bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+            >
+                <option>Free Text</option>
+                <option>Quick Guide</option>
+            </select>
         </div>
-    <button
-        @click="sendMessage('roger out')"
-        class="w-2/12 bg-gray-500 hover:bg-gray-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-green-500 hover:border-transparent rounded"
-    >
-        Roger Out
-    </button>
-    <button
-        @click="sendMessage('time')"
-        class="w-2/12 mx-2 bg-blue-500 hover:bg-blue-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-    >
-        TIME
-    </button>
-    <button
-        @click="sendMessage('ix')"
-        class="w-2/12 mx-2 bg-yellow-500 hover:bg-yellow-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-yellow-500 hover:border-transparent rounded"
-    >
-        IX
-    </button>
-    <button
-        @click="sendMessage('rix')"
-        class="w-2/12 bg-red-500 hover:bg-red-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-red-500 hover:border-transparent rounded"
-    >
-        RIX
-    </button>
+        <button
+            @click="sendMessage('Roger Out')"
+            class="w-2/12 bg-gray-500 hover:bg-gray-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-green-500 hover:border-transparent rounded"
+        >
+            Roger Out
+        </button>
+        <button
+            @click="sendMessage('TIME')"
+            class="w-2/12 mx-2 bg-blue-500 hover:bg-blue-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+        >
+            TIME
+        </button>
+        <button
+            @click="sendMessage('IX')"
+            class="w-2/12 mx-2 bg-yellow-500 hover:bg-yellow-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-yellow-500 hover:border-transparent rounded"
+        >
+            IX
+        </button>
+        <button
+            @click="sendMessage('RIX')"
+            class="w-2/12 bg-red-500 hover:bg-red-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-red-500 hover:border-transparent rounded"
+        >
+            RIX
+        </button>
     </div>
 </template>
 
@@ -62,7 +63,7 @@ import Input from "../../Jetstream/Input.vue";
 export default {
     components: { Input },
     emits: ["messagesent"],
-    props: ["room", "currenteksesais"],
+    props: ["room", "currenteksesais", "clickMessage3"],
     data: function () {
         return {
             message: "",
@@ -70,6 +71,9 @@ export default {
         };
     },
     watch: {
+        clickMessage3:function (val, oldval) {
+            this.message = val
+        },
         message: function (val, oldval) {
             axios
                 .get("/grouper/ajax/meaning", {
@@ -86,15 +90,25 @@ export default {
         },
     },
     methods: {
+        asdasfnafjk(){
+            console.log(this.message)
+        },
         sendMessage(action) {
             if (this.Message == " ") {
                 return;
             }
             axios
-                .post("/chat/eksesais/"+ this.currenteksesais+ '/' + this.room.id + "/message", {
-                    message: this.message,
-                    action: action,
-                })
+                .post(
+                    "/chat/eksesais/" +
+                        this.currenteksesais +
+                        "/" +
+                        this.room.id +
+                        "/message",
+                    {
+                        message: this.message,
+                        action: action,
+                    }
+                )
                 .then((response) => {
                     if (response.status == 200) {
                         this.message = "";

@@ -22,10 +22,14 @@ import ChatRoomSelection from "./chatRoomSelection.vue";
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <message-container :messages="messages" />
+                    <message-container
+                        :messages="messages"
+                        v-on:clickmessage2="getClickMessage($event)"
+                    />
                     <input-message
                         :room="currentRoom"
                         :currenteksesais="eksesaisdetail.id"
+                        :clickMessage3="clickMessage"
                         v-on:messagesent="getMessages()"
                     />
                 </div>
@@ -49,19 +53,26 @@ export default {
             currentRoom: [],
             messages: [],
             test: [],
+            clickMessage: ""
         };
     },
     mounted() {
-        window.Echo.private("eksesais." + this.eksesaisdetail.id)
-            .listen("NewChatMessage", (e) => {
+        window.Echo.private("eksesais." + this.eksesaisdetail.id).listen(
+            "NewChatMessage",
+            (e) => {
                 this.getMessages();
                 this.getRooms();
-            });
+            }
+        );
     },
     unmounted() {
         window.Echo.leave("eksesais." + this.eksesaisdetail.id);
     },
     methods: {
+        getClickMessage(test) {
+            this.clickMessage = test;
+            console.log(this.clickMessage);
+        },
         connect() {
             if (this.currentRoom.id) {
                 let vm = this;
@@ -84,7 +95,7 @@ export default {
                 .then((response) => {
                     if (response.status == 200) {
                         this.currentRoom.pivot.newMessage = 0;
-                        console.log( this.currentRoom);
+                        console.log(this.currentRoom);
                     }
                 })
                 .catch((error) => {

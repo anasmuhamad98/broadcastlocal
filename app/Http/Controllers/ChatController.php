@@ -12,6 +12,7 @@ use App\Models\Eksesais;
 use App\Models\Grouper;
 use App\Models\ListA;
 use App\Models\ListB;
+use App\Models\TableGrouper;
 use App\Models\Tack;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -105,39 +106,46 @@ class ChatController extends Controller
     {
         $grouper = $request->message;
         $message = '';
+        $firstsplits = preg_split("#/#", $grouper);
         $patternlist = "/[-]/";
-        $splittext = preg_split($patternlist, $grouper);
-        $grouper = array_shift($splittext);
-        $groupermeaning = Grouper::select('Meaning')->where('Grouper', $grouper)->first()->Meaning ?? null;
-        $message .= ' ' . $groupermeaning;
-        $checktack = Grouper::select('Tack')->where('Grouper', $grouper)->first()->Tack ?? false;
-        $checkfreetexttack = Grouper::select('Free_Text_Tack')->where('Grouper', $grouper)->first()->Free_Text_Tack ?? false;
-        $checklista = Grouper::select('List_A')->where('Grouper', $grouper)->first()->List_A ?? false;
-        $checklistb = Grouper::select('List_B')->where('Grouper', $grouper)->first()->List_B ?? false;
-        $checkfreetextlist = Grouper::select('Free_Text_List')->where('Grouper', $grouper)->first()->Free_Text_List ?? false;
+        foreach ($firstsplits as $firstsplit) {
+            $splittext = preg_split($patternlist, $firstsplit);
+            $grouper = array_shift($splittext);
+            $groupermeaning = Grouper::select('Meaning')->where('Grouper', $grouper)->first()->Meaning ?? null;
+            $message .= ' ' . $groupermeaning;
+            $checktack = Grouper::select('Tack')->where('Grouper', $grouper)->first()->Tack ?? false;
+            $checkfreetexttack = Grouper::select('Free_Text_Tack')->where('Grouper', $grouper)->first()->Free_Text_Tack ?? false;
+            $checklista = Grouper::select('List_A')->where('Grouper', $grouper)->first()->List_A ?? false;
+            $checklistb = Grouper::select('List_B')->where('Grouper', $grouper)->first()->List_B ?? false;
+            $checkfreetextlist = Grouper::select('Free_Text_List')->where('Grouper', $grouper)->first()->Free_Text_List ?? false;
 
-        if ($checktack) {
-            $tack = array_shift($splittext);
-            $tackmeaning = Tack::select('Meaning')->where('Grouper', $grouper)->where('Tack', $tack)->first()->Meaning ?? null;
-            $message .= ' ' . $tackmeaning;
-        }
-        if ($checkfreetexttack) {
-            $freetexttack = array_shift($splittext);
-            $message .= ' ' . $freetexttack;
-        }
-        if ($checklista) {
-            $ista = array_shift($splittext);
-            $istameaning = ListA::select('Meaning')->where('Grouper', $grouper)->where('List_A', $ista)->first()->Meaning ?? null;
-            $message .= ' ' . $istameaning;
-        }
-        if ($checklistb) {
-            $listb = array_shift($splittext);
-            $listbmeaning = ListB::select('Meaning')->where('Grouper', $grouper)->where('List_B', $listb)->first()->Meaning ?? null;
-            $message .= ' ' . $listbmeaning;
-        }
-        if ($checkfreetextlist) {
-            $freetextlist = array_shift($splittext);
-            $message .= ' ' . $freetextlist;
+            if ($checktack) {
+                $tack = array_shift($splittext);
+                $tackmeaning = Tack::select('Meaning')->where('Grouper', $grouper)->where('Tack', $tack)->first()->Meaning ?? null;
+                $message .= ' ' . $tackmeaning;
+            }
+            if ($checkfreetexttack) {
+                $freetexttack = array_shift($splittext);
+                $message .= ' ' . $freetexttack;
+            }
+            if ($checklista) {
+                $ista = array_shift($splittext);
+                $istameaning = ListA::select('Meaning')->where('Grouper', $grouper)->where('List_A', $ista)->first()->Meaning ?? null;
+                $message .= ' ' . $istameaning;
+            }
+            if ($checklistb) {
+                $listb = array_shift($splittext);
+                $listbmeaning = ListB::select('Meaning')->where('Grouper', $grouper)->where('List_B', $listb)->first()->Meaning ?? null;
+                $message .= ' ' . $listbmeaning;
+            }
+            if ($checkfreetextlist) {
+                $freetextlist = array_shift($splittext);
+                $message .= ' ' . $freetextlist;
+            }
+
+            $tablegrouper = array_shift($splittext);
+            $tablegroupermeaning = TableGrouper::select('Meaning')->where('Table_Grouper', $tablegrouper)->first()->Meaning ?? null;
+            $message .= ' ' . $tablegroupermeaning;
         }
         return $message;
     }
