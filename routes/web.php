@@ -20,12 +20,14 @@ use App\Models\User;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+
+    return redirect('/eksesais');
+    // return Inertia::render('Welcome', [
+    //     'canLogin' => Route::has('login'),
+    //     'canRegister' => Route::has('register'),
+    //     'laravelVersion' => Application::VERSION,
+    //     'phpVersion' => PHP_VERSION,
+    // ]);
 });
 
 Route::middleware([
@@ -57,7 +59,7 @@ Route::middleware([
     Route::get('/senaraikapal/{eksesaisId}', [KapalController::class, 'senaraikapaldalamrooms']);
 
     Route::post('/eksesais/{eksesaisId}/group/{roomId}/updateseenmessage', [ChatController::class, 'updateseenmessage']);
-    Route::get('/test/{id}/{id2}', [ChatController::class, 'testets']);
+    Route::get('/testasdasdasdafdsf', [ChatController::class, 'testets']);
 });
 
 

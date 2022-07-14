@@ -75,14 +75,14 @@ class ChatController extends Controller
         // event(new RealTimeMessage('Hello World'));
     }
 
-    public function testets($eksesaisId, $roomId)
+    public function testets(Request $request)
     {
-        // return response()->json([ 'test' => 'asd?S' ]);
-        // return ChatRoom::with('users')->where('eksesais_id', $eksesaisId)->get();
-
-        $attributes = ['newMessage' => 1];
-        return ChatRoom::find($roomId)->users()->where('users.id', '!=', Auth::id())->pluck('users.id');
-        // ()->updateExistingPivot([1,2,3], $attributes);
+        $teadtasd = $request->message;
+        $splittext = preg_split("/[-]/", $teadtasd);
+        while(count($splittext) > 0){
+            array_shift($splittext);
+            echo count($splittext);
+        }
 
     }
 
@@ -106,10 +106,10 @@ class ChatController extends Controller
     {
         $grouper = $request->message;
         $message = '';
-        $firstsplits = preg_split("#/#", $grouper);
         $patternlist = "/[-]/";
-        foreach ($firstsplits as $firstsplit) {
-            $splittext = preg_split($patternlist, $firstsplit);
+        $splittext = preg_split($patternlist, $grouper);
+        while (count($splittext) > 0) {
+
             $grouper = array_shift($splittext);
             $groupermeaning = Grouper::select('Meaning')->where('Grouper', $grouper)->first()->Meaning ?? null;
             $message .= ' ' . $groupermeaning;
@@ -143,7 +143,7 @@ class ChatController extends Controller
                 $message .= ' ' . $freetextlist;
             }
 
-            $checkfortablegrouper = TableGrouper::select('Table_Grouper', 'Meaning')->where('Table_Grouper', '1A')->first()->Table_Grouper ?? false;
+            $checkfortablegrouper = TableGrouper::select('Table_Grouper', 'Meaning')->where('Table_Grouper', $splittext[0] ?? null)->first()->Table_Grouper ?? null;
             if ($checkfortablegrouper) {
                 $tablegrouper = array_shift($splittext);
                 $tablegroupermeaning = TableGrouper::select('Meaning')->where('Table_Grouper', $tablegrouper)->first()->Meaning ?? null;
