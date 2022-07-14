@@ -33,26 +33,32 @@ import Input from "../../Jetstream/Input.vue";
             </select>
         </div>
         <button
+            @click="sendMessage('K')"
+            class="w-1/12 bg-gray-500 hover:bg-gray-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-gray-500 hover:border-transparent rounded"
+        >
+            OVER
+        </button>
+        <button
             @click="sendMessage('Roger Out')"
-            class="w-2/12 bg-gray-500 hover:bg-gray-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-green-500 hover:border-transparent rounded"
+            class="w-2/12 mx-2 bg-gray-500 hover:bg-gray-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-gray-500 hover:border-transparent rounded"
         >
             Roger Out
         </button>
         <button
             @click="sendMessage('TIME')"
-            class="w-2/12 mx-2 bg-blue-500 hover:bg-blue-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+            class="w-1/12 mx-2 bg-blue-500 hover:bg-blue-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-blue-500 hover:border-transparent rounded"
         >
             TIME
         </button>
         <button
             @click="sendMessage('IX')"
-            class="w-2/12 mx-2 bg-yellow-500 hover:bg-yellow-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-yellow-500 hover:border-transparent rounded"
+            class="w-1/12 mx-2 bg-yellow-500 hover:bg-yellow-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-yellow-500 hover:border-transparent rounded"
         >
             IX
         </button>
         <button
             @click="sendMessage('RIX')"
-            class="w-2/12 bg-red-500 hover:bg-red-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-red-500 hover:border-transparent rounded"
+            class="w-1/12 bg-red-500 hover:bg-red-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-red-500 hover:border-transparent rounded"
         >
             RIX
         </button>
