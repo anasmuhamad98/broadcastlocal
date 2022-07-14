@@ -33,13 +33,13 @@ import Input from "../../Jetstream/Input.vue";
             </select>
         </div>
         <button
-            @click="sendMessage('K')"
+            @click="customsendMessage('K')"
             class="w-1/12 bg-gray-500 hover:bg-gray-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-gray-500 hover:border-transparent rounded"
         >
             OVER
         </button>
         <button
-            @click="sendMessage('Roger Out')"
+            @click="customsendMessage('AR')"
             class="w-2/12 mx-2 bg-gray-500 hover:bg-gray-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-gray-500 hover:border-transparent rounded"
         >
             Roger Out
@@ -110,6 +110,30 @@ export default {
                     {
                         message: this.message,
                         action: action,
+                    }
+                )
+                .then((response) => {
+                    if (response.status == 200) {
+                        this.message = "";
+                        this.translatemessage = " ";
+                        this.$emit("messagesent");
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        customsendMessage(action) {
+            axios
+                .post(
+                    "/chat/eksesais/" +
+                        this.currenteksesais +
+                        "/" +
+                        this.room.id +
+                        "/message",
+                    {
+                        message: action,
+                        action: " ",
                     }
                 )
                 .then((response) => {
