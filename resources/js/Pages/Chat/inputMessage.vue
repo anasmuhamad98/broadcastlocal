@@ -1,14 +1,24 @@
 <script setup>
 import Input from "../../Jetstream/Input.vue";
+import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue";
 </script>
 
 <template>
     <div class="relative h-10 m-1">
-        <div style="border-top: 1px solid #e6e6e6" class="grid">
+        <div v-if="quickguide === false" style="border-top: 1px solid #e6e6e6">
             <input
                 type="text"
                 v-model="message"
                 placeholder="Say Something..."
+                class="shadow appearance-none border rounded w-4/5 py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
+            />
+            <secondary-button @click="refreshmessage()">Refresh</secondary-button>
+        </div>
+        <div v-if="quickguide" style="border-top: 1px solid #e6e6e6" class="grid">
+            <input
+                type="text"
+                v-model="message"
+                placeholder="v kacmako akpi kamsvioak apokak a0vk a09 0oaoi s..."
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
             />
         </div>
@@ -17,15 +27,16 @@ import Input from "../../Jetstream/Input.vue";
         <div style="border-top: 1px solid #e6e6e6" class="grid">
             <textarea
                 v-model="translatemessage"
-                disabled
+
                 rows="3"
-                class="shadow appearance-none border rounded w-full py-2 px-3  leading-tight focus:outline-none focus:shadow-outline"
+                class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
             ></textarea>
         </div>
     </div>
     <div class="relative p-3 pl-1 flex justify-end">
         <div class="ml-1 absolute left-0">
             <select
+                @change="choosemessagetype"
                 class="block appearance-none w-auto bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
             >
                 <option>Free Text</option>
@@ -74,11 +85,12 @@ export default {
         return {
             message: "",
             translatemessage: "",
+            quickguide: false,
         };
     },
     watch: {
-        clickMessage3:function (val, oldval) {
-            this.message = val
+        clickMessage3: function (val, oldval) {
+            this.message = val;
         },
         message: function (val, oldval) {
             axios
@@ -96,6 +108,17 @@ export default {
         },
     },
     methods: {
+        choosemessagetype(e) {
+            if (e.target.value === "Quick Guide") {
+                this.quickguide = true;
+            }
+            if (e.target.value === "Free Text") {
+                this.quickguide = false;
+            }
+        },
+        refreshmessage(){
+            this.message = '';
+        },
         sendMessage(action) {
             if (this.Message == " ") {
                 return;

@@ -22,12 +22,6 @@ use App\Models\User;
 Route::get('/', function () {
 
     return redirect('/eksesais');
-    // return Inertia::render('Welcome', [
-    //     'canLogin' => Route::has('login'),
-    //     'canRegister' => Route::has('register'),
-    //     'laravelVersion' => Application::VERSION,
-    //     'phpVersion' => PHP_VERSION,
-    // ]);
 });
 
 Route::middleware([
@@ -47,9 +41,6 @@ Route::middleware([
         return Inertia::render('Eksesais');
     })->name('eksesais');
 
-    // Route::get('/eksesais/{id}', function () {
-    //     return Inertia::render('Chat/container', ['create_url' => 'asdasd']);
-    // })->name('eksesaischat');
     Route::get('/eksesais/{id}', [ChatController::class, 'index'])->name('eksesaischat');
     Route::get('chat/eksesais/{eksesaisId}/{roomId}/messages', [ChatController::class, 'messages'])->name('eksesaismessage');
     Route::get('/chat/rooms/{eksesaisId}', [ChatController::class, 'rooms']);

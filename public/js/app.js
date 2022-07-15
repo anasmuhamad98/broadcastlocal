@@ -21587,6 +21587,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _Jetstream_Input_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Jetstream/Input.vue */ "./resources/js/Jetstream/Input.vue");
+/* harmony import */ var _vendor_laravel_jetstream_stubs_inertia_resources_js_Jetstream_SecondaryButton_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue */ "./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue");
 var __default__ = {
   components: {
     Input: _Jetstream_Input_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
@@ -21596,7 +21597,8 @@ var __default__ = {
   data: function data() {
     return {
       message: "",
-      translatemessage: ""
+      translatemessage: "",
+      quickguide: false
     };
   },
   watch: {
@@ -21618,6 +21620,18 @@ var __default__ = {
     }
   },
   methods: {
+    choosemessagetype: function choosemessagetype(e) {
+      if (e.target.value === "Quick Guide") {
+        this.quickguide = true;
+      }
+
+      if (e.target.value === "Free Text") {
+        this.quickguide = false;
+      }
+    },
+    refreshmessage: function refreshmessage() {
+      this.message = '';
+    },
     sendMessage: function sendMessage(action) {
       var _this2 = this;
 
@@ -21659,13 +21673,15 @@ var __default__ = {
   }
 };
 
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (/*#__PURE__*/Object.assign(__default__, {
   __name: 'inputMessage',
   setup: function setup(__props, _ref) {
     var expose = _ref.expose;
     expose();
     var __returned__ = {
-      Input: _Jetstream_Input_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+      Input: _Jetstream_Input_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
+      SecondaryButton: _vendor_laravel_jetstream_stubs_inertia_resources_js_Jetstream_SecondaryButton_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -21734,11 +21750,6 @@ __webpack_require__.r(__webpack_exports__);
     return {
       date: new Date(this.message.created_at)
     };
-  },
-  methods: {
-    clickMessage: function clickMessage() {
-      console.log('asdsadsad');
-    }
   }
 });
 
@@ -22928,6 +22939,39 @@ __webpack_require__.r(__webpack_exports__);
       onUnmounted: vue__WEBPACK_IMPORTED_MODULE_0__.onUnmounted,
       watch: vue__WEBPACK_IMPORTED_MODULE_0__.watch
     };
+    Object.defineProperty(__returned__, '__isScriptSetup', {
+      enumerable: false,
+      value: true
+    });
+    return __returned__;
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue?vue&type=script&setup=true&lang=js":
+/*!**********************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue?vue&type=script&setup=true&lang=js ***!
+  \**********************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  __name: 'SecondaryButton',
+  props: {
+    type: {
+      type: String,
+      "default": 'button'
+    }
+  },
+  setup: function setup(__props, _ref) {
+    var expose = _ref.expose;
+    expose();
+    var __returned__ = {};
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
       value: true
@@ -26182,73 +26226,113 @@ var _hoisted_1 = {
   "class": "relative h-10 m-1"
 };
 var _hoisted_2 = {
+  key: 0,
   style: {
     "border-top": "1px solid #e6e6e6"
-  },
-  "class": "grid"
+  }
 };
-var _hoisted_3 = {
-  "class": "m-1"
-};
+
+var _hoisted_3 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Refresh");
+
 var _hoisted_4 = {
+  key: 1,
   style: {
     "border-top": "1px solid #e6e6e6"
   },
   "class": "grid"
 };
 var _hoisted_5 = {
+  "class": "m-1"
+};
+var _hoisted_6 = {
+  style: {
+    "border-top": "1px solid #e6e6e6"
+  },
+  "class": "grid"
+};
+var _hoisted_7 = {
   "class": "relative p-3 pl-1 flex justify-end"
 };
-
-var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+var _hoisted_8 = {
   "class": "ml-1 absolute left-0"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
-  "class": "block appearance-none w-auto bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", null, "Free Text"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", null, "Quick Guide")])], -1
+};
+
+var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", null, "Free Text", -1
 /* HOISTED */
 );
 
+var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", null, "Quick Guide", -1
+/* HOISTED */
+);
+
+var _hoisted_11 = [_hoisted_9, _hoisted_10];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [_ctx.quickguide === false ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     type: "text",
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
       return _ctx.message = $event;
     }),
     placeholder: "Say Something...",
+    "class": "shadow appearance-none border rounded w-4/5 py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
+  }, null, 512
+  /* NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, _ctx.message]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["SecondaryButton"], {
+    onClick: _cache[1] || (_cache[1] = function ($event) {
+      return $options.refreshmessage();
+    })
+  }, {
+    "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [_hoisted_3];
+    }),
+    _: 1
+    /* STABLE */
+
+  })])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _ctx.quickguide ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+    type: "text",
+    "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
+      return _ctx.message = $event;
+    }),
+    placeholder: "v kacmako akpi kamsvioak apokak a0vk a09 0oaoi s...",
     "class": "shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
   }, null, 512
   /* NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, _ctx.message]])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
-    "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, _ctx.message]])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("textarea", {
+    "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
       return _ctx.translatemessage = $event;
     }),
-    disabled: "",
     rows: "3",
     "class": "shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
   }, null, 512
   /* NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, _ctx.translatemessage]])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [_hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    onClick: _cache[2] || (_cache[2] = function ($event) {
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, _ctx.translatemessage]])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
+    onChange: _cache[4] || (_cache[4] = function () {
+      return $options.choosemessagetype && $options.choosemessagetype.apply($options, arguments);
+    }),
+    "class": "block appearance-none w-auto bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+  }, _hoisted_11, 32
+  /* HYDRATE_EVENTS */
+  )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    onClick: _cache[5] || (_cache[5] = function ($event) {
       return $options.customsendMessage('K');
     }),
     "class": "w-1/12 bg-gray-500 hover:bg-gray-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-gray-500 hover:border-transparent rounded"
   }, " OVER "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    onClick: _cache[3] || (_cache[3] = function ($event) {
+    onClick: _cache[6] || (_cache[6] = function ($event) {
       return $options.customsendMessage('AR');
     }),
     "class": "w-2/12 mx-2 bg-gray-500 hover:bg-gray-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-gray-500 hover:border-transparent rounded"
   }, " Roger Out "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    onClick: _cache[4] || (_cache[4] = function ($event) {
+    onClick: _cache[7] || (_cache[7] = function ($event) {
       return $options.sendMessage('TIME');
     }),
     "class": "w-1/12 mx-2 bg-blue-500 hover:bg-blue-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-blue-500 hover:border-transparent rounded"
   }, " TIME "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    onClick: _cache[5] || (_cache[5] = function ($event) {
+    onClick: _cache[8] || (_cache[8] = function ($event) {
       return $options.sendMessage('IX');
     }),
     "class": "w-1/12 mx-2 bg-yellow-500 hover:bg-yellow-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-yellow-500 hover:border-transparent rounded"
   }, " IX "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
-    onClick: _cache[6] || (_cache[6] = function ($event) {
+    onClick: _cache[9] || (_cache[9] = function ($event) {
       return $options.sendMessage('RIX');
     }),
     "class": "w-1/12 bg-red-500 hover:bg-red-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-red-500 hover:border-transparent rounded"
@@ -26345,7 +26429,7 @@ var _hoisted_4 = {
   "class": "text-center px-6 py-4 text-md text-zinc-900"
 };
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.date.getHours() + (_ctx.date.getMinutes() < 10 ? '0' : '') + _ctx.date.getMinutes() + "H"), 1
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((_ctx.date.getHours() < 10 ? '0' : '') + _ctx.date.getHours() + ":" + (_ctx.date.getMinutes() < 10 ? '0' : '') + _ctx.date.getMinutes() + ":" + (_ctx.date.getSeconds() < 10 ? '0' : '') + _ctx.date.getSeconds() + "H"), 1
   /* TEXT */
   ), _hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.message.user.name), 1
   /* TEXT */
@@ -28144,6 +28228,31 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     /* FORWARDED */
 
   })]);
+}
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue?vue&type=template&id=2d964008":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue?vue&type=template&id=2d964008 ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render)
+/* harmony export */ });
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+
+var _hoisted_1 = ["type"];
+function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
+    type: $props.type,
+    "class": "inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 active:text-gray-800 active:bg-gray-50 disabled:opacity-25 transition"
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.renderSlot)(_ctx.$slots, "default")], 8
+  /* PROPS */
+  , _hoisted_1);
 }
 
 /***/ }),
@@ -61503,6 +61612,34 @@ if (false) {}
 
 /***/ }),
 
+/***/ "./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue":
+/*!*******************************************************************************************!*\
+  !*** ./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue ***!
+  \*******************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _SecondaryButton_vue_vue_type_template_id_2d964008__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./SecondaryButton.vue?vue&type=template&id=2d964008 */ "./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue?vue&type=template&id=2d964008");
+/* harmony import */ var _SecondaryButton_vue_vue_type_script_setup_true_lang_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SecondaryButton.vue?vue&type=script&setup=true&lang=js */ "./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue?vue&type=script&setup=true&lang=js");
+/* harmony import */ var C_xampp_htdocs_broadcastapp_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./node_modules/vue-loader/dist/exportHelper.js */ "./node_modules/vue-loader/dist/exportHelper.js");
+
+
+
+
+;
+const __exports__ = /*#__PURE__*/(0,C_xampp_htdocs_broadcastapp_node_modules_vue_loader_dist_exportHelper_js__WEBPACK_IMPORTED_MODULE_2__["default"])(_SecondaryButton_vue_vue_type_script_setup_true_lang_js__WEBPACK_IMPORTED_MODULE_1__["default"], [['render',_SecondaryButton_vue_vue_type_template_id_2d964008__WEBPACK_IMPORTED_MODULE_0__.render],['__file',"vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue"]])
+/* hot reload */
+if (false) {}
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__exports__);
+
+/***/ }),
+
 /***/ "./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SectionTitle.vue":
 /*!****************************************************************************************!*\
   !*** ./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SectionTitle.vue ***!
@@ -62389,6 +62526,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Modal_vue_vue_type_script_setup_true_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"])
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Modal_vue_vue_type_script_setup_true_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./Modal.vue?vue&type=script&setup=true&lang=js */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/Modal.vue?vue&type=script&setup=true&lang=js");
+ 
+
+/***/ }),
+
+/***/ "./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue?vue&type=script&setup=true&lang=js":
+/*!******************************************************************************************************************************!*\
+  !*** ./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue?vue&type=script&setup=true&lang=js ***!
+  \******************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_SecondaryButton_vue_vue_type_script_setup_true_lang_js__WEBPACK_IMPORTED_MODULE_0__["default"])
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_SecondaryButton_vue_vue_type_script_setup_true_lang_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./SecondaryButton.vue?vue&type=script&setup=true&lang=js */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue?vue&type=script&setup=true&lang=js");
  
 
 /***/ }),
@@ -63333,6 +63486,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Modal_vue_vue_type_template_id_6df73def__WEBPACK_IMPORTED_MODULE_0__.render)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_Modal_vue_vue_type_template_id_6df73def__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../../../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../../../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./Modal.vue?vue&type=template&id=6df73def */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/Modal.vue?vue&type=template&id=6df73def");
+
+
+/***/ }),
+
+/***/ "./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue?vue&type=template&id=2d964008":
+/*!*************************************************************************************************************************!*\
+  !*** ./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue?vue&type=template&id=2d964008 ***!
+  \*************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_SecondaryButton_vue_vue_type_template_id_2d964008__WEBPACK_IMPORTED_MODULE_0__.render)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_dist_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_dist_index_js_ruleSet_0_use_0_SecondaryButton_vue_vue_type_template_id_2d964008__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../../../../../../node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!../../../../../../../../node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./SecondaryButton.vue?vue&type=template&id=2d964008 */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/dist/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/dist/index.js??ruleSet[0].use[0]!./vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/SecondaryButton.vue?vue&type=template&id=2d964008");
 
 
 /***/ }),
