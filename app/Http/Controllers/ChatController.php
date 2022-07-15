@@ -120,55 +120,84 @@ class ChatController extends Controller
             $checklistc = Grouper::select('List_C')->where('Grouper', $grouper)->first()->List_C ?? false;
             $checkfreetextlist = Grouper::select('Free_Text_List')->where('Grouper', $grouper)->first()->Free_Text_List ?? false;
 
-            if ($checktack) {
-                $tack = array_shift($splittext);
-                $tackmeaning = Tack::select('Meaning')->where('Grouper', $grouper)->where('Tack', $tack)->first()->Meaning ?? null;
-                $message .= ' | ' . $tackmeaning;
-            }
-            if ($checkfreetexttack) {
-                $freetexttack = array_shift($splittext);
-                $message .= ' | ' . $freetexttack;
-            }
-            if ($checklista) {
-                $ista = array_shift($splittext);
-                $istameaning = ListA::select('Meaning')->where('Grouper', $grouper)->where('List_A', $ista)->first()->Meaning ?? '(List A)';
-                $message = str_replace('(List A)', $istameaning, $message);
-                // $message .= ' | ' . $istameaning;
-            }
-            if ($checklistb) {
-                $listb = array_shift($splittext);
-                $splitcharlistb = str_split($listb);
-                $listbmeaning = '';
-                while (count($splitcharlistb) > 0) {
-                    // return 'asdasd';
-                    $listbchar = array_shift($splitcharlistb);
-                    $listbcharmeaning = ListB::select('Meaning')->where('Grouper', $grouper)->where('List_B', $listbchar)->first()->Meaning ?? '(List B)';
-                    $listbmeaning .= ' ' . $listbcharmeaning;
+            $checkifnextitemisgrouper = Grouper::select('Meaning')->where('Grouper', $splittext[0] ?? null)->first() ? true : false;
+
+            if ($checkifnextitemisgrouper) {
+            } else {
+
+                $checkfortablegrouper = TableGrouper::select('Table_Grouper', 'Meaning')->where('Table_Grouper', $splittext[0] ?? null)->first() ? true : false;
+                if ($checkfortablegrouper) {
+                    $tablegrouper = array_shift($splittext);
+                    $tablegroupermeaning = TableGrouper::select('Meaning')->where('Table_Grouper', $tablegrouper)->first()->Meaning ?? null;
+                    $message .= ' | ' . $tablegroupermeaning;
+                } else {
+                    if ($checktack) {
+                        $tack = array_shift($splittext);
+                        $splittack = explode(" ", $tack);
+                        $tackmeaning = '';
+                        while (count($splittack) > 0) {
+                            $tackchar = array_shift($splittack);
+                            $tackcharmeaning = Tack::select('Meaning')->where('Grouper', $grouper)->where('Tack', $tackchar)->first()->Meaning ?? null;
+                            $tackmeaning .= ' ' . $tackcharmeaning;
+                        }
+                        $message .= ' | ' . $tackmeaning;
+                    }
+                    if ($checkfreetexttack) {
+                        $checkifnextitemisgrouper = Grouper::select('Meaning')->where('Grouper', $splittext[0] ?? null)->first() ? true : false;
+                        if ($checkifnextitemisgrouper) {
+                        } else {
+                            $freetexttack = array_shift($splittext);
+                            $freetexttack = str_replace('DSG', '', $freetexttack);
+                            $message .= ' | ' . $freetexttack;
+                        }
+                    }
+                    if ($checklista) {
+                        $ista = array_shift($splittext);
+                        $istameaning = ListA::select('Meaning')->where('Grouper', $grouper)->where('List_A', $ista)->first()->Meaning ?? '(List A)';
+                        // $message = str_replace('(List A)', $istameaning, $message);
+                        $message .= ' | ' . $istameaning;
+                    }
+                    if ($checklistb) {
+                        $listb = array_shift($splittext);
+                        $splitcharlistb = str_split($listb);
+                        $listbmeaning = '';
+                        while (count($splitcharlistb) > 0) {
+                            // return 'asdasd';
+                            $listbchar = array_shift($splitcharlistb);
+                            $listbcharmeaning = ListB::select('Meaning')->where('Grouper', $grouper)->where('List_B', $listbchar)->first()->Meaning ?? '(List B)';
+                            $listbmeaning .= ' ' . $listbcharmeaning;
+                        }
+                        // $message = str_replace('(List B)', $listbmeaning, $message);
+                        $message .= ' | ' . $listbmeaning;
+                    }
+                    if ($checklistc) {
+                        $istc = array_shift($splittext);
+                        $istcmeaning = ListC::select('Meaning')->where('Grouper', $grouper)->where('List_c', $istc)->first()->Meaning ?? '(List C)';
+                        // $message = str_replace('(List C)', $istcmeaning, $message);
+                        $message .= ' | ' . $istameaning;
+                    }
+                    if ($checkfreetextlist) {
+                        $freetextlist = array_shift($splittext);
+                        $message .= ' | ' . $freetextlist;
+                    }
+
+                    $checkfortablegrouper = TableGrouper::select('Table_Grouper', 'Meaning')->where('Table_Grouper', $splittext[0] ?? null)->first()->Table_Grouper ?? null;
+                    if ($checkfortablegrouper) {
+                        $tablegrouper = array_shift($splittext);
+                        $tablegroupermeaning = TableGrouper::select('Meaning')->where('Table_Grouper', $tablegrouper)->first()->Meaning ?? null;
+                        $message .= ' | ' . $tablegroupermeaning;
+                    }
                 }
-                $message = str_replace('(List B)', $listbmeaning, $message);
-                // $message .= ' | ' . $listbmeaning;
-            }
-            if ($checklistc) {
-                $istc = array_shift($splittext);
-                $istcmeaning = ListC::select('Meaning')->where('Grouper', $grouper)->where('List_c', $istc)->first()->Meaning ?? '(List C)';
-                $message = str_replace('(List C)', $istcmeaning, $message);
-                // $message .= ' | ' . $istameaning;
-            }
-            if ($checkfreetextlist) {
-                $freetextlist = array_shift($splittext);
-                $message .= ' | ' . $freetextlist;
             }
 
-            $checkfortablegrouper = TableGrouper::select('Table_Grouper', 'Meaning')->where('Table_Grouper', $splittext[0] ?? null)->first()->Table_Grouper ?? null;
-            if ($checkfortablegrouper) {
-                $tablegrouper = array_shift($splittext);
-                $tablegroupermeaning = TableGrouper::select('Meaning')->where('Table_Grouper', $tablegrouper)->first()->Meaning ?? null;
-                $message .= ' | ' . $tablegroupermeaning;
-            }
 
             $message .= '
 ';
         }
         return $message;
+    }
+
+    public function quickguide()
+    {
     }
 }

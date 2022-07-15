@@ -12,22 +12,48 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
                 placeholder="Say Something..."
                 class="shadow appearance-none border rounded w-4/5 py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
             />
-            <secondary-button @click="refreshmessage()">Refresh</secondary-button>
+            <secondary-button @click="refreshmessage()"
+                >Refresh</secondary-button
+            >
         </div>
-        <div v-if="quickguide" style="border-top: 1px solid #e6e6e6" class="grid">
-            <input
+        <div
+            v-if="quickguide"
+            style="border-top: 1px solid #e6e6e6"
+            class="grid"
+        >
+            <!-- <input
                 type="text"
                 v-model="message"
                 placeholder="v kacmako akpi kamsvioak apokak a0vk a09 0oaoi s..."
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
+            /> -->
+            <input
+                type="text"
+                placeholder="Enter Country name..."
+                v-model="query"
+                @keyup="getData()"
+                autocomplete="off"
+                class="form-control input-lg"
             />
+            <div class="panel-footer" v-if="search_data.length">
+                <ul class="list-group">
+                    <a
+                        href="#"
+                        class="list-group-item"
+                        v-for="(data1, index) in search_data"
+                        :key="index"
+                        @click="getName(data1.country_name)"
+                        v-bind="i"
+                        >{{ data1.country_name }}</a
+                    >
+                </ul>
+            </div>
         </div>
     </div>
     <div class="m-1">
         <div style="border-top: 1px solid #e6e6e6" class="grid">
             <textarea
                 v-model="translatemessage"
-
                 rows="3"
                 class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
             ></textarea>
@@ -86,6 +112,8 @@ export default {
             message: "",
             translatemessage: "",
             quickguide: false,
+            query: "",
+            search_data: [],
         };
     },
     watch: {
@@ -108,6 +136,20 @@ export default {
         },
     },
     methods: {
+        getData: function () {
+            this.search_data = [];
+            axios
+                .post("fetch.php", {
+                    query: this.query,
+                })
+                .then((response) => {
+                    this.search_data = response.data;
+                });
+        },
+        getName: function (name) {
+            this.query = name;
+            this.search_data = [];
+        },
         choosemessagetype(e) {
             if (e.target.value === "Quick Guide") {
                 this.quickguide = true;
@@ -116,8 +158,8 @@ export default {
                 this.quickguide = false;
             }
         },
-        refreshmessage(){
-            this.message = '';
+        refreshmessage() {
+            this.message = "";
         },
         sendMessage(action) {
             if (this.Message == " ") {
