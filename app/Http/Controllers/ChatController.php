@@ -79,11 +79,9 @@ class ChatController extends Controller
     public function testets(Request $request)
     {
         $teadtasd = $request->message;
-        $splittext = preg_split("/[-]/", $teadtasd);
-        while (count($splittext) > 0) {
-            array_shift($splittext);
-            echo count($splittext);
-        }
+
+        $groupermeaning = Grouper::select('Grouper', 'Meaning')->where('Grouper','like', '%A%')->take(5)->get();
+        return response()->json(['teadtasd' => $groupermeaning]);
     }
 
     public function updateseenmessage($eksesaisId, $roomId)
@@ -174,7 +172,7 @@ class ChatController extends Controller
                         $istc = array_shift($splittext);
                         $istcmeaning = ListC::select('Meaning')->where('Grouper', $grouper)->where('List_c', $istc)->first()->Meaning ?? '(List C)';
                         // $message = str_replace('(List C)', $istcmeaning, $message);
-                        $message .= ' | ' . $istameaning;
+                        $message .= ' | ' . $istcmeaning;
                     }
                     if ($checkfreetextlist) {
                         $freetextlist = array_shift($splittext);

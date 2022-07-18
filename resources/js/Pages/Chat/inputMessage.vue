@@ -4,7 +4,7 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
 </script>
 
 <template>
-    <div class="relative h-10 m-1">
+    <div class="relative m-1">
         <div v-if="quickguide === false" style="border-top: 1px solid #e6e6e6">
             <input
                 type="text"
@@ -29,23 +29,19 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
             /> -->
             <input
                 type="text"
-                placeholder="Enter Country name..."
+                placeholder="Enter some of the keywords"
                 v-model="query"
                 @keyup="getData()"
                 autocomplete="off"
                 class="form-control input-lg"
             />
             <div class="panel-footer" v-if="search_data.length">
-                <ul class="list-group">
-                    <a
-                        href="#"
-                        class="list-group-item"
-                        v-for="(data1, index) in search_data"
-                        :key="index"
-                        @click="getName(data1.country_name)"
-                        v-bind="i"
-                        >{{ data1.country_name }}</a
-                    >
+                <ul
+                    v-for="(data1, index) in search_data"
+                    :key="index"
+                    class="bg-gray-100 rounded-lg w-full overflow-visible"
+                >
+                    <a class="list-group-item block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white border border-gray-300" @click="getName(data1.Meaning)">{{ data1.Meaning }} </a>
                 </ul>
             </div>
         </div>
@@ -139,16 +135,20 @@ export default {
         getData: function () {
             this.search_data = [];
             axios
-                .post("fetch.php", {
-                    query: this.query,
+                .get("/testasdasdasdafdsf", {
+                    params: {
+                        message: this.query,
+                    },
                 })
                 .then((response) => {
-                    this.search_data = response.data;
+                    this.search_data = response.data.teadtasd;
+                    console.log(this.search_data);
                 });
         },
         getName: function (name) {
             this.query = name;
             this.search_data = [];
+            console.log(this.query);
         },
         choosemessagetype(e) {
             if (e.target.value === "Quick Guide") {

@@ -4,6 +4,13 @@
         </div>
         <div class="flex flex-wrap">
             <button
+                class="m-1 h-10 px-5 text-gray-700 text-sm transition-colors duration-150 bg-gray-300 rounded-lg focus:shadow-outline hover:bg-indigo-800 hover:text-white active"
+                type="button"
+                v-on:click="tooglemodaladdkapal()"
+            >
+              +  Tambah Kapal
+            </button>
+            <button
                 class="m-1 h-10 px-5 text-gray-700 text-sm transition-colors duration-150 bg-gray-300 rounded-lg focus:shadow-outline hover:bg-indigo-800 hover:text-white"
                 v-for="(room, index) in rooms"
                 :key="index"
@@ -101,6 +108,71 @@
                 v-if="showModal"
                 class="opacity-25 fixed inset-0 z-40 bg-black"
             ></div>
+
+            <!-- modaladdkapal -->
+            <div
+                v-if="addkapalmodal"
+                class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex"
+            >
+                <div class="relative w-1/3 my-6 mx-auto max-w-6xl">
+                    <!--content-->
+                    <div
+                        class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none"
+                    >
+                        <!--header-->
+                        <div
+                            class="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t"
+                        >
+                            <h3 class="text-xl font-semibold">
+                                Tambah Kapal ke dalam group eksesais
+                            </h3>
+                            <button
+                                class="p-1 ml-auto bg-transparent border-0 text-black opacity-70 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+                                v-on:click="tooglemodaladdkapal()"
+                            >
+                                <span
+                                    class="bg-transparent text-black opacity-70 h-6 w-6 text-2xl block outline-none focus:outline-none"
+                                >
+                                    ×
+                                </span>
+                            </button>
+                        </div>
+                        <!--body-->
+                        <div class="relative px-6 pb-3 flex-auto">
+                            <div
+                                v-for="(senaraikapal, index) in senaraikapals"
+                                :key="index"
+                            >
+                                <label class="text-gray-700">
+                                    <input
+                                        checked
+                                        type="checkbox"
+                                        v-model="senaraiKapalTerlibat"
+                                        :value="senaraikapal.id"
+                                    />
+                                    <span class="ml-1">{{senaraikapal.name}}</span>
+                                </label>
+                            </div>
+                        </div>
+                        <!--footer-->
+                        <div
+                            class="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b"
+                        >
+                            <button
+                                class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                type="button"
+                                @click="saveGroup()"
+                            >
+                                Create Group
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div
+                v-if="addkapalmodal"
+                class="opacity-25 fixed inset-0 z-40 bg-black"
+            ></div>
         </div>
 </template>
 
@@ -114,6 +186,7 @@ export default {
     data: function () {
         return {
             showModal: false,
+            addkapalmodal: false,
             newRoom: "",
             selected: "",
             senaraikapals: [],
@@ -124,6 +197,9 @@ export default {
     methods: {
         toggleModal: function () {
             this.showModal = !this.showModal;
+        },
+        tooglemodaladdkapal: function () {
+            this.addkapalmodal = !this.addkapalmodal;
         },
         getKapal() {
             axios
