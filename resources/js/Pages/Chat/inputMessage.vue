@@ -17,7 +17,7 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
                 @click="refreshmessage()"
                 >CLR</secondary-button
             >
-            <select
+            <!-- <select
                 v-model="idkapalindividual"
                 id=""
                 class="ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded"
@@ -30,7 +30,7 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
                 >
                     {{ senaraikapal.name }}
                 </option>
-            </select>
+            </select> -->
             <!-- <secondary-button class="ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded" @click="refreshmessage()"
                 >ADDRESSEE</secondary-button
             > -->
@@ -189,7 +189,7 @@ export default {
             if (this.Message == " ") {
                 return;
             }
-            if (this.idkapalindividual == "") {
+            // if (this.idkapalindividual == "") {
                 axios
                     .post(
                         "/chat/eksesais/" +
@@ -214,34 +214,34 @@ export default {
                     .catch((error) => {
                         console.log(error);
                     });
-            }
+            // }
             // Individual chat
-            else {
-                 axios
-                    .post(
-                        "/chat/eksesais/" +
-                            this.currenteksesais +
-                            "/" +
-                            this.room.id +
-                            "/message",
-                        {
-                            message: this.message,
-                            action: action,
-                            pluckusersOnRoom: this.idkapalindividual,
-                            individual: true
-                        }
-                    )
-                    .then((response) => {
-                        if (response.status == 200) {
-                            this.message = "";
-                            this.translatemessage = " ";
-                            this.$emit("messagesent");
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            }
+            // else {
+            //      axios
+            //         .post(
+            //             "/chat/eksesais/" +
+            //                 this.currenteksesais +
+            //                 "/" +
+            //                 this.room.id +
+            //                 "/message",
+            //             {
+            //                 message: this.message,
+            //                 action: action,
+            //                 pluckusersOnRoom: this.idkapalindividual,
+            //                 individual: true
+            //             }
+            //         )
+            //         .then((response) => {
+            //             if (response.status == 200) {
+            //                 this.message = "";
+            //                 this.translatemessage = " ";
+            //                 this.$emit("messagesent");
+            //             }
+            //         })
+            //         .catch((error) => {
+            //             console.log(error);
+            //         });
+            // }
         },
         customsendMessage(action) {
             axios

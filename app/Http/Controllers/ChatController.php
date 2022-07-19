@@ -69,16 +69,16 @@ class ChatController extends Controller
 
     public function newMessage(Request $request, $eksesaisId, $roomId)
     {
-        if ($request->individual == true) {
-            $receiver = User::find($request->pluckusersOnRoom);
-            $newRoom = ChatRoom::updateOrCreate(
-                ['eksesais_id' => $eksesaisId, 'name' => $receiver->name, 'shortform' => $receiver->shortform],
-                ['isShow' => 0]
-            );
+        // if ($request->individual == true) {
+        //     $receiver = User::find($request->pluckusersOnRoom);
+        //     $newRoom = ChatRoom::updateOrCreate(
+        //         ['eksesais_id' => $eksesaisId, 'name' => $receiver->name, 'shortform' => $receiver->shortform],
+        //         ['isShow' => 0]
+        //     );
 
-            $newRoom->users()->attach([$request->pluckusersOnRoom, Auth::id()]);
-            $roomId = $newRoom->id;
-        }
+        //     $newRoom->users()->attach([$request->pluckusersOnRoom, Auth::id()]);
+        //     $roomId = $newRoom->id;
+        // }
         $newMessage = new ChatMessage();
         $newMessage->user_id = Auth::id();
         $newMessage->eksesais_id = $eksesaisId;
