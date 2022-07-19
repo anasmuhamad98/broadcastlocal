@@ -9,31 +9,40 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
             <input
                 type="text"
                 v-model="message"
-                placeholder="Say Something..."
-                class="shadow appearance-none border rounded w-4/5 py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="Groupers..."
+                class="shadow appearance-none border rounded w-10/12 py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
             />
-            <secondary-button @click="refreshmessage()"
-                >Refresh</secondary-button
+            <secondary-button
+                class="ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded"
+                @click="refreshmessage()"
+                >CLR</secondary-button
             >
+            <select
+                v-model="idkapalindividual"
+                id=""
+                class="ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded"
+            >
+                <option value=""></option>
+                <option
+                    v-for="(senaraikapal, index) in senaraikapals"
+                    :key="index"
+                    :value="senaraikapal.id"
+                >
+                    {{ senaraikapal.name }}
+                </option>
+            </select>
+            <!-- <secondary-button class="ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded" @click="refreshmessage()"
+                >ADDRESSEE</secondary-button
+            > -->
         </div>
-        <div
-            v-if="quickguide"
-            style="border-top: 1px solid #e6e6e6"
-            class="grid"
-        >
-            <!-- <input
-                type="text"
-                v-model="message"
-                placeholder="v kacmako akpi kamsvioak apokak a0vk a09 0oaoi s..."
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
-            /> -->
+        <div v-if="quickguide" style="border-top: 1px solid #e6e6e6">
             <input
                 type="text"
                 placeholder="Enter some of the keywords"
                 v-model="query"
                 @keyup="getData()"
                 autocomplete="off"
-                class="form-control input-lg"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
             />
             <div class="panel-footer" v-if="search_data.length">
                 <ul
@@ -41,18 +50,24 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
                     :key="index"
                     class="bg-gray-100 rounded-lg w-full overflow-visible"
                 >
-                    <a class="list-group-item block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white border border-gray-300" @click="getName(data1.Meaning)">{{ data1.Meaning }} </a>
+                    <a
+                        style="cursor: pointer"
+                        class="list-group-item block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white border border-gray-300"
+                        @click="getName(data1.Meaning)"
+                        >{{ data1.Meaning }}
+                    </a>
                 </ul>
             </div>
         </div>
     </div>
     <div class="m-1">
         <div style="border-top: 1px solid #e6e6e6" class="grid">
-            <textarea
-                v-model="translatemessage"
+            <span
                 rows="3"
-                class="shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
-            ></textarea>
+                style="min-height: 6rem; white-space: pre-wrap"
+                class="shadow appearance-none border border-gray-500 rounded py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
+                >{{ translatemessage }}</span
+            >
         </div>
     </div>
     <div class="relative p-3 pl-1 flex justify-end">
@@ -102,7 +117,13 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
 export default {
     components: { Input },
     emits: ["messagesent"],
-    props: ["room", "currenteksesais", "clickMessage3"],
+    props: [
+        "room",
+        "currenteksesais",
+        "clickMessage3",
+        "pluckusersOnRoom",
+        "senaraikapals",
+    ],
     data: function () {
         return {
             message: "",
@@ -110,6 +131,7 @@ export default {
             quickguide: false,
             query: "",
             search_data: [],
+            idkapalindividual: "",
         };
     },
     watch: {
@@ -117,6 +139,7 @@ export default {
             this.message = val;
         },
         message: function (val, oldval) {
+            // this.message = this.message.toUpperCase();
             axios
                 .get("/grouper/ajax/meaning", {
                     params: {
@@ -124,7 +147,7 @@ export default {
                     },
                 })
                 .then((response) => {
-                    this.translatemessage = response.data;
+                    this.translatemessage = response.data.message;
                 })
                 .catch((error) => {
                     console.log(error);
@@ -159,34 +182,66 @@ export default {
             }
         },
         refreshmessage() {
+            console.log(this.idkapalindividual);
             this.message = "";
         },
         sendMessage(action) {
             if (this.Message == " ") {
                 return;
             }
-            axios
-                .post(
-                    "/chat/eksesais/" +
-                        this.currenteksesais +
-                        "/" +
-                        this.room.id +
-                        "/message",
-                    {
-                        message: this.message,
-                        action: action,
-                    }
-                )
-                .then((response) => {
-                    if (response.status == 200) {
-                        this.message = "";
-                        this.translatemessage = " ";
-                        this.$emit("messagesent");
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+            if (this.idkapalindividual == "") {
+                axios
+                    .post(
+                        "/chat/eksesais/" +
+                            this.currenteksesais +
+                            "/" +
+                            this.room.id +
+                            "/message",
+                        {
+                            message: this.message,
+                            action: action,
+                            pluckusersOnRoom: this.room.shortform,
+                            individual: false
+                        }
+                    )
+                    .then((response) => {
+                        if (response.status == 200) {
+                            this.message = "";
+                            this.translatemessage = " ";
+                            this.$emit("messagesent");
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+            // Individual chat
+            else {
+                 axios
+                    .post(
+                        "/chat/eksesais/" +
+                            this.currenteksesais +
+                            "/" +
+                            this.room.id +
+                            "/message",
+                        {
+                            message: this.message,
+                            action: action,
+                            pluckusersOnRoom: this.idkapalindividual,
+                            individual: true
+                        }
+                    )
+                    .then((response) => {
+                        if (response.status == 200) {
+                            this.message = "";
+                            this.translatemessage = " ";
+                            this.$emit("messagesent");
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
         },
         customsendMessage(action) {
             axios
@@ -199,6 +254,7 @@ export default {
                     {
                         message: action,
                         action: " ",
+                        pluckusersOnRoom: this.room.shortform,
                     }
                 )
                 .then((response) => {

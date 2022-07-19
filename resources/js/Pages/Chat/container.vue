@@ -14,12 +14,14 @@ import ChatRoomSelection from "./chatRoomSelection.vue";
                     :rooms="chatRooms"
                     :currentRoom="currentRoom"
                     :eksesaisdetail="eksesaisdetail"
+                    :usersOnRoom="usersOnRoom"
+                    :senaraikapals="senaraikapals"
                     v-on:roomchanged="setRoom($event)"
                 />
             </h2>
         </template>
 
-        <div class="py-12 relative">
+        <div class="py-9 relative">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <message-container
@@ -30,6 +32,8 @@ import ChatRoomSelection from "./chatRoomSelection.vue";
                         :room="currentRoom"
                         :currenteksesais="eksesaisdetail.id"
                         :clickMessage3="clickMessage"
+                        :pluckusersOnRoom="pluckusersOnRoom"
+                        :senaraikapals="senaraikapals"
                         v-on:messagesent="getMessages()"
                     />
                 </div>
@@ -53,7 +57,10 @@ export default {
             currentRoom: [],
             messages: [],
             test: [],
-            clickMessage: ""
+            clickMessage: "",
+            usersOnRoom: [],
+            pluckusersOnRoom: "",
+            senaraikapals: [],
         };
     },
     mounted() {
@@ -69,6 +76,16 @@ export default {
         window.Echo.leave("eksesais." + this.eksesaisdetail.id);
     },
     methods: {
+        getKapal() {
+            axios
+                .get("/senaraikapal/" + this.eksesaisdetail.id)
+                .then((response) => {
+                    this.senaraikapals = response.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
         getClickMessage(test) {
             this.clickMessage = test;
             console.log(this.clickMessage);
@@ -125,18 +142,29 @@ export default {
         },
         setRoom(room) {
             this.currentRoom = room;
-            this.getMessages();
+            this.getUsersonRoom();
+            // this.getMessages();
             this.updateSeenMessage();
+            console.log(this.usersOnRoom);
+        },
+        getUsersonRoom() {
+            axios
+                .get("/room/users/" + this.currentRoom.id)
+                .then((response) => {
+                    this.usersOnRoom = response.data.usersOnRoom;
+                    this.pluckusersOnRoom = response.data.pluckusersOnRoom;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         },
         getMessages() {
             axios
-                .get(
-                    "/chat/eksesais/" +
-                        this.eksesaisdetail.id +
-                        "/" +
-                        this.currentRoom.id +
-                        "/messages"
-                )
+                .get("/chat/eksesais/" + this.eksesaisdetail.id + "/messages", {
+                    params: {
+                        chatrooms: this.chatRooms,
+                    },
+                })
                 .then((response) => {
                     this.messages = response.data;
                 })
@@ -146,6 +174,8 @@ export default {
         },
     },
     created() {
+        this.getKapal();
+        this.getMessages();
         this.getRoomsFirst();
     },
 };

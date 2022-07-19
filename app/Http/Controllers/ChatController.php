@@ -39,30 +39,52 @@ class ChatController extends Controller
         // return ChatRoom::where('eksesais_id', $eksesaisId)->get();
     }
 
+    public function users_room($roomId)
+    {
+        $usersOnRoom = ChatRoom::find($roomId)->users()->get();
+        $pluckusersOnRoom = ChatRoom::find($roomId)->users()->pluck('shortform')->implode(',');
+        return response()->json(['usersOnRoom' => $usersOnRoom, 'pluckusersOnRoom' => $pluckusersOnRoom]);
+    }
+
     public function newRoom(Request $request, $eksesaisId)
     {
         $senaraiKapalTerlibat = $request->senaraiKapalTerlibat;
         $newRoom = new ChatRoom();
         $newRoom->eksesais_id = $eksesaisId;
         $newRoom->name = $request->roomName;
+        $newRoom->shortform = $request->shortform;
         $newRoom->save();
 
         $newRoom->users()->attach($senaraiKapalTerlibat);
         // return response()->json([ 'test' => $senaraiKapalTerlibat ]);
     }
 
-    public function messages(Request $request, $eksesaisId, $roomId)
+    public function messages(Request $request, $eksesaisId)
     {
-        return ChatMessage::with('rooms')->where('eksesais_id', $eksesaisId)->where('chat_room_id', $roomId)->with('user')->orderBy('created_at', 'desc')->get();
+        $user = User::find(Auth::id());
+        $chatrooms = $user->rooms()->where('eksesais_id', $eksesaisId)->get();
+        $chatrooms = $chatrooms->pluck('id');
+        return ChatMessage::with('rooms')->where('eksesais_id', $eksesaisId)->whereIn('chat_room_id', $chatrooms)->with('user')->orderBy('created_at', 'desc')->get();
     }
 
     public function newMessage(Request $request, $eksesaisId, $roomId)
     {
+        if ($request->individual == true) {
+            $receiver = User::find($request->pluckusersOnRoom);
+            $newRoom = ChatRoom::updateOrCreate(
+                ['eksesais_id' => $eksesaisId, 'name' => $receiver->name, 'shortform' => $receiver->shortform],
+                ['isShow' => 0]
+            );
+
+            $newRoom->users()->attach([$request->pluckusersOnRoom, Auth::id()]);
+            $roomId = $newRoom->id;
+        }
         $newMessage = new ChatMessage();
         $newMessage->user_id = Auth::id();
         $newMessage->eksesais_id = $eksesaisId;
         $newMessage->chat_room_id = $roomId;
         $newMessage->message = $request->message;
+        $newMessage->receiver = $request->pluckusersOnRoom;
         $newMessage->action = $request->action;
         $newMessage->save();
 
@@ -78,9 +100,14 @@ class ChatController extends Controller
 
     public function testets(Request $request)
     {
-        $teadtasd = $request->message;
+        // return ChatRoom::find(1)->users()->pluck('users.shortform');
+        // $user = User::find(Auth::id());
+        // $chatrooms =  $user->rooms()->where('eksesais_id', 1)->get();
+        // return $chatrooms->pluck('id');
+        // return $users = ChatRoom::find(1)->users()->where('users.id', '!=', Auth::id())->pluck('users.name');
+        // $teadtasd = $request->message;
 
-        $groupermeaning = Grouper::select('Grouper', 'Meaning')->where('Grouper','like', '%A%')->take(5)->get();
+        $groupermeaning = Grouper::select('Grouper', 'Meaning')->where('Grouper', 'like', '%A%')->take(5)->get();
         return response()->json(['teadtasd' => $groupermeaning]);
     }
 
@@ -103,7 +130,7 @@ class ChatController extends Controller
     public function chatmeaning(Request $request)
     {
         $grouper = $request->message;
-        $message = '';
+        $message = "";
         $patternlist = "/[-]/";
         $splittext = preg_split($patternlist, $grouper);
         while (count($splittext) > 0) {
@@ -127,7 +154,7 @@ class ChatController extends Controller
                 if ($checkfortablegrouper) {
                     $tablegrouper = array_shift($splittext);
                     $tablegroupermeaning = TableGrouper::select('Meaning')->where('Table_Grouper', $tablegrouper)->first()->Meaning ?? null;
-                    $message .= ' | ' . $tablegroupermeaning;
+                    $message .= " | " . $tablegroupermeaning;
                 } else {
                     if ($checktack) {
                         $tack = array_shift($splittext);
@@ -138,7 +165,7 @@ class ChatController extends Controller
                             $tackcharmeaning = Tack::select('Meaning')->where('Grouper', $grouper)->where('Tack', $tackchar)->first()->Meaning ?? null;
                             $tackmeaning .= ' ' . $tackcharmeaning;
                         }
-                        $message .= ' | ' . $tackmeaning;
+                        $message .= " | " . $tackmeaning;
                     }
                     if ($checkfreetexttack) {
                         $checkifnextitemisgrouper = Grouper::select('Meaning')->where('Grouper', $splittext[0] ?? null)->first() ? true : false;
@@ -146,14 +173,14 @@ class ChatController extends Controller
                         } else {
                             $freetexttack = array_shift($splittext);
                             $freetexttack = str_replace('DSG', '', $freetexttack);
-                            $message .= ' | ' . $freetexttack;
+                            $message .= " | " . $freetexttack;
                         }
                     }
                     if ($checklista) {
                         $ista = array_shift($splittext);
                         $istameaning = ListA::select('Meaning')->where('Grouper', $grouper)->where('List_A', $ista)->first()->Meaning ?? '(List A)';
                         // $message = str_replace('(List A)', $istameaning, $message);
-                        $message .= ' | ' . $istameaning;
+                        $message .= " | " . $istameaning;
                     }
                     if ($checklistb) {
                         $listb = array_shift($splittext);
@@ -166,33 +193,33 @@ class ChatController extends Controller
                             $listbmeaning .= ' ' . $listbcharmeaning;
                         }
                         // $message = str_replace('(List B)', $listbmeaning, $message);
-                        $message .= ' | ' . $listbmeaning;
+                        $message .= " | " . $listbmeaning;
                     }
                     if ($checklistc) {
                         $istc = array_shift($splittext);
                         $istcmeaning = ListC::select('Meaning')->where('Grouper', $grouper)->where('List_c', $istc)->first()->Meaning ?? '(List C)';
                         // $message = str_replace('(List C)', $istcmeaning, $message);
-                        $message .= ' | ' . $istcmeaning;
+                        $message .= " | " . $istcmeaning;
                     }
                     if ($checkfreetextlist) {
                         $freetextlist = array_shift($splittext);
-                        $message .= ' | ' . $freetextlist;
+                        $message .= " | " . $freetextlist;
                     }
 
                     $checkfortablegrouper = TableGrouper::select('Table_Grouper', 'Meaning')->where('Table_Grouper', $splittext[0] ?? null)->first()->Table_Grouper ?? null;
                     if ($checkfortablegrouper) {
                         $tablegrouper = array_shift($splittext);
                         $tablegroupermeaning = TableGrouper::select('Meaning')->where('Table_Grouper', $tablegrouper)->first()->Meaning ?? null;
-                        $message .= ' | ' . $tablegroupermeaning;
+                        $message .= " | " . $tablegroupermeaning;
                     }
                 }
             }
 
 
-            $message .= '
-';
+            $message .= "\n";
         }
-        return $message;
+        return response()->json(['message' => $message]);
+        // return $message;
     }
 
     public function quickguide()

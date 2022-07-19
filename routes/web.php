@@ -42,8 +42,10 @@ Route::middleware([
     })->name('eksesais');
 
     Route::get('/eksesais/{id}', [ChatController::class, 'index'])->name('eksesaischat');
-    Route::get('chat/eksesais/{eksesaisId}/{roomId}/messages', [ChatController::class, 'messages'])->name('eksesaismessage');
+    Route::get('chat/eksesais/{eksesaisId}/messages', [ChatController::class, 'messages'])->name('eksesaismessage');
     Route::get('/chat/rooms/{eksesaisId}', [ChatController::class, 'rooms']);
+
+    Route::get('/room/users/{roomId}', [ChatController::class, 'users_room']);
     Route::post('/chat/eksesais/{eksesaisId}/{roomId}/message', [ChatController::class, 'newMessage']);
 
     Route::post('/chat/eksesais/{eksesaisId}/createroom', [ChatController::class, 'newRoom']);

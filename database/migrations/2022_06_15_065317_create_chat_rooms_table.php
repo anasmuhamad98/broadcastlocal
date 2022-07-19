@@ -17,6 +17,8 @@ class CreateChatRoomsTable extends Migration
             $table->id();
             $table->integer('eksesais_id');
             $table->string('name');
+            $table->string('shortform');
+            $table->boolean('isShow');
             $table->timestamps();
         });
     }

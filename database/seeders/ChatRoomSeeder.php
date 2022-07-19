@@ -15,18 +15,33 @@ class ChatRoomSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
-            'name' => 'ahmad',
-            'email' => 'ahmad@gmail.com',
+            'name' => 'LEKIR',
+            'email' => 'LEKIR@gmail.com',
+            'shortform' => 'H3',
             'password' => bcrypt('12345678')
         ]);
         DB::table('users')->insert([
-            'name' => 'anas',
-            'email' => 'anas@gmail.com',
+            'name' => 'KELANTAN',
+            'email' => 'KELANTAN@gmail.com',
+            'shortform' => 'N5',
             'password' => bcrypt('12345678')
         ]);
         DB::table('users')->insert([
-            'name' => 'ezzat',
-            'email' => 'ezzat@gmail.com',
+            'name' => 'SRIINDERASAKTI',
+            'email' => 'SRIINDERASAKTI@gmail.com',
+            'shortform' => 'F2',
+            'password' => bcrypt('12345678')
+        ]);
+        DB::table('users')->insert([
+            'name' => 'KASTURI',
+            'email' => 'KASTURI@gmail.com',
+            'shortform' => 'C1',
+            'password' => bcrypt('12345678')
+        ]);
+        DB::table('users')->insert([
+            'name' => 'MUTIARA',
+            'email' => 'MUTIARA@gmail.com',
+            'shortform' => 'R5',
             'password' => bcrypt('12345678')
         ]);
     }
