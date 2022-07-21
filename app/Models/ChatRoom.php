@@ -9,6 +9,13 @@ class ChatRoom extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'eksesais_id',
+        'name',
+        'shortform',
+        'isShow',
+    ];
+
     public function messages(){
         return $this->hasMany('App\Models\ChatMessage');
     }

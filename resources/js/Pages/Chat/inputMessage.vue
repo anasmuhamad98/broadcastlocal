@@ -10,17 +10,13 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
                 type="text"
                 v-model="message"
                 placeholder="Groupers..."
-                class="shadow appearance-none border rounded w-10/12 py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
+                class="shadow appearance-none border rounded w-9/12 py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
             />
-            <secondary-button
-                class="ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded"
-                @click="refreshmessage()"
-                >CLR</secondary-button
-            >
-            <!-- <select
+
+            <select
                 v-model="idkapalindividual"
                 id=""
-                class="ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded"
+                class="ml-1 hover:bg-gray-700 w-2/12 text-gray-900 font-semibold hover:text-gray-100 py-2 px-3 border border-gray-900 hover:border-transparent rounded"
             >
                 <option value=""></option>
                 <option
@@ -28,9 +24,14 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
                     :key="index"
                     :value="senaraikapal.id"
                 >
-                    {{ senaraikapal.name }}
+                    {{ senaraikapal.shortform }}
                 </option>
-            </select> -->
+            </select>
+            <secondary-button
+                class="ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded"
+                @click="refreshmessage()"
+                >CLR</secondary-button
+            >
             <!-- <secondary-button class="ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded" @click="refreshmessage()"
                 >ADDRESSEE</secondary-button
             > -->
@@ -189,7 +190,7 @@ export default {
             if (this.Message == " ") {
                 return;
             }
-            // if (this.idkapalindividual == "") {
+            if (this.idkapalindividual == "") {
                 axios
                     .post(
                         "/chat/eksesais/" +
@@ -214,34 +215,34 @@ export default {
                     .catch((error) => {
                         console.log(error);
                     });
-            // }
+            }
             // Individual chat
-            // else {
-            //      axios
-            //         .post(
-            //             "/chat/eksesais/" +
-            //                 this.currenteksesais +
-            //                 "/" +
-            //                 this.room.id +
-            //                 "/message",
-            //             {
-            //                 message: this.message,
-            //                 action: action,
-            //                 pluckusersOnRoom: this.idkapalindividual,
-            //                 individual: true
-            //             }
-            //         )
-            //         .then((response) => {
-            //             if (response.status == 200) {
-            //                 this.message = "";
-            //                 this.translatemessage = " ";
-            //                 this.$emit("messagesent");
-            //             }
-            //         })
-            //         .catch((error) => {
-            //             console.log(error);
-            //         });
-            // }
+            else {
+                 axios
+                    .post(
+                        "/chat/eksesais/" +
+                            this.currenteksesais +
+                            "/" +
+                            this.room.id +
+                            "/message",
+                        {
+                            message: this.message,
+                            action: action,
+                            pluckusersOnRoom: this.idkapalindividual,
+                            individual: true
+                        }
+                    )
+                    .then((response) => {
+                        if (response.status == 200) {
+                            this.message = "";
+                            this.translatemessage = " ";
+                            this.$emit("messagesent");
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
         },
         customsendMessage(action) {
             axios

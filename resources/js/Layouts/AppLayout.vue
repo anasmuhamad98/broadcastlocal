@@ -69,6 +69,12 @@ const logout = () => {
                                 >
                                     Eksesais
                                 </JetNavLink>
+                                <JetNavLink
+                                    :href="route('callsign')"
+                                    :active="route().current('callsign')"
+                                >
+                                    CallSign
+                                </JetNavLink>
                                 <!-- <JetNavLink :href="route('chat')" :active="route().current('chat')">
                                     Chat
                                 </JetNavLink> -->

@@ -33,6 +33,10 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
+    Route::get('/callsign', function () {
+        return Inertia::render('Callsign');
+    })->name('callsign');
+
     Route::get('/chat', function () {
         return Inertia::render('Chat/container');
     })->name('chat');

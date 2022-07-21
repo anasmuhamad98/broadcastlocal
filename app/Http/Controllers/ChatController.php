@@ -35,7 +35,7 @@ class ChatController extends Controller
     public function rooms($eksesaisId)
     {
         $user = User::find(Auth::id());
-        return $user->rooms()->where('eksesais_id', $eksesaisId)->get();
+        return $user->rooms()->where('eksesais_id', $eksesaisId)->where('isShow', 1)->get();
         // return ChatRoom::where('eksesais_id', $eksesaisId)->get();
     }
 
@@ -69,16 +69,27 @@ class ChatController extends Controller
 
     public function newMessage(Request $request, $eksesaisId, $roomId)
     {
-        // if ($request->individual == true) {
-        //     $receiver = User::find($request->pluckusersOnRoom);
-        //     $newRoom = ChatRoom::updateOrCreate(
-        //         ['eksesais_id' => $eksesaisId, 'name' => $receiver->name, 'shortform' => $receiver->shortform],
-        //         ['isShow' => 0]
-        //     );
+        if ($request->individual == true) {
+            $sender = User::find(Auth::id());
+            $receiver = User::find($request->pluckusersOnRoom);
+            $checkindividual= ChatRoom::where('eksesais_id', $eksesaisId)->where(function ($query) use ($sender, $receiver) {
+                $query->where('name', $receiver->name . '-' . $sender->name)->orWhere('name', $sender->name . '-' . $receiver->name);
+            })->first();
 
-        //     $newRoom->users()->attach([$request->pluckusersOnRoom, Auth::id()]);
-        //     $roomId = $newRoom->id;
-        // }
+            if ($checkindividual) {
+            } else {
+                $newRoom = new ChatRoom;
+                $newRoom->eksesais_id = $eksesaisId;
+                $newRoom->name = $receiver->name . '-' . $sender->name;
+                $newRoom->shortform = $receiver->shortform . '-' . $sender->shortform;
+                $newRoom->isShow = 0;
+                $newRoom->save();
+
+                $newRoom->users()->attach([$request->pluckusersOnRoom, Auth::id()]);
+                $roomId = $newRoom->id;
+            }
+            $request->pluckusersOnRoom = $receiver->shortform;
+        }
         $newMessage = new ChatMessage();
         $newMessage->user_id = Auth::id();
         $newMessage->eksesais_id = $eksesaisId;
@@ -138,8 +149,10 @@ class ChatController extends Controller
             $grouper = array_shift($splittext);
             $groupermeaning = Grouper::select('Meaning')->where('Grouper', $grouper)->first()->Meaning ?? null;
             $message .= '' . $groupermeaning;
-            $checktack = Grouper::select('Tack')->where('Grouper', $grouper)->first()->Tack ?? false;
-            $checkfreetexttack = Grouper::select('Free_Text_Tack')->where('Grouper', $grouper)->first()->Free_Text_Tack ?? false;
+            $checktack1 = Grouper::select('Tack_1')->where('Grouper', $grouper)->first()->Tack_1 ?? false;
+            $checktack2 = Grouper::select('Tack_2')->where('Grouper', $grouper)->first()->Tack_2 ?? false;
+            $checkfreetexttack1 = Grouper::select('Free_Text_Tack_1')->where('Grouper', $grouper)->first()->Free_Text_Tack_1 ?? false;
+            $checkfreetexttack2 = Grouper::select('Free_Text_Tack_2')->where('Grouper', $grouper)->first()->Free_Text_Tack_2 ?? false;
             $checklista = Grouper::select('List_A')->where('Grouper', $grouper)->first()->List_A ?? false;
             $checklistb = Grouper::select('List_B')->where('Grouper', $grouper)->first()->List_B ?? false;
             $checklistc = Grouper::select('List_C')->where('Grouper', $grouper)->first()->List_C ?? false;
@@ -156,7 +169,7 @@ class ChatController extends Controller
                     $tablegroupermeaning = TableGrouper::select('Meaning')->where('Table_Grouper', $tablegrouper)->first()->Meaning ?? null;
                     $message .= " | " . $tablegroupermeaning;
                 } else {
-                    if ($checktack) {
+                    if ($checktack1) {
                         $tack = array_shift($splittext);
                         $splittack = explode(" ", $tack);
                         $tackmeaning = '';
@@ -167,12 +180,13 @@ class ChatController extends Controller
                         }
                         $message .= " | " . $tackmeaning;
                     }
-                    if ($checkfreetexttack) {
+                    if ($checkfreetexttack1) {
                         $checkifnextitemisgrouper = Grouper::select('Meaning')->where('Grouper', $splittext[0] ?? null)->first() ? true : false;
                         if ($checkifnextitemisgrouper) {
                         } else {
-                            $freetexttack = array_shift($splittext);
+                            $freetexttack = array_shift($splittext) ?? 'Free_Text_Tack';
                             $freetexttack = str_replace('DSG', '', $freetexttack);
+                            // $message = str_replace('Free_Text_Tack', $freetexttack, $message);
                             $message .= " | " . $freetexttack;
                         }
                     }

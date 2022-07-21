@@ -66,9 +66,9 @@ import DropdownLink from "../../../vendor/laravel/jetstream/stubs/inertia/resour
             <div>
                 <div
                     v-if="showModal"
-                    class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center flex"
+                    class="overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none justify-center items-center"
                 >
-                    <div class="relative w-1/3 my-6 mx-auto max-w-6xl">
+                    <div class="relative my-6 mx-auto max-w-6xl">
                         <!--content-->
                         <div
                             class="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none"
@@ -109,7 +109,8 @@ import DropdownLink from "../../../vendor/laravel/jetstream/stubs/inertia/resour
                                     value="Senarai Kapal"
                                     class="my-4 text-slate-500 text-lg leading-relaxed"
                                 />
-                                <div class="form-check"
+                                <div class="flex flex-row flex-wrap">
+                                    <div class="form-check w-1/3"
                                     v-for="(namakapal, index) in namakapals"
                                     :key="index"
                                 >
@@ -121,9 +122,11 @@ import DropdownLink from "../../../vendor/laravel/jetstream/stubs/inertia/resour
                                         />
                                         <span class="ml-1">{{
                                             namakapal.name
-                                        }}</span>
+                                        }}</span> &nbsp;
                                     </label>
                                 </div>
+                                </div>
+
                             </div>
                             <!--footer-->
                             <div

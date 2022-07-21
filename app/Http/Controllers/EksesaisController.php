@@ -56,6 +56,7 @@ class EksesaisController extends Controller
         $generalchatroom->eksesais_id = $eksesais->id;
         $generalchatroom->name = 'TG 31.0';
         $generalchatroom->shortform = 'M7';
+        $generalchatroom->isShow = 1;
         $generalchatroom->save();
 
         $generalchatroom->users()->attach($senaraiKapalTerlibat);

@@ -3,6 +3,8 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import messageContainer from "./messageContainer.vue";
 import InputMessage from "./inputMessage.vue";
 import ChatRoomSelection from "./chatRoomSelection.vue";
+import Rightslide from './rightslide.vue';
+import Leftslide from './leftslide.vue';
 </script>
 
 <template>
@@ -39,6 +41,8 @@ import ChatRoomSelection from "./chatRoomSelection.vue";
                 </div>
             </div>
         </div>
+        <rightslide class="absolute right-0 top-1/2"/>
+        <leftslide class="absolute left-0 top-1/2"/>
     </AppLayout>
 </template>
 
@@ -49,6 +53,8 @@ export default {
         InputMessage,
         AppLayout,
         ChatRoomSelection,
+        Rightslide,
+        Leftslide,
     },
     props: ["eksesaisdetail"],
     data: function () {

@@ -10,7 +10,7 @@
                 class="ml-1 text-sm"
                 v-for="(senaraikapal, index) in usersOnRoom"
                 :key="index"
-                >{{ senaraikapal.name }}</span
+                >{{ senaraikapal.shortform }}</span
             > </label
         >
         <!-- <button
@@ -105,7 +105,7 @@
                                     :value="senaraikapal.id"
                                 />
                                 <span class="ml-1">{{
-                                    senaraikapal.name
+                                    senaraikapal.shortform
                                 }}</span>
                             </label>
                         </div>
