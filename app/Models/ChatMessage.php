@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,5 +21,10 @@ class ChatMessage extends Model
 
     public function rooms(){
         return $this->hasMany('App\Models\ChatRoom', 'id', 'chat_room_id');
+    }
+
+    public function callsign()
+    {
+        return $this->hasOne(Callsign::class, 'user_id', 'user_id')->where('tarikhhari', Carbon::now()->day);
     }
 }

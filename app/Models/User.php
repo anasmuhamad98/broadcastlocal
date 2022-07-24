@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -70,5 +71,14 @@ class User extends Authenticatable
     public function rooms()
     {
         return $this->belongsToMany(ChatRoom::class, 'chat_room_users')->withPivot('newMessage');
+    }
+
+    public function callsign()
+    {
+        return $this->hasOne(Callsign::class)->where('tarikhhari', Carbon::now()->day);
+    }
+    public function callsigns()
+    {
+        return $this->hasMany(Callsign::class);
     }
 }

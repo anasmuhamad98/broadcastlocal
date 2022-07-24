@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Callsign;
 use App\Models\Eksesais;
 use App\Models\Kapal;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class KapalController extends Controller
@@ -16,13 +18,39 @@ class KapalController extends Controller
      */
     public function index()
     {
-        return User::all();
+        return User::with(['callsign' => function ($query) {
+            $query->where('tarikhhari',  Carbon::now()->day);
+        }])->get();
     }
 
 
-    public function senaraikapaldalamrooms($eksesaisId){
-        $kapaldalameksesais = Eksesais::find($eksesaisId);
-        return $kapaldalameksesais->users;
+    public function senaraikapaldalameksesais($eksesaisId)
+    {
+        return $kapaldalameksesais = Eksesais::find($eksesaisId)->users()->with('callsign')->get();
+
+    }
+
+    public function savecallsign(Request $request)
+    {
+        // return $request->tarikhhari;
+        $callsignkapals = $request->callsignkapal;
+        foreach ($callsignkapals as $index => $callsignkapal) {
+            if ($callsignkapal) {
+                $data = new Callsign();
+                $data->user_id =  $request->idKapal[$index];
+                $data->tarikhhari = $request->tarikhhari;
+                $data->callsign = $callsignkapal;
+                $data->save();
+            }
+        }
+        // return response()->json(['teadtasd' => $request->callsignkapal, 'sagokwof' => $request->idKapal]);
+    }
+
+    public function getcallsign()
+    {
+        return User::with(['callsigns' => function ($query) {
+            $query->where('tarikhhari', '>=' ,Carbon::now()->day)->where('tarikhhari', '<=', Carbon::now()->addDay(4)->day);
+        }])->get();
     }
 
     /**

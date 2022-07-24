@@ -52,11 +52,17 @@ Route::middleware([
     Route::get('/room/users/{roomId}', [ChatController::class, 'users_room']);
     Route::post('/chat/eksesais/{eksesaisId}/{roomId}/message', [ChatController::class, 'newMessage']);
 
+    Route::post('/chat/eksesais/{eksesaisId}/{roomId}/{messageId}/messageId', [ChatController::class, 'updateIXMessage']);
     Route::post('/chat/eksesais/{eksesaisId}/createroom', [ChatController::class, 'newRoom']);
-    Route::get('/senaraikapal/{eksesaisId}', [KapalController::class, 'senaraikapaldalamrooms']);
+    Route::get('/senaraikapal/{eksesaisId}', [KapalController::class, 'senaraikapaldalameksesais']);
+    Route::post('/saveallcallsign', [KapalController::class, 'savecallsign']);
 
     Route::post('/eksesais/{eksesaisId}/group/{roomId}/updateseenmessage', [ChatController::class, 'updateseenmessage']);
     Route::get('/testasdasdasdafdsf', [ChatController::class, 'testets']);
+
+    Route::get('kapal/ajax', [KapalController::class, 'index']);
+    Route::get('kapal/callsign', [KapalController::class, 'getcallsign']);
+    Route::get('eksesais/callsign/{eksesaisId}', [EksesaisController::class, 'getcallsign']);
 });
 
 
@@ -71,6 +77,5 @@ Route::middleware([
 Route::middleware('auth:sanctum')->get('/chat/room/{roomId}/messages', [ChatController::class, 'messages']);
 // Route::middleware('auth:sanctum')->post('/chat/room/{roomId}/message', [ChatController::class, 'newMessage']);
 Route::get('grouper/ajax/meaning', [ChatController::class, 'chatmeaning']);
-Route::get('kapal/ajax', [KapalController::class, 'index']);
 
 Route::resource('/eksesaisdata', EksesaisController::class);

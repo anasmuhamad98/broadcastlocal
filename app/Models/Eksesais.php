@@ -16,4 +16,9 @@ class Eksesais extends Model
     {
         return $this->belongsToMany(User::class, 'eksesais_user');
     }
+
+    public function callsigns()
+    {
+        return $this->hasMany(CallsignEksesais::class);
+    }
 }

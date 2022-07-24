@@ -6,19 +6,30 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
 <template>
     <div class="relative m-1">
         <div v-if="quickguide === false" style="border-top: 1px solid #e6e6e6">
+            <select
+                v-model="sendercallsign"
+                class="mr-1 shadow appearance-none border rounded w-auto py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
+            >
+                <option value="">From</option>
+                <option
+                    v-for="(callsign, index) in callsigneksesais"
+                    :key="index"
+                    :value="callsign.callsign2"
+                >
+                    {{ callsign.callsign1 + "-" + callsign.callsign2 }}
+                </option>
+            </select>
             <input
                 type="text"
                 v-model="message"
                 placeholder="Groupers..."
-                class="shadow appearance-none border rounded w-9/12 py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
+                class="shadow appearance-none border rounded w-4/5 py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
             />
-
             <select
                 v-model="idkapalindividual"
-                id=""
-                class="ml-1 hover:bg-gray-700 w-2/12 text-gray-900 font-semibold hover:text-gray-100 py-2 px-3 border border-gray-900 hover:border-transparent rounded"
+                class="ml-1 shadow appearance-none border rounded w-auto py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
             >
-                <option value=""></option>
+                <option value="">To</option>
                 <option
                     v-for="(senaraikapal, index) in senaraikapals"
                     :key="index"
@@ -27,11 +38,17 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
                     {{ senaraikapal.shortform }}
                 </option>
             </select>
-            <secondary-button
+            <button
+                @click="refreshmessage()"
+                class="ml-1 shadow appearance-none border rounded w-auto py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
+            >
+                CLR
+            </button>
+            <!-- <secondary-button
                 class="ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded"
                 @click="refreshmessage()"
                 >CLR</secondary-button
-            >
+            > -->
             <!-- <secondary-button class="ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded" @click="refreshmessage()"
                 >ADDRESSEE</secondary-button
             > -->
@@ -72,7 +89,7 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
         </div>
     </div>
     <div class="relative p-3 pl-1 flex justify-end">
-        <div class="ml-1 absolute left-0">
+        <!-- <div class="ml-1 absolute left-0">
             <select
                 @change="choosemessagetype"
                 class="block appearance-none w-auto bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
@@ -80,7 +97,7 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
                 <option>Free Text</option>
                 <option>Quick Guide</option>
             </select>
-        </div>
+        </div> -->
         <button
             @click="customsendMessage('K')"
             class="w-1/12 bg-gray-500 hover:bg-gray-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-gray-500 hover:border-transparent rounded"
@@ -124,6 +141,7 @@ export default {
         "clickMessage3",
         "pluckusersOnRoom",
         "senaraikapals",
+        "callsigneksesais",
     ],
     data: function () {
         return {
@@ -133,6 +151,7 @@ export default {
             query: "",
             search_data: [],
             idkapalindividual: "",
+            sendercallsign: "",
         };
     },
     watch: {
@@ -183,8 +202,9 @@ export default {
             }
         },
         refreshmessage() {
-            console.log(this.idkapalindividual);
             this.message = "";
+            this.sendercallsign = "";
+            this.idkapalindividual = "";
         },
         sendMessage(action) {
             if (this.Message == " ") {
@@ -202,13 +222,15 @@ export default {
                             message: this.message,
                             action: action,
                             pluckusersOnRoom: this.room.shortform,
-                            individual: false
+                            individual: false,
+                            sendercallsign: this.sendercallsign,
                         }
                     )
                     .then((response) => {
                         if (response.status == 200) {
                             this.message = "";
-                            this.translatemessage = " ";
+                            this.translatemessage = "";
+                            // this.sendercallsign = ""
                             this.$emit("messagesent");
                         }
                     })
@@ -218,7 +240,7 @@ export default {
             }
             // Individual chat
             else {
-                 axios
+                axios
                     .post(
                         "/chat/eksesais/" +
                             this.currenteksesais +
@@ -229,13 +251,15 @@ export default {
                             message: this.message,
                             action: action,
                             pluckusersOnRoom: this.idkapalindividual,
-                            individual: true
+                            individual: true,
+                            sendercallsign: this.sendercallsign,
                         }
                     )
                     .then((response) => {
                         if (response.status == 200) {
                             this.message = "";
                             this.translatemessage = " ";
+                            // this.sendercallsign = ""
                             this.$emit("messagesent");
                         }
                     })
@@ -270,5 +294,6 @@ export default {
                 });
         },
     },
+    created() {},
 };
 </script>

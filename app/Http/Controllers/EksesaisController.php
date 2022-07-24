@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\NewEksesais;
+use App\Models\CallsignEksesais;
 use App\Models\ChatRoom;
 use App\Models\Eksesais;
 use App\Models\User;
@@ -24,6 +25,12 @@ class EksesaisController extends Controller
         //     $query->select('users.id')->where('users.id', Auth::id());
         // }])->get();
         // return $eksesaislist->whereNotNull('users');
+    }
+
+    public function getcallsign(Request $request, $eksesaisId)
+    {
+        $eksesais = Eksesais::find($eksesaisId);
+        return $eksesais->callsigns;
     }
 
     /**
@@ -60,10 +67,21 @@ class EksesaisController extends Controller
         $generalchatroom->save();
 
         $generalchatroom->users()->attach($senaraiKapalTerlibat);
+        $callsign1s = $request->callsign1;
+        $callsign2s = $request->callsign2;
+        foreach ($callsign1s as $index => $callsign1) {
+            if ($callsign1 && $callsign2s[$index]) {
+                $callsigneksesais = new CallsignEksesais();
+                $callsigneksesais->eksesais_id = $eksesais->id;
+                $callsigneksesais->callsign1 = $callsign1;
+                $callsigneksesais->callsign2 = $callsign2s[$index];
+                $callsigneksesais->save();
+            }
+        };
 
         // broadcast(new EventsNewChatMessage($newMessage))->toOthers();
         broadcast(new NewEksesais())->toOthers();
-        return response()->json([ 'success' => true ]);
+        return response()->json(['success' => true]);
         // return response()->json([
         //     'data' => $namaEksesais,
         //     'asdasd' => $senaraiKapalTerlibat

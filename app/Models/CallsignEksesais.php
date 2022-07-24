@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Callsign extends Model
+class CallsignEksesais extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'tarikhhari',
-        'callsign',
+        'eksesais_id',
+        'callsign1',
+        'callsign2',
     ];
 }
