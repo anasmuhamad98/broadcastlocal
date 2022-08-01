@@ -58,7 +58,7 @@ Route::middleware([
     Route::post('/saveallcallsign', [KapalController::class, 'savecallsign']);
 
     Route::post('/eksesais/{eksesaisId}/group/{roomId}/updateseenmessage', [ChatController::class, 'updateseenmessage']);
-    Route::get('/testasdasdasdafdsf', [ChatController::class, 'testets']);
+
 
     Route::get('kapal/ajax', [KapalController::class, 'index']);
     Route::get('kapal/callsign', [KapalController::class, 'getcallsign']);
@@ -67,7 +67,7 @@ Route::middleware([
 });
 
 
-
+Route::get('/testasdasdasdafdsf', [ChatController::class, 'testets']);
 
 // Route::get('/test', function () {
 //     return view('welcome');

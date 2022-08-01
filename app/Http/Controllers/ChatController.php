@@ -133,8 +133,11 @@ class ChatController extends Controller
         // return $users = ChatRoom::find(1)->users()->where('users.id', '!=', Auth::id())->pluck('users.name');
         // $teadtasd = $request->message;
 
-        return $groupermeaning = Grouper::select('Grouper', 'Meaning')->where('Grouper', 'like', '%A%')->take(5)->get();
-        return response()->json(['teadtasd' => $groupermeaning]);
+        // return $groupermeaning = Grouper::select('Grouper', 'Meaning')->where('Grouper', 'like', '%A%')->take(5)->get();
+        // User::all();
+        $user = User::all();
+        return $user->toJson(JSON_PRETTY_PRINT);
+        // return response()->json( User::all());
     }
 
     public function updateseenmessage($eksesaisId, $roomId)
