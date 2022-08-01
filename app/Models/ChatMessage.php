@@ -25,6 +25,6 @@ class ChatMessage extends Model
 
     public function callsign()
     {
-        return $this->hasOne(Callsign::class, 'user_id', 'user_id')->where('tarikhhari', Carbon::now()->day);
+        return $this->hasOne(Callsign::class, 'user_id', 'user_id')->whereDate('tarikh', Carbon::now());
     }
 }

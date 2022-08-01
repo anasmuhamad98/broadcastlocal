@@ -62,7 +62,8 @@ Route::middleware([
 
     Route::get('kapal/ajax', [KapalController::class, 'index']);
     Route::get('kapal/callsign', [KapalController::class, 'getcallsign']);
-    Route::get('eksesais/callsign/{eksesaisId}', [EksesaisController::class, 'getcallsign']);
+    Route::get('callsign/eksesais', [EksesaisController::class, 'getcallsigneksesais']);
+    Route::get('eksesais/callsign/all', [EksesaisController::class, 'getcallsign']);
 });
 
 

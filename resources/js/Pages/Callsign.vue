@@ -3,22 +3,26 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import Welcome from "@/Jetstream/Welcome.vue";
 import moment from "moment";
 import Label from "../../../vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/Label.vue";
+
+import { DateTime } from "luxon";
 </script>
 
 <template>
     <AppLayout title="Callsign">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2
+                class="font-semibold text-xl text-gray-800 leading-tight relative"
+            >
                 CallSign
+                <button
+                    class="absolute right-0 bg-gray-500 text-white active:bg-gray-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button"
+                    v-on:click="toggleModal()"
+                >
+                    Kemaskini Callsign
+                </button>
             </h2>
         </template>
-        <button
-            class="bg-gray-500 text-white active:bg-gray-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-            type="button"
-            v-on:click="toggleModal()"
-        >
-            Tambah Eksesais
-        </button>
         <!-- Modal toggle -->
         <div>
             <div
@@ -32,7 +36,7 @@ import Label from "../../../vendor/laravel/jetstream/stubs/inertia/resources/js/
                     >
                         <!--header-->
                         <div
-                            class="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t"
+                            class="flex items-start justify-between p-5 border border-solid border-slate-200 rounded-t"
                         >
                             <h3 class="text-xl font-semibold">
                                 Assign callsign
@@ -51,30 +55,44 @@ import Label from "../../../vendor/laravel/jetstream/stubs/inertia/resources/js/
                         <!--body-->
                         <div class="relative px-6 pb-3 flex-auto">
                             <label for="">Tarikh : </label>
-                            <!-- <input type="date"  v-model="getdate"> -->
-                            <select name="" id="" v-model="getdate">
-                                <option :value="moment().format('D')">
-                                    {{ moment().format("dddd Do MMM YYYY") }}
-                                </option>
-                                <option
-                                    :value="moment().add(1, 'days').format('D')"
-                                >
-                                    {{
-                                        moment()
-                                            .add(1, "days")
-                                            .format("dddd Do MMM YYYY")
-                                    }}
-                                </option>
-                                <option
-                                    :value="moment().add(2, 'days').format('D')"
-                                >
-                                    {{
-                                        moment()
-                                            .add(2, "days")
-                                            .format("dddd Do MMM YYYY")
-                                    }}
-                                </option>
-                            </select>
+                            <input type="date" v-model="getdate" />
+
+                            <Label
+                                value="Panggilan Taktikal"
+                                class="my-4 text-slate-500 text-lg leading-relaxed"
+                            />
+                            <div
+                                v-for="index in numberofcallsign"
+                                :key="index"
+                                class="mb-2"
+                            >
+                                <input
+                                    type="text"
+                                    placeholder="CTO"
+                                    v-model="callsignforeksesais[index]"
+                                    class="mr-6 px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-2/5"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="A1"
+                                    v-model="callsign2foreksesais[index]"
+                                    class="px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-1/12"
+                                />
+                            </div>
+                            <button
+                                class="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                @click="addnumberofcallsign()"
+                            >
+                                Tambah Callsign
+                            </button>
+
+                            <button
+                                v-if="numberofcallsign !== 0"
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                @click="removenumberofcallsign()"
+                            >
+                                Padam Callsign
+                            </button>
                             <Label
                                 for="email"
                                 value="Senarai Kapal"
@@ -122,7 +140,7 @@ import Label from "../../../vendor/laravel/jetstream/stubs/inertia/resources/js/
                             <button
                                 class="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                 type="button"
-                                @click="getcallsign()"
+                                @click="savecallsign()"
                             >
                                 Tambah Eksesais
                             </button>
@@ -136,151 +154,355 @@ import Label from "../../../vendor/laravel/jetstream/stubs/inertia/resources/js/
             ></div>
         </div>
         <div class="py-4">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                    <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-                        <table class="border border-gray-900">
-                            <thead class="border border-gray-900">
-                                <th>Nama Kapal</th>
-                                <th>
+                    <div class="p-6 sm:px-20 bg-white border border-gray-200">
+                        <!-- get callsign of eksesais -->
+                        <table class="border border-gray-500 w-full">
+                            <thead class="border border-gray-500">
+                                <th
+                                    class="px-6 py-2 text-md text-gray-500 border border-gray-500"
+                                >
+                                    Unit
+                                </th>
+                                <th class="px-6 py-2 text-md text-gray-500">
+                                    {{ datenow.toFormat("d MMM") }}
+                                </th>
+                                <th
+                                    class="px-6 py-2 text-md text-gray-500 border border-gray-500"
+                                >
+                                    {{
+                                        datenow
+                                            .plus({ days: 1 })
+                                            .toFormat("d MMM")
+                                    }}
+                                </th>
+                                <th
+                                    class="px-6 py-2 text-md text-gray-500 border border-gray-500"
+                                >
+                                    {{
+                                        datenow
+                                            .plus({ days: 2 })
+                                            .toFormat("d MMM")
+                                    }}
+                                </th>
+                                <th
+                                    class="px-6 py-2 text-md text-gray-500 border border-gray-500"
+                                >
+                                    {{
+                                        datenow
+                                            .plus({ days: 3 })
+                                            .toFormat("d MMM")
+                                    }}
+                                </th>
+                                <th
+                                    class="px-6 py-2 text-md text-gray-500 border border-gray-500"
+                                >
+                                    {{
+                                        datenow
+                                            .plus({ days: 4 })
+                                            .toFormat("d MMM")
+                                    }}
+                                </th>
+                            </thead>
+                            <tbody class="border border-gray-500">
+                                <tr
+                                    v-for="(unit, index) in callsignunit"
+                                    :key="index"
+                                    class="text-center border border-gray-500"
+                                >
+                                    <td>
+                                        {{ unit.callsign1 }}
+                                    </td>
+                                    <td class="border border-gray-500">
+                                        <span
+                                            v-if="
+                                                callsigneksesais.find(
+                                                    (element) =>
+                                                        element.tarikh ===
+                                                            datenow.toSQLDate() &&
+                                                        element.callsign1 ===
+                                                            unit.callsign1
+                                                )
+                                            "
+                                            >{{
+                                                callsigneksesais.find(
+                                                    (element) =>
+                                                        element.tarikh ===
+                                                            datenow.toSQLDate() &&
+                                                        element.callsign1 ===
+                                                            unit.callsign1
+                                                ).callsign2
+                                            }}</span
+                                        >
+                                    </td>
+                                    <td class="border border-gray-500">
+                                        <span
+                                            v-if="
+                                                callsigneksesais.find(
+                                                    (element) =>
+                                                        element.tarikh ===
+                                                            datenow
+                                            .plus({ days: 1 }).toSQLDate() &&
+                                                        element.callsign1 ===
+                                                            unit.callsign1
+                                                )
+                                            "
+                                            >{{
+                                                callsigneksesais.find(
+                                                    (element) =>
+                                                        element.tarikh ===
+                                                            datenow
+                                            .plus({ days: 1 }).toSQLDate() &&
+                                                        element.callsign1 ===
+                                                            unit.callsign1
+                                                ).callsign2
+                                            }}</span
+                                        >
+                                    </td>
+                                    <td class="border border-gray-500">
+                                        <span
+                                            v-if="
+                                                callsigneksesais.find(
+                                                    (element) =>
+                                                        element.tarikh ===
+                                                            datenow
+                                            .plus({ days: 2 }).toSQLDate() &&
+                                                        element.callsign1 ===
+                                                            unit.callsign1
+                                                )
+                                            "
+                                            >{{
+                                                callsigneksesais.find(
+                                                    (element) =>
+                                                        element.tarikh ===
+                                                            datenow
+                                            .plus({ days: 2 }).toSQLDate() &&
+                                                        element.callsign1 ===
+                                                            unit.callsign1
+                                                ).callsign2
+                                            }}</span
+                                        >
+                                    </td>
+                                    <td class="border border-gray-500">
+                                        <span
+                                            v-if="
+                                                callsigneksesais.find(
+                                                    (element) =>
+                                                        element.tarikh ===
+                                                            datenow
+                                            .plus({ days: 3 }).toSQLDate() &&
+                                                        element.callsign1 ===
+                                                            unit.callsign1
+                                                )
+                                            "
+                                            >{{
+                                                callsigneksesais.find(
+                                                    (element) =>
+                                                        element.tarikh ===
+                                                            datenow
+                                            .plus({ days: 3 }).toSQLDate() &&
+                                                        element.callsign1 ===
+                                                            unit.callsign1
+                                                ).callsign2
+                                            }}</span
+                                        >
+                                    </td>
+                                    <td class="border border-gray-500">
+                                        <span
+                                            v-if="
+                                                callsigneksesais.find(
+                                                    (element) =>
+                                                        element.tarikh ===
+                                                            datenow
+                                            .plus({ days: 4 }).toSQLDate() &&
+                                                        element.callsign1 ===
+                                                            unit.callsign1
+                                                )
+                                            "
+                                            >{{
+                                                callsigneksesais.find(
+                                                    (element) =>
+                                                        element.tarikh ===
+                                                            datenow
+                                            .plus({ days: 4 }).toSQLDate() &&
+                                                        element.callsign1 ===
+                                                            unit.callsign1
+                                                ).callsign2
+                                            }}</span
+                                        >
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br />
+                        <!-- get callsign of kapal -->
+                        <table class="border border-gray-500 w-full">
+                            <thead class="border border-gray-500">
+                                <th
+                                    class="px-6 py-2 text-md text-gray-500 border border-gray-500"
+                                >
+                                    Nama Kapal
+                                </th>
+                                <th class="px-6 py-2 text-md text-gray-500">
                                     {{ moment().format("D MMM") }}
                                 </th>
-                                <th>
+                                <th
+                                    class="px-6 py-2 text-md text-gray-500 border border-gray-500"
+                                >
                                     {{
                                         moment().add(1, "days").format("D MMM")
                                     }}
                                 </th>
-                                <th>
+                                <th
+                                    class="px-6 py-2 text-md text-gray-500 border border-gray-500"
+                                >
                                     {{
                                         moment().add(2, "days").format("D MMM")
                                     }}
                                 </th>
-                                <th>
+                                <th
+                                    class="px-6 py-2 text-md text-gray-500 border border-gray-500"
+                                >
                                     {{
                                         moment().add(3, "days").format("D MMM")
                                     }}
                                 </th>
-                                <th>
+                                <th
+                                    class="px-6 py-2 text-md text-gray-500 border border-gray-500"
+                                >
                                     {{
                                         moment().add(4, "days").format("D MMM")
                                     }}
                                 </th>
                             </thead>
-                            <tbody>
+                            <tbody class="border border-gray-500">
                                 <tr
                                     v-for="(namakapal, index) in namakapals"
                                     :key="index"
-                                    class="text-center"
+                                    class="text-center border border-gray-500"
                                 >
                                     <td>
                                         {{ namakapal.shortform }}
                                     </td>
                                     <td
+                                        class="border border-gray-500"
                                         v-if="
                                             namakapal.callsigns.find(
                                                 (element) =>
-                                                    element.tarikhhari ===
-                                                    moment().format('D')
+                                                    element.tarikh ===
+                                                    datenow.toSQLDate()
                                             )
                                         "
                                     >
                                         {{
                                             namakapal.callsigns.find(
                                                 (element) =>
-                                                    element.tarikhhari ===
-                                                    moment().format("D")
+                                                    element.tarikh ===
+                                                    datenow.toSQLDate()
                                             ).callsign
                                         }}
                                     </td>
-                                    <td v-else></td>
                                     <td
-                                        v-if="
-                                            namakapal.callsigns.find(
-                                                (element) =>
-                                                    element.tarikhhari ===
-                                                    moment()
-                                                        .add(1, 'days')
-                                                        .format('D')
-                                            )
-                                        "
-                                    >
-                                        {{
-                                            namakapal.callsigns.find(
-                                                (element) =>
-                                                    element.tarikhhari ===
-                                                    moment()
-                                                        .add(1, "days")
-                                                        .format("D")
-                                            ).callsign
-                                        }}
-                                    </td>
-                                    <td v-else></td>
+                                        v-else
+                                        class="border border-gray-500"
+                                    ></td>
                                     <td
+                                        class="border border-gray-500"
                                         v-if="
                                             namakapal.callsigns.find(
                                                 (element) =>
-                                                    element.tarikhhari ===
-                                                    moment()
-                                                        .add(2, 'days')
-                                                        .format('D')
+                                                    element.tarikh ===
+                                                    datenow
+                                            .plus({ days: 1 }).toSQLDate()
                                             )
                                         "
                                     >
                                         {{
                                             namakapal.callsigns.find(
                                                 (element) =>
-                                                    element.tarikhhari ===
-                                                    moment()
-                                                        .add(2, "days")
-                                                        .format("D")
+                                                    element.tarikh ===
+                                                    datenow
+                                            .plus({ days: 1 }).toSQLDate()
                                             ).callsign
                                         }}
                                     </td>
-                                    <td v-else></td>
                                     <td
-                                        v-if="
-                                            namakapal.callsigns.find(
-                                                (element) =>
-                                                    element.tarikhhari ===
-                                                    moment()
-                                                        .add(3, 'days')
-                                                        .format('D')
-                                            )
-                                        "
-                                    >
-                                        {{
-                                            namakapal.callsigns.find(
-                                                (element) =>
-                                                    element.tarikhhari ===
-                                                    moment()
-                                                        .add(3, "days")
-                                                        .format("D")
-                                            ).callsign
-                                        }}
-                                    </td>
-                                    <td v-else></td>
+                                        v-else
+                                        class="border border-gray-500"
+                                    ></td>
                                     <td
+                                        class="border border-gray-500"
                                         v-if="
                                             namakapal.callsigns.find(
                                                 (element) =>
-                                                    element.tarikhhari ===
-                                                    moment()
-                                                        .add(4, 'days')
-                                                        .format('D')
+                                                    element.tarikh ===
+                                                    datenow
+                                            .plus({ days: 2 }).toSQLDate()
                                             )
                                         "
                                     >
                                         {{
                                             namakapal.callsigns.find(
                                                 (element) =>
-                                                    element.tarikhhari ===
-                                                    moment()
-                                                        .add(4, "days")
-                                                        .format("D")
+                                                    element.tarikh ===
+                                                    datenow
+                                            .plus({ days: 2 }).toSQLDate()
                                             ).callsign
                                         }}
                                     </td>
-                                    <td v-else></td>
+                                    <td
+                                        v-else
+                                        class="border border-gray-500"
+                                    ></td>
+                                    <td
+                                        class="border border-gray-500"
+                                        v-if="
+                                            namakapal.callsigns.find(
+                                                (element) =>
+                                                    element.tarikh ===
+                                                    datenow
+                                            .plus({ days: 3 }).toSQLDate()
+                                            )
+                                        "
+                                    >
+                                        {{
+                                            namakapal.callsigns.find(
+                                                (element) =>
+                                                    element.tarikh ===
+                                                    datenow
+                                            .plus({ days: 3 }).toSQLDate()
+                                            ).callsign
+                                        }}
+                                    </td>
+                                    <td
+                                        v-else
+                                        class="border border-gray-500"
+                                    ></td>
+                                    <td
+                                        class="border border-gray-500"
+                                        v-if="
+                                            namakapal.callsigns.find(
+                                                (element) =>
+                                                    element.tarikh ===
+                                                    datenow
+                                            .plus({ days: 4 }).toSQLDate()
+                                            )
+                                        "
+                                    >
+                                        {{
+                                            namakapal.callsigns.find(
+                                                (element) =>
+                                                    element.tarikh ===
+                                                    datenow
+                                            .plus({ days: 4 }).toSQLDate()
+                                            ).callsign
+                                        }}
+                                    </td>
+                                    <td
+                                        v-else
+                                        class="border border-gray-500"
+                                    ></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -293,7 +515,7 @@ import Label from "../../../vendor/laravel/jetstream/stubs/inertia/resources/js/
 <script>
 export default {
     components: {
-        moment
+        moment,
     },
     data() {
         return {
@@ -303,12 +525,38 @@ export default {
             currentDate: moment(),
             getdate: "",
             idKapal: [],
-            options: ["foo", "bar", "baz"],
+            numberofcallsign: 0,
+            callsignforeksesais: [],
+            callsign2foreksesais: [],
+            callsigneksesais: [],
+            callsignunit: [],
+            datenow: DateTime.now(),
         };
     },
     methods: {
         toggleModal: function () {
             this.showModal = !this.showModal;
+        },
+        removenumberofcallsign() {
+            this.numberofcallsign--;
+        },
+        addnumberofcallsign() {
+            this.numberofcallsign++;
+        },
+        getcallsigneksesais() {
+            axios
+                .get("/callsign/eksesais")
+                .then((response) => {
+                    this.callsigneksesais = response.data.callsigneksesais;
+                    this.callsignunit = response.data.callsigngroup;
+                    console.log(
+                        "callsign untuk eksesais",
+                        this.callsigneksesais
+                    );
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         },
         getKapal() {
             axios
@@ -325,17 +573,20 @@ export default {
                     console.log(error);
                 });
         },
-        getcallsign() {
+        savecallsign() {
             console.log(this.getdate);
             axios
                 .post("/saveallcallsign", {
                     idKapal: this.idKapal,
                     callsignkapal: this.callsignkapal,
                     tarikhhari: this.getdate,
+                    callsign1: this.callsignforeksesais,
+                    callsign2: this.callsign2foreksesais,
                 })
                 .then((response) => {
                     if (response.status == 200) {
-                        console.log(response.data);
+                        console.log("dapatkan semua callsign", response.data);
+                        this.getKapal();
                         this.showModal = !this.showModal;
                     }
                 })
@@ -345,25 +596,9 @@ export default {
         },
     },
     created() {
+        this.getcallsigneksesais();
         this.getKapal();
+        console.log(this.datenow);
     },
 };
 </script>
-
-<style>
-tbody {
-    display: block;
-}
-thead,
-tbody tr {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-    /* border: 1px solid gray; */
-}
-
-tbody td,
-th {
-    border: 1px solid gray;
-}
-</style>

@@ -4,7 +4,7 @@ import messageItem from "./messageItem.vue";
 
 <template>
     <table class="divide-y divide-gray-300 border-y">
-        <thead class="bg-gray-50">
+        <thead class="bg-gray-50" style="display: table;width: 100%;table-layout: fixed;">
             <tr>
                 <th class="px-6 py-2 text-md text-gray-500">TIME</th>
                 <th class="px-6 py-2 text-md text-gray-500">TO</th>
@@ -15,8 +15,9 @@ import messageItem from "./messageItem.vue";
                 <th class="px-6 py-2 text-md text-gray-500">ACTION</th>
             </tr>
         </thead>
-        <tbody style="max-height: 180px; height:auto; overflow:scroll">
-            <tr class="border-b border-gray-300" v-for="(messagesIX, index) in messagesIXs"
+        <tbody style="max-height: 180px; height:auto; overflow:scroll; display:block">
+            <tr style="display: table;width: 100%;table-layout: fixed;"
+            class="border-b border-gray-300" v-for="(messagesIX, index) in messagesIXs"
                 :key="index">
                 <message-item
                     :message="messagesIX"
@@ -25,8 +26,8 @@ import messageItem from "./messageItem.vue";
                 />
             </tr>
         </tbody>
-        <tbody class="flex flex-col-reverse bawah">
-            <tr
+        <tbody class="flex flex-col-reverse" style="max-height: 500px; height:500px; overflow:scroll">
+            <tr style="display: table;width: 100%;table-layout: fixed;"
                 class="border-b border-gray-300"
                 v-for="(message, index) in messages"
                 :key="index"
@@ -58,16 +59,4 @@ export default {
     width:100%;
     /* z-index:100; */
 }
-tbody {
-    display: block;
-    height: 500px;
-    overflow: scroll;
-}
-thead,
-tbody tr {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-}
-
 </style>

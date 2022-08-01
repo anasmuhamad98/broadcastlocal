@@ -75,7 +75,7 @@ class User extends Authenticatable
 
     public function callsign()
     {
-        return $this->hasOne(Callsign::class)->where('tarikhhari', Carbon::now()->day);
+        return $this->hasOne(Callsign::class)->whereDate('tarikh', Carbon::now());
     }
     public function callsigns()
     {

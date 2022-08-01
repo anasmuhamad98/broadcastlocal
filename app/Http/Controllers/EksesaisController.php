@@ -7,8 +7,10 @@ use App\Models\CallsignEksesais;
 use App\Models\ChatRoom;
 use App\Models\Eksesais;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class EksesaisController extends Controller
 {
@@ -27,10 +29,18 @@ class EksesaisController extends Controller
         // return $eksesaislist->whereNotNull('users');
     }
 
-    public function getcallsign(Request $request, $eksesaisId)
+    public function getcallsign(Request $request)
     {
-        $eksesais = Eksesais::find($eksesaisId);
-        return $eksesais->callsigns;
+        return CallsignEksesais::whereDate('tarikh',  Carbon::now())->get();
+        // $eksesais = Eksesais::find($eksesaisId);
+        // return $eksesais->callsigns;
+    }
+
+    public function getcallsigneksesais(Request $request)
+    {
+        $callsigneksesais = CallsignEksesais::whereDate('tarikh', '>=', Carbon::now())->whereDate('tarikh', '<=', Carbon::now()->addDay(4))->get();
+        $callsigngroup = CallsignEksesais::select('callsign1')->whereDate('tarikh', '>=', Carbon::now())->whereDate('tarikh', '<=', Carbon::now()->addDay(4))->groupBy('callsign1')->get();
+        return response()->json(['callsigneksesais' => $callsigneksesais, 'callsigngroup' => $callsigngroup]);
     }
 
     /**
@@ -61,23 +71,13 @@ class EksesaisController extends Controller
 
         $generalchatroom = new ChatRoom;
         $generalchatroom->eksesais_id = $eksesais->id;
-        $generalchatroom->name = 'TG 31.0';
-        $generalchatroom->shortform = 'M7';
+        $generalchatroom->name = $request->firstgroupname;
+        $generalchatroom->shortform = $request->firstgroupcallsign;
         $generalchatroom->isShow = 1;
         $generalchatroom->save();
 
         $generalchatroom->users()->attach($senaraiKapalTerlibat);
-        $callsign1s = $request->callsign1;
-        $callsign2s = $request->callsign2;
-        foreach ($callsign1s as $index => $callsign1) {
-            if ($callsign1 && $callsign2s[$index]) {
-                $callsigneksesais = new CallsignEksesais();
-                $callsigneksesais->eksesais_id = $eksesais->id;
-                $callsigneksesais->callsign1 = $callsign1;
-                $callsigneksesais->callsign2 = $callsign2s[$index];
-                $callsigneksesais->save();
-            }
-        };
+
 
         // broadcast(new EventsNewChatMessage($newMessage))->toOthers();
         broadcast(new NewEksesais())->toOthers();

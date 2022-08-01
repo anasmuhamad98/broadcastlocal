@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\NewChatMessage as EventsNewChatMessage;
+use App\Events\NewGroupChat;
 use App\Events\NewMessageNotification;
 use App\Events\RealTimeMessage;
 use App\Models\ChatMessage;
@@ -16,6 +17,7 @@ use App\Models\ListC;
 use App\Models\TableGrouper;
 use App\Models\Tack;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -52,10 +54,13 @@ class ChatController extends Controller
         $newRoom = new ChatRoom();
         $newRoom->eksesais_id = $eksesaisId;
         $newRoom->name = $request->roomName;
+        $newRoom->isShow = 1;
         $newRoom->shortform = $request->shortform;
         $newRoom->save();
 
         $newRoom->users()->attach($senaraiKapalTerlibat);
+
+        broadcast(new NewGroupChat($eksesaisId))->toOthers();
         // return response()->json([ 'test' => $senaraiKapalTerlibat ]);
     }
 
@@ -105,6 +110,7 @@ class ChatController extends Controller
         $newMessage->sender = $request->sendercallsign ?? $sender->callsign->callsign;
         $newMessage->receiver = $request->pluckusersOnRoom;
         $newMessage->action = $request->action;
+        $newMessage->senddate = Carbon::now();
         $newMessage->save();
 
         $users = ChatRoom::find($roomId)->users()->where('users.id', '!=', Auth::id())->pluck('users.id');
@@ -127,7 +133,7 @@ class ChatController extends Controller
         // return $users = ChatRoom::find(1)->users()->where('users.id', '!=', Auth::id())->pluck('users.name');
         // $teadtasd = $request->message;
 
-       return $groupermeaning = Grouper::select('Grouper', 'Meaning')->where('Grouper', 'like', '%A%')->take(5)->get();
+        return $groupermeaning = Grouper::select('Grouper', 'Meaning')->where('Grouper', 'like', '%A%')->take(5)->get();
         return response()->json(['teadtasd' => $groupermeaning]);
     }
 
@@ -166,7 +172,7 @@ class ChatController extends Controller
         $attributes = ['newMessage' => 1];
         ChatRoom::find($roomId)->users()->updateExistingPivot($users, $attributes);
 
-        broadcast(new NewMessageNotification($eksesaisId))->toOthers();
+        broadcast(new EventsNewChatMessage($newMessage))->toOthers();
         // $seenmessage->newMessage = 1;
 
         // $seenmessage->update();
@@ -186,9 +192,13 @@ class ChatController extends Controller
             $message .= '' . $groupermeaning;
             $checktack1 = Grouper::select('Tack_1')->where('Grouper', $grouper)->first()->Tack_1 ?? false;
             $checktack2 = Grouper::select('Tack_2')->where('Grouper', $grouper)->first()->Tack_2 ?? false;
+            $checktack3 = Grouper::select('Tack_3')->where('Grouper', $grouper)->first()->Tack_3 ?? false;
+            $checktack4 = Grouper::select('Tack_4')->where('Grouper', $grouper)->first()->Tack_4 ?? false;
             $checkfreetexttack1 = Grouper::select('Free_Text_Tack_1')->where('Grouper', $grouper)->first()->Free_Text_Tack_1 ?? false;
             $checkfreetexttack2 = Grouper::select('Free_Text_Tack_2')->where('Grouper', $grouper)->first()->Free_Text_Tack_2 ?? false;
             $checkfreetexttack3 = Grouper::select('Free_Text_Tack_3')->where('Grouper', $grouper)->first()->Free_Text_Tack_3 ?? false;
+            $checkfreetexttack4 = Grouper::select('Free_Text_Tack_4')->where('Grouper', $grouper)->first()->Free_Text_Tack_4 ?? false;
+            $checkfreetexttack5 = Grouper::select('Free_Text_Tack_5')->where('Grouper', $grouper)->first()->Free_Text_Tack_5 ?? false;
             $checklista = Grouper::select('List_A')->where('Grouper', $grouper)->first()->List_A ?? false;
             $checklistb = Grouper::select('List_B')->where('Grouper', $grouper)->first()->List_B ?? false;
             $checklistc = Grouper::select('List_C')->where('Grouper', $grouper)->first()->List_C ?? false;
@@ -203,9 +213,43 @@ class ChatController extends Controller
                 if ($checkfortablegrouper) {
                     $tablegrouper = array_shift($splittext);
                     $tablegroupermeaning = TableGrouper::select('Meaning')->where('Table_Grouper', $tablegrouper)->first()->Meaning ?? null;
-                    $message .= " | " . $tablegroupermeaning;
+                    if (str_contains($message, 'Table_Group')) {
+                        $message = str_replace('Table_Group', $tablegroupermeaning, $message);
+                    } else {
+                        $message .= " | " . $tablegroupermeaning;
+                    }
                 } else {
                     if ($checktack1) {
+                        $tack = array_shift($splittext);
+                        $splittack = explode(" ", $tack);
+                        $tackmeaning = '';
+                        while (count($splittack) > 0) {
+                            $tackchar = array_shift($splittack);
+                            $tackcharmeaning = Tack::select('Meaning')->where('Grouper', $grouper)->where('Tack', $tackchar)->first()->Meaning ?? 'asd';
+                            $tackmeaning .= ' ' . $tackcharmeaning;
+                        }
+                        if (str_contains($message, 'Tack_1')) {
+                            $message = str_replace('Tack_1', $tackmeaning, $message);
+                        } else {
+                            $message .= " | " . $tackmeaning;
+                        }
+                    }
+
+                    if ($checkfreetexttack1) {
+                        $checkifnextitemisgrouper = Grouper::select('Meaning')->where('Grouper', $splittext[0] ?? null)->first() ? true : false;
+                        if ($checkifnextitemisgrouper) {
+                        } else {
+                            $freetexttack1 = array_shift($splittext) ?? 'Free_Text_Tack';
+                            $freetexttack1 = str_replace('DSG', '', $freetexttack1);
+
+                            if (str_contains($message, 'Free_Text_Tack_1')) {
+                                $message = str_replace('Free_Text_Tack_1', $freetexttack1, $message);
+                            } else {
+                                $message .= " | " . $freetexttack1;
+                            }
+                        }
+                    }
+                    if ($checktack2) {
                         $tack = array_shift($splittext);
                         $splittack = explode(" ", $tack);
                         $tackmeaning = '';
@@ -214,43 +258,104 @@ class ChatController extends Controller
                             $tackcharmeaning = Tack::select('Meaning')->where('Grouper', $grouper)->where('Tack', $tackchar)->first()->Meaning ?? null;
                             $tackmeaning .= ' ' . $tackcharmeaning;
                         }
-                        $message .= " | " . $tackmeaning;
-                    }
-                    if ($checkfreetexttack1) {
-                        $checkifnextitemisgrouper = Grouper::select('Meaning')->where('Grouper', $splittext[0] ?? null)->first() ? true : false;
-                        if ($checkifnextitemisgrouper) {
+                        if (str_contains($message, 'Tack_2')) {
+                            $message = str_replace('Tack_2', $tackmeaning, $message);
                         } else {
-                            $freetexttack1 = array_shift($splittext) ?? 'Free_Text_Tack';
-                            $freetexttack1 = str_replace('DSG', '', $freetexttack1);
-                            // $message = str_replace('Free_Text_Tack', $freetexttack, $message);
-                            $message .= " | " . $freetexttack1;
+                            $message .= " | " . $tackmeaning;
                         }
                     }
+
                     if ($checkfreetexttack2) {
                         $checkifnextitemisgrouper = Grouper::select('Meaning')->where('Grouper', $splittext[0] ?? null)->first() ? true : false;
                         if ($checkifnextitemisgrouper) {
                         } else {
                             $freetexttack2 = array_shift($splittext) ?? 'Free_Text_Tack';
                             $freetexttack2 = str_replace('DSG', '', $freetexttack2);
-                            // $message = str_replace('Free_Text_Tack', $freetexttack, $message);
-                            $message .= " | " . $freetexttack2;
+                            if (str_contains($message, 'Free_Text_Tack_2')) {
+                                $message = str_replace('Free_Text_Tack_2', $freetexttack2, $message);
+                            } else {
+                                $message .= " | " . $freetexttack2;
+                            }
                         }
                     }
+                    if ($checktack3) {
+                        $tack = array_shift($splittext);
+                        $splittack = explode(" ", $tack);
+                        $tackmeaning = '';
+                        while (count($splittack) > 0) {
+                            $tackchar = array_shift($splittack);
+                            $tackcharmeaning = Tack::select('Meaning')->where('Grouper', $grouper)->where('Tack', $tackchar)->first()->Meaning ?? null;
+                            $tackmeaning .= ' ' . $tackcharmeaning;
+                        }
+                        if (str_contains($message, 'Tack_3')) {
+                            $message = str_replace('Tack_3', $tackmeaning, $message);
+                        } else {
+                            $message .= " | " . $tackmeaning;
+                        }
+                    }
+
                     if ($checkfreetexttack3) {
                         $checkifnextitemisgrouper = Grouper::select('Meaning')->where('Grouper', $splittext[0] ?? null)->first() ? true : false;
                         if ($checkifnextitemisgrouper) {
                         } else {
                             $freetexttack3 = array_shift($splittext) ?? 'Free_Text_Tack';
                             $freetexttack3 = str_replace('DSG', '', $freetexttack3);
-                            // $message = str_replace('Free_Text_Tack', $freetexttack, $message);
-                            $message .= " | " . $freetexttack3;
+                            if (str_contains($message, 'Free_Text_Tack_3')) {
+                                $message = str_replace('Free_Text_Tack_3', $freetexttack3, $message);
+                            } else {
+                                $message .= " | " . $freetexttack3;
+                            }
                         }
                     }
+                    if ($checktack4) {
+                        $tack = array_shift($splittext);
+                        $splittack = explode(" ", $tack);
+                        $tackmeaning = '';
+                        while (count($splittack) > 0) {
+                            $tackchar = array_shift($splittack);
+                            $tackcharmeaning = Tack::select('Meaning')->where('Grouper', $grouper)->where('Tack', $tackchar)->first()->Meaning ?? null;
+                            $tackmeaning .= ' ' . $tackcharmeaning;
+                        }
+                        if (str_contains($message, 'Tack_4')) {
+                            $message = str_replace('Tack_4', $tackmeaning, $message);
+                        } else {
+                            $message .= " | " . $tackmeaning;
+                        }
+                    }
+                    if ($checkfreetexttack4) {
+                        $checkifnextitemisgrouper = Grouper::select('Meaning')->where('Grouper', $splittext[0] ?? null)->first() ? true : false;
+                        if ($checkifnextitemisgrouper) {
+                        } else {
+                            $freetexttack4 = array_shift($splittext) ?? 'Free_Text_Tack';
+                            $freetexttack4 = str_replace('DSG', '', $freetexttack4);
+                            if (str_contains($message, 'Free_Text_Tack_4')) {
+                                $message = str_replace('Free_Text_Tack_4', $freetexttack4, $message);
+                            } else {
+                                $message .= " | " . $freetexttack4;
+                            }
+                        }
+                    }
+                    // if ($checkfreetexttack5) {
+                    //     $checkifnextitemisgrouper = Grouper::select('Meaning')->where('Grouper', $splittext[0] ?? null)->first() ? true : false;
+                    //     if ($checkifnextitemisgrouper) {
+                    //     } else {
+                    //         $freetexttack5 = array_shift($splittext) ?? 'Free_Text_Tack';
+                    //         $freetexttack5 = str_replace('DSG', '', $freetexttack5);
+                    //         if (str_contains($message, 'Free_Text_Tack_5')) {
+                    //             $message = str_replace('Free_Text_Tack_5', $freetexttack5, $message);
+                    //         } else {
+                    //             $message .= " | " . $freetexttack5;
+                    //         }
+                    //     }
+                    // }
                     if ($checklista) {
                         $ista = array_shift($splittext);
                         $istameaning = ListA::select('Meaning')->where('Grouper', $grouper)->where('List_A', $ista)->first()->Meaning ?? '(List A)';
-                        // $message = str_replace('(List A)', $istameaning, $message);
-                        $message .= " | " . $istameaning;
+                        if (str_contains($message, 'List_A')) {
+                            $message = str_replace('List_A', $istameaning, $message);
+                        } else {
+                            $message .= " | " . $istameaning;
+                        }
                     }
                     if ($checklistb) {
                         $listb = array_shift($splittext);
@@ -262,25 +367,43 @@ class ChatController extends Controller
                             $listbcharmeaning = ListB::select('Meaning')->where('Grouper', $grouper)->where('List_B', $listbchar)->first()->Meaning ?? '(List B)';
                             $listbmeaning .= ' ' . $listbcharmeaning;
                         }
-                        // $message = str_replace('(List B)', $listbmeaning, $message);
-                        $message .= " | " . $listbmeaning;
+
+                        if (str_contains($message, 'List_B')) {
+                            $message = str_replace('List_B', $listbmeaning, $message);
+                        } else {
+                            $message .= " | " . $listbmeaning;
+                        }
                     }
                     if ($checklistc) {
                         $istc = array_shift($splittext);
                         $istcmeaning = ListC::select('Meaning')->where('Grouper', $grouper)->where('List_c', $istc)->first()->Meaning ?? '(List C)';
-                        // $message = str_replace('(List C)', $istcmeaning, $message);
-                        $message .= " | " . $istcmeaning;
+
+
+                        if (str_contains($message, 'List_C')) {
+                            $message = str_replace('List_C', $istcmeaning, $message);
+                        } else {
+                            $message .= " | " . $istcmeaning;
+                        }
                     }
                     if ($checkfreetextlist) {
                         $freetextlist = array_shift($splittext);
-                        $message .= " | " . $freetextlist;
+
+                        if (str_contains($message, 'Free_Text_List')) {
+                            $message = str_replace('Free_Text_List', $freetextlist, $message);
+                        } else {
+                            $message .= " | " . $freetextlist;
+                        }
                     }
 
                     $checkfortablegrouper = TableGrouper::select('Table_Grouper', 'Meaning')->where('Table_Grouper', $splittext[0] ?? null)->first()->Table_Grouper ?? null;
                     if ($checkfortablegrouper) {
                         $tablegrouper = array_shift($splittext);
                         $tablegroupermeaning = TableGrouper::select('Meaning')->where('Table_Grouper', $tablegrouper)->first()->Meaning ?? null;
-                        $message .= " | " . $tablegroupermeaning;
+                        if (str_contains($message, 'Table_Group')) {
+                            $message = str_replace('Table_Group', $tablegroupermeaning, $message);
+                        } else {
+                            $message .= " | " . $tablegroupermeaning;
+                        }
                     }
                 }
             }

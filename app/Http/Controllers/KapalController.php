@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Callsign;
+use App\Models\CallsignEksesais;
 use App\Models\Eksesais;
 use App\Models\Kapal;
 use App\Models\User;
@@ -19,7 +20,7 @@ class KapalController extends Controller
     public function index()
     {
         return User::with(['callsign' => function ($query) {
-            $query->where('tarikhhari',  Carbon::now()->day);
+            $query->where('tarikh',  Carbon::now()->day);
         }])->get();
     }
 
@@ -33,23 +34,36 @@ class KapalController extends Controller
     public function savecallsign(Request $request)
     {
         // return $request->tarikhhari;
+        $callsign1s = $request->callsign1;
+        $callsign2s = $request->callsign2;
+        foreach ($callsign1s as $index => $callsign1) {
+            if ($callsign1 && $callsign2s[$index]) {
+                $callsigneksesais = new CallsignEksesais();
+                $callsigneksesais->tarikh = $request->tarikhhari;
+                $callsigneksesais->callsign1 = $callsign1;
+                $callsigneksesais->callsign2 = $callsign2s[$index];
+                $callsigneksesais->save();
+            }
+        };
+
         $callsignkapals = $request->callsignkapal;
         foreach ($callsignkapals as $index => $callsignkapal) {
             if ($callsignkapal) {
                 $data = new Callsign();
                 $data->user_id =  $request->idKapal[$index];
-                $data->tarikhhari = $request->tarikhhari;
+                $data->tarikh = $request->tarikhhari;
                 $data->callsign = $callsignkapal;
                 $data->save();
             }
         }
+
         // return response()->json(['teadtasd' => $request->callsignkapal, 'sagokwof' => $request->idKapal]);
     }
 
     public function getcallsign()
     {
         return User::with(['callsigns' => function ($query) {
-            $query->where('tarikhhari', '>=' ,Carbon::now()->day)->where('tarikhhari', '<=', Carbon::now()->addDay(4)->day);
+            $query->whereDate('tarikh', '>=' ,Carbon::now())->whereDate('tarikh', '<=', Carbon::now()->addDay(4));
         }])->get();
     }
 

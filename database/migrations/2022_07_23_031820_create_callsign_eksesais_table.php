@@ -15,7 +15,7 @@ class CreateCallsignEksesaisTable extends Migration
     {
         Schema::create('callsign_eksesais', function (Blueprint $table) {
             $table->id();
-            $table->integer('eksesais_id');
+            $table->date('tarikh');
             $table->string('callsign1');
             $table->string('callsign2');
             $table->timestamps();

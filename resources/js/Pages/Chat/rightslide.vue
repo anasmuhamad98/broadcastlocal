@@ -5,7 +5,7 @@
                 >&times;</a
             >
             <table
-                class="text-white table-auto border-collapse border border-slate-400 m-3"
+                class="text-white table-auto border-collapse border border-slate-400 w-4/5 m-auto"
             >
                 <thead>
                     <tr>
@@ -13,7 +13,7 @@
                         <th class="border border-slate-300">Callsign</th>
                     </tr>
                 </thead>
-                <tbody class="h-auto overflow-hidden">
+                <tbody class="h-auto overflow-hidden ">
                     <tr
                         v-for="(callsign, index) in callsigneksesais"
                         :key="index"
@@ -35,7 +35,7 @@
             </button></div> -->
 
             <table
-                class="text-white table-auto border-collapse border border-slate-400 m-3"
+                class="text-white table-auto border-collapse border border-slate-400 w-4/5 m-auto mt-6"
             >
                 <thead>
                     <tr>
@@ -54,7 +54,7 @@
                         </td>
                         <td class="border border-slate-300">
                             <span v-if="kapal.callsign">{{
-                                kapal.callsign
+                                kapal.callsign.callsign
                             }}</span>
                         </td>
                     </tr>

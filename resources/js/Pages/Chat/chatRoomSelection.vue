@@ -11,8 +11,8 @@
                 v-for="(senaraikapal, index) in usersOnRoom"
                 :key="index"
                 >{{ senaraikapal.shortform }}</span
-            > </label
-        >
+            >
+        </label>
         <!-- <button
             class="m-1 h-10 px-5 text-gray-700 text-sm transition-colors duration-150 bg-gray-300 rounded-lg focus:shadow-outline hover:bg-indigo-800 hover:text-white active"
             type="button"
@@ -204,8 +204,14 @@ import Label from "../../../../vendor/laravel/jetstream/stubs/inertia/resources/
 import Input from "../../../../vendor/laravel/jetstream/stubs/inertia/resources/js/Jetstream/Input.vue";
 
 export default {
-    props: ["rooms", "currentRoom", "eksesaisdetail", 'usersOnRoom', 'senaraikapals'],
-    emits: ["roomchanged"],
+    props: [
+        "rooms",
+        "currentRoom",
+        "eksesaisdetail",
+        "usersOnRoom",
+        "senaraikapals",
+    ],
+    emits: ["roomchanged", "updategroup"],
     data: function () {
         return {
             showModal: false,
@@ -224,9 +230,7 @@ export default {
         tooglemodaladdkapal: function () {
             this.addkapalmodal = !this.addkapalmodal;
         },
-        getKapalBaseOnRoom(){
-
-        },
+        getKapalBaseOnRoom() {},
         // getKapal() {
         //     axios
         //         .get("/senaraikapal/" + this.eksesaisdetail.id)
@@ -247,13 +251,14 @@ export default {
                     {
                         roomName: this.newRoom,
                         senaraiKapalTerlibat: this.senaraiKapalTerlibat,
-                        shortform: this.shortform
+                        shortform: this.shortform,
                     }
                 )
                 .then((response) => {
                     if (response.status == 200) {
                         this.newRoom = "";
                         this.senaraiKapalTerlibat = [];
+                        this.$emit("updategroup");
                         this.showModal = !this.showModal;
                     }
                 })
@@ -264,8 +269,8 @@ export default {
     },
     created() {
         // this.getKapal();
-        this.selected = this.currentRoom;
-        console.log(this.rooms[0].pivot.newMessage);
+        // this.selected = this.currentRoom;
+        // console.log(this.rooms[0].pivot.newMessage);
     },
     components: { Label, Input },
 };

@@ -1,6 +1,11 @@
+<script setup>
+
+import { DateTime } from "luxon";
+</script>
+
 <template>
     <td class="text-center px-6 py-4 text-md text-zinc-900">
-        {{
+        <!-- {{
             (date.getHours() < 10 ? "0" : "") +
             date.getHours() +
             ":" +
@@ -10,7 +15,9 @@
             (date.getSeconds() < 10 ? "0" : "") +
             date.getSeconds() +
             "H"
-        }}
+        }} -->
+        <!-- {{message.senddate}} -->
+        {{DateTime.fromISO(this.message.created_at).toLocaleString(DateTime.TIME_24_WITH_SECONDS) + 'H'}}
     </td>
     <td class="text-center px-6 py-4 text-md text-zinc-900">
         {{ message.receiver }}
@@ -30,6 +37,7 @@
             v-if="message.action == 'IX'"
             class="blink_me px-4 py-1 bg-yellow-500 rounded"
             v-on:click="$emit('clickIXbutton', message.id)"
+            :disabled="message.user_id !==  $page.props.user.id "
         >
             {{ message.action }}
         </button>
@@ -44,12 +52,15 @@ export default {
     emits: ["clickmessage" , 'clickIXbutton'],
     data: function () {
         return {
-            date: new Date(this.message.created_at),
+            date: DateTime.fromSQL(this.message.senddate).toLocaleString(DateTime.TIME_24_WITH_SECONDS),
+            // date: new Date(this.message.created_at),
         };
     },
     methods: {
 
     },
+    created(){
+    }
 };
 </script>
 <style>

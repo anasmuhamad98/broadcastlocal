@@ -19,9 +19,13 @@ class CreateGroupersTable extends Migration
             $table->text('Meaning')->nullable();
             $table->boolean('Tack_1');
             $table->boolean('Tack_2');
+            $table->boolean('Tack_3');
+            $table->boolean('Tack_4');
             $table->boolean('Free_Text_Tack_1');
             $table->boolean('Free_Text_Tack_2');
             $table->boolean('Free_Text_Tack_3');
+            $table->boolean('Free_Text_Tack_4');
+            $table->boolean('Free_Text_Tack_5');
             $table->boolean('List_A');
             $table->boolean('List_B');
             $table->boolean('List_C');

@@ -11,11 +11,26 @@ import DropdownLink from "../../../vendor/laravel/jetstream/stubs/inertia/resour
 
 <template>
     <AppLayout title="Dashboard">
-        <div class="container flex justify-center mx-auto my-20">
-            <div class="flex justify-center">
-                <div class="w-2/3 relative">
-                    <div class="border-b border-gray-200 shadow">
-                        <table class="divide-y divide-gray-300 border-y">
+        <template #header>
+            <h2
+                class="font-semibold text-xl text-gray-800 leading-tight relative"
+            >
+                Eksesais
+                <button
+                    class="absolute right-0 bg-gray-500 text-white active:bg-gray-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                    type="button"
+                    v-on:click="toggleModal()"
+                >
+                    Tambah Eksesais
+                </button>
+            </h2>
+            <Input>asdas</Input>
+        </template>
+        <div class="py-4">
+            <div class="mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                    <div class="p-6 sm:px-20 bg-white border border-gray-200">
+                        <table class="divide-y divide-gray-300 w-full">
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th class="px-6 py-2 text-md text-gray-500">
@@ -29,7 +44,9 @@ import DropdownLink from "../../../vendor/laravel/jetstream/stubs/inertia/resour
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-300">
+                            <tbody
+                                class="bg-white divide-y divide-gray-300 text-center"
+                            >
                                 <tr
                                     class="whitespace-nowrap"
                                     v-for="(
@@ -65,16 +82,6 @@ import DropdownLink from "../../../vendor/laravel/jetstream/stubs/inertia/resour
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-
-                    <div class="absolute right-0 bottom-0">
-                        <button
-                            class="bg-gray-500 text-white active:bg-gray-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                            type="button"
-                            v-on:click="toggleModal()"
-                        >
-                            Tambah Eksesais
-                        </button>
                     </div>
                 </div>
 
@@ -119,7 +126,23 @@ import DropdownLink from "../../../vendor/laravel/jetstream/stubs/inertia/resour
                                         class="px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-full"
                                     />
                                     <Label
-                                        value="Callsign"
+                                        value="Collective Callsign TG"
+                                        class="my-4 text-slate-500 text-lg leading-relaxed"
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="TG 30.0"
+                                        v-model="firstgroupname"
+                                        class="mr-6 px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-2/5"
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="M7"
+                                        v-model="firstgroupcallsign"
+                                        class="px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-1/12"
+                                    />
+                                    <!-- <Label
+                                        value="Panggilan Taktikal"
                                         class="my-4 text-slate-500 text-lg leading-relaxed"
                                     />
                                     <div
@@ -154,9 +177,9 @@ import DropdownLink from "../../../vendor/laravel/jetstream/stubs/inertia/resour
                                         @click="removenumberofcallsign()"
                                     >
                                         remove callsign
-                                    </button>
+                                    </button> -->
                                     <Label
-                                        for="email"
+                                        for="kapal"
                                         value="Senarai Kapal"
                                         class="my-4 text-slate-500 text-lg leading-relaxed"
                                     />
@@ -222,9 +245,8 @@ export default {
             namaEksesais: "",
             senaraiKapalTerlibat: [],
             senaraieksesaises: [],
-            numberofcallsign: 0,
-            callsignforeksesais: [],
-            callsign2foreksesais: [],
+            firstgroupname: "",
+            firstgroupcallsign: "",
         };
     },
     mounted() {
@@ -267,8 +289,8 @@ export default {
                 .post("/eksesaisdata", {
                     namaEksesais: this.namaEksesais,
                     senaraiKapalTerlibat: this.senaraiKapalTerlibat,
-                    callsign1: this.callsignforeksesais,
-                    callsign2: this.callsign2foreksesais,
+                    firstgroupname: this.firstgroupname,
+                    firstgroupcallsign: this.firstgroupcallsign,
                 })
                 .then((response) => {
                     if (response.status == 200) {
@@ -302,20 +324,3 @@ export default {
     },
 };
 </script>
-
-<style>
-tbody {
-    display: block;
-    height: 500px;
-    overflow: auto;
-}
-thead,
-tbody tr {
-    display: table;
-    width: 100%;
-    table-layout: fixed;
-}
-tbody tr td {
-    text-align: center;
-}
-</style>

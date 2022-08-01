@@ -19,6 +19,7 @@ import Leftslide from "./leftslide.vue";
                     :usersOnRoom="usersOnRoom"
                     :senaraikapals="senaraikapals"
                     v-on:roomchanged="setRoom($event)"
+                    v-on:updategroup="getRooms()"
                 />
             </h2>
         </template>
@@ -49,7 +50,7 @@ import Leftslide from "./leftslide.vue";
             :callsigneksesais="callsigneksesais"
             :senaraikapals="senaraikapals"
         />
-        <leftslide class="absolute left-0 top-1/2" />
+        <!-- <leftslide class="absolute left-0 top-1/2" /> -->
     </AppLayout>
 </template>
 
@@ -79,13 +80,14 @@ export default {
         };
     },
     mounted() {
-        window.Echo.private("eksesais." + this.eksesaisdetail.id).listen(
-            "NewChatMessage",
-            (e) => {
+        window.Echo.private("eksesais." + this.eksesaisdetail.id)
+            .listen("NewChatMessage", (e) => {
                 this.getMessages();
                 this.getRooms();
-            }
-        );
+            })
+            .listen("NewGroupChat", (e) => {
+                this.getRooms();
+            });
     },
     unmounted() {
         window.Echo.leave("eksesais." + this.eksesaisdetail.id);
@@ -93,7 +95,7 @@ export default {
     methods: {
         getcallsign() {
             axios
-                .get("/eksesais/callsign/" + this.eksesaisdetail.id)
+                .get("/eksesais/callsign/all")
                 .then((response) => {
                     this.callsigneksesais = response.data;
                 });
@@ -235,6 +237,8 @@ export default {
         this.getMessages();
         this.getRoomsFirst();
         this.getcallsign();
+        // console.log(DateTime.now().setZone("America/New_York").toISO());
+
     },
 };
 </script>
