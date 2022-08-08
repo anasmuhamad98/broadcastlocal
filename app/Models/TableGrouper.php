@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class TableGrouper extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'Table_Grouper',
+        'Meaning'
+    ];
 }

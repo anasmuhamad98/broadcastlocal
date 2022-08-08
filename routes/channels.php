@@ -40,5 +40,10 @@ Broadcast::channel('eksesais.{eksesaisId}', function ($user, $eksesaisId) {
     if(Auth::check()){
         return ['id' => $user->id, 'name' => $user->name];
     }
-    // return true;
+});
+
+Broadcast::channel('eksesais.{eksesaisId}.{chatroomId}', function ($user) {
+    if(Auth::check()){
+        return ['id' => $user->id, 'name' => $user->name];
+    }
 });

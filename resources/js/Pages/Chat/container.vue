@@ -28,8 +28,8 @@ import Leftslide from "./leftslide.vue";
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <message-container
-                        :messages="messages"
-                        :messagesIXs="messagesIXs"
+                        :messages="messageofeachroomatas"
+                        :messagesIXs="messageofeachroombawah"
                         v-on:clickmessage2="getClickMessage($event)"
                         v-on:clickIXbutton2="clickIXbutton($event)"
                     />
@@ -51,6 +51,13 @@ import Leftslide from "./leftslide.vue";
             :senaraikapals="senaraikapals"
         />
         <!-- <leftslide class="absolute left-0 top-1/2" /> -->
+        <audio ref="myAudio" hidden>
+            <source src="/musics/tingting.mp3" type="audio/mpeg" /></audio
+        ><br />
+
+        <button @click="enableLoop()" type="button">Enable loop</button>
+        <button @click="disableLoop()" type="button">Disable loop</button>
+        <button @click="checkLoop()" type="button">Check loop status</button>
     </AppLayout>
 </template>
 
@@ -77,9 +84,13 @@ export default {
             pluckusersOnRoom: "",
             senaraikapals: [],
             callsigneksesais: [],
+            messageofeachroomatas: [],
+            messageofeachroombawah: [],
+            audio: new Audio("/musics/tingting.mp3"),
         };
     },
     mounted() {
+        this.getRoomsFirst();
         window.Echo.private("eksesais." + this.eksesaisdetail.id)
             .listen("NewChatMessage", (e) => {
                 this.getMessages();
@@ -88,17 +99,22 @@ export default {
             .listen("NewGroupChat", (e) => {
                 this.getRooms();
             });
+
+        // window.Echo.private("eksesais." + this.eksesaisdetail.id +  "." )
+        //     .listen("NewChatMessage", (e) => {
+        //         this.getMessages();
+        //         this.getRooms();
+        //     });
     },
     unmounted() {
         window.Echo.leave("eksesais." + this.eksesaisdetail.id);
+        window.Echo.leave("NewGroupChat");
     },
     methods: {
         getcallsign() {
-            axios
-                .get("/eksesais/callsign/all")
-                .then((response) => {
-                    this.callsigneksesais = response.data;
-                });
+            axios.get("/eksesais/callsign/all").then((response) => {
+                this.callsigneksesais = response.data;
+            });
         },
         clickIXbutton(mesejid) {
             if (
@@ -146,16 +162,7 @@ export default {
         },
         getClickMessage(test) {
             this.clickMessage = test;
-            console.log(this.clickMessage);
-        },
-        connect() {
-            if (this.currentRoom.id) {
-                let vm = this;
-                this.getMessages();
-            }
-        },
-        disconnect(room) {
-            window.Echo.leave("chat." + room.id);
+            console.log("clickmessage", this.clickMessage);
         },
         updateSeenMessage() {
             axios
@@ -170,7 +177,7 @@ export default {
                 .then((response) => {
                     if (response.status == 200) {
                         this.currentRoom.pivot.newMessage = 0;
-                        console.log(this.currentRoom);
+                        console.log("currentroom", this.currentRoom);
                     }
                 })
                 .catch((error) => {
@@ -192,18 +199,23 @@ export default {
                 .get("/chat/rooms/" + this.eksesaisdetail.id)
                 .then((response) => {
                     this.chatRooms = response.data;
-                    this.setRoom(response.data[0]);
+                    this.setRoomFirst(response.data[0]);
                 })
                 .catch((error) => {
                     console.log(error);
                 });
         },
+        setRoomFirst(room) {
+            this.currentRoom = room;
+            this.getUsersonRoom();
+            this.getMessages();
+            this.updateSeenMessage();
+        },
         setRoom(room) {
             this.currentRoom = room;
             this.getUsersonRoom();
-            // this.getMessages();
+            this.getMessagesOfEachRoom(room.id);
             this.updateSeenMessage();
-            console.log(this.usersOnRoom);
         },
         getUsersonRoom() {
             axios
@@ -211,34 +223,75 @@ export default {
                 .then((response) => {
                     this.usersOnRoom = response.data.usersOnRoom;
                     this.pluckusersOnRoom = response.data.pluckusersOnRoom;
+                    console.log("user on room", this.usersOnRoom);
                 })
                 .catch((error) => {
                     console.log(error);
                 });
+        },
+        getMessagesOfEachRoom(room) {
+            console.log('before', this.messageofeachroomatas);
+            this.messageofeachroomatas = [];
+            this.messageofeachroombawah = [];
+            this.messageofeachroomatas = this.messages.filter(function (
+                value,
+            ) {
+                return (value.chat_room_id == room);
+            });
+            this.messageofeachroombawah = this.messagesIXs.filter(function (
+                value,
+            ) {
+                return (value.chat_room_id == room);
+            });
+
+            console.log('after', this.messageofeachroomatas);
         },
         getMessages() {
             axios
                 .get("/chat/eksesais/" + this.eksesaisdetail.id + "/messages", {
                     params: {
-                        chatrooms: this.chatRooms,
+                        // chatrooms: this.chatRooms,
+                        chatroomId: this.currentRoom.id,
                     },
                 })
                 .then((response) => {
                     this.messages = response.data.mesejbawah;
                     this.messagesIXs = response.data.mesejatas;
+                    console.log("messagebawah", this.messages);
+                    console.log("messageatas", this.messagesIXs);
+                    this.getMessagesOfEachRoom(this.currentRoom.id);
+                    // this.playSound();
                 })
                 .catch((error) => {
                     console.log(error);
                 });
         },
+        // playSound() {
+        //     this.audio.play();
+        // },
+
+        // enableLoop() {
+        //     this.audio.loop = true;
+        //     this.audio.load();
+        //     this.$refs.myAudio.play();
+        //     this.$refs.myAudio.loop = true;
+        //     this.$refs.myAudio.load();
+        // },
+
+        // disableLoop() {
+        //     this.audio.loop = false;
+        //     this.audio.load();
+        //     this.$refs.myAudio.loop = false;
+        //     this.$refs.myAudio.load();
+        // },
+
+        // checkLoop() {
+        //     alert(this.audio.loop);
+        // },
     },
     created() {
         this.getKapal();
-        this.getMessages();
-        this.getRoomsFirst();
         this.getcallsign();
-        // console.log(DateTime.now().setZone("America/New_York").toISO());
-
     },
 };
 </script>

@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class ListC extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'Grouper',
+        'List_C',
+        'Meaning'
+    ];
 }

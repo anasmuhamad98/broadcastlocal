@@ -24,7 +24,7 @@ import DropdownLink from "../../../vendor/laravel/jetstream/stubs/inertia/resour
                     Tambah Eksesais
                 </button>
             </h2>
-            <Input>asdas</Input>
+            <button @click="playSound('/musics/tingting.mp3')">Play</button>
         </template>
         <div class="py-4">
             <div class="mx-auto sm:px-6 lg:px-8">
@@ -305,6 +305,11 @@ export default {
                     console.log("x Jadi");
                     console.log(error);
                 });
+        },
+
+        playSound(url) {
+            const audio = new Audio(url);
+            audio.play();
         },
 
         getEksesais() {

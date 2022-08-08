@@ -52,7 +52,6 @@ export default {
     emits: ["clickmessage" , 'clickIXbutton'],
     data: function () {
         return {
-            date: DateTime.fromSQL(this.message.senddate).toLocaleString(DateTime.TIME_24_WITH_SECONDS),
             // date: new Date(this.message.created_at),
         };
     },
