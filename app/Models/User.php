@@ -37,7 +37,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        // 'password',
+        'password',
+        'two_factor_confirmed_at',
+        'email_verified_at',
+        'current_team_id',
+        'profile_photo_path',
+        'profile_photo_url',
         'remember_token',
         'two_factor_recovery_codes',
         'two_factor_secret',

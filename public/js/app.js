@@ -21016,7 +21016,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return _objectSpread(_objectSpread({}, data), {}, {
           remember: form.remember ? 'on' : ''
         });
-      }).post(route('login'), {
+      }).post('/login', {
         onFinish: function onFinish() {
           return form.reset('password');
         }
@@ -21596,6 +21596,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _chatRoomSelection_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./chatRoomSelection.vue */ "./resources/js/Pages/Chat/chatRoomSelection.vue");
 /* harmony import */ var _rightslide_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./rightslide.vue */ "./resources/js/Pages/Chat/rightslide.vue");
 /* harmony import */ var _leftslide_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./leftslide.vue */ "./resources/js/Pages/Chat/leftslide.vue");
+/* harmony import */ var luxon__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! luxon */ "./node_modules/luxon/src/luxon.js");
 var __default__ = {
   components: {
     messageContainer: _messageContainer_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
@@ -21618,133 +21619,221 @@ var __default__ = {
       pluckusersOnRoom: "",
       senaraikapals: [],
       callsigneksesais: [],
+      messageofeachroomatas: [],
+      messageofeachroombawah: [],
+      allroomswithusers: [],
       audio: new Audio("/musics/tingting.mp3")
     };
   },
   mounted: function mounted() {
     var _this = this;
 
+    console.log(luxon__WEBPACK_IMPORTED_MODULE_6__.DateTime.now().toISOTime(), "check for mounted");
     window.Echo["private"]("eksesais." + this.eksesaisdetail.id).listen("NewChatMessage", function (e) {
-      _this.getMessages();
+      _this.pushtoMessage(e.chatMessage); // this.getMessages();
+
 
       _this.getRooms();
     }).listen("NewGroupChat", function (e) {
       _this.getRooms();
-    });
+    }); // window.Echo.private("eksesais." + this.eksesaisdetail.id +  "." )
+    //     .listen("NewChatMessage", (e) => {
+    //         this.getMessages();
+    //         this.getRooms();
+    //     });
   },
   unmounted: function unmounted() {
     window.Echo.leave("eksesais." + this.eksesaisdetail.id);
+    window.Echo.leave("NewGroupChat");
   },
   methods: {
-    getcallsign: function getcallsign() {
+    getKapal: function getKapal() {
       var _this2 = this;
 
-      axios.get("/eksesais/callsign/all").then(function (response) {
-        _this2.callsigneksesais = response.data;
-      });
-    },
-    clickIXbutton: function clickIXbutton(mesejid) {
-      if (confirm("Are you sure to execute " + this.messagesIXs.find(function (element) {
-        return element.id === mesejid;
-      }).message + "?") == true) {
-        this.updateIXMessage(mesejid);
-      }
-    },
-    updateIXMessage: function updateIXMessage(messageid) {
-      var _this3 = this;
-
-      axios.post("/chat/eksesais/" + this.eksesaisdetail.id + "/" + this.currentRoom.id + "/" + messageid + "/messageId", {}).then(function (response) {
-        if (response.status == 200) {
-          _this3.getMessages();
-        }
+      axios.get("/senaraikapal/" + this.eksesaisdetail.id).then(function (response) {
+        _this2.senaraikapals = response.data;
+        console.log(luxon__WEBPACK_IMPORTED_MODULE_6__.DateTime.now().toISOTime(), "2. getkapal", _this2.senaraikapals);
       })["catch"](function (error) {
         console.log(error);
       });
     },
-    getKapal: function getKapal() {
+    getcallsign: function getcallsign() {
+      var _this3 = this;
+
+      axios.get("/eksesais/callsign/all").then(function (response) {
+        _this3.callsigneksesais = response.data;
+        console.log(luxon__WEBPACK_IMPORTED_MODULE_6__.DateTime.now().toISOTime(), "3. getcallsign", _this3.callsigneksesais);
+      });
+    },
+    getAllRoomsWithUsers: function getAllRoomsWithUsers() {
       var _this4 = this;
 
-      axios.get("/senaraikapal/" + this.eksesaisdetail.id).then(function (response) {
-        _this4.senaraikapals = response.data;
+      axios.get("/eksesais/" + this.eksesaisdetail.id + "/rooms/users").then(function (response) {
+        _this4.allroomswithusers = response.data;
+        console.log(luxon__WEBPACK_IMPORTED_MODULE_6__.DateTime.now().toISOTime(), "4. allroomswithusers", _this4.allroomswithusers);
+
+        _this4.getRoomsFirst(_this4.allroomswithusers);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    getRoomsFirst: function getRoomsFirst(allrooms) {
+      this.chatRooms = allrooms.filter(function (value) {
+        return value.isShow == 1;
+      });
+      console.log(luxon__WEBPACK_IMPORTED_MODULE_6__.DateTime.now().toISOTime(), "5. getroomfirst", this.chatRooms);
+      this.setRoomFirst(this.chatRooms[0]); // axios
+      //     .get("/chat/rooms/" + this.eksesaisdetail.id)
+      //     .then((response) => {
+      //         this.chatRooms = response.data;
+      //         console.log(
+      //             DateTime.now().toISOTime(),
+      //             "5. getroomfirst",
+      //             this.chatRooms
+      //         );
+      //         this.setRoomFirst(response.data[0]);
+      //     })
+      //     .catch((error) => {
+      //         console.log(error);
+      //     });
+    },
+    setRoomFirst: function setRoomFirst(room) {
+      this.currentRoom = room;
+      console.log(luxon__WEBPACK_IMPORTED_MODULE_6__.DateTime.now().toISOTime(), "6. setroom", this.currentRoom);
+      this.getUsersonRoom(room.id);
+      this.getMessages();
+      this.updateSeenMessage();
+    },
+    getUsersonRoom: function getUsersonRoom(roomId) {
+      this.usersOnRoom = this.allroomswithusers.find(function (element) {
+        return element.id === roomId;
+      }).users;
+      console.log(luxon__WEBPACK_IMPORTED_MODULE_6__.DateTime.now().toISOTime(), "7. get users on room", this.usersOnRoom); // axios
+      //     .get("/room/users/" + this.currentRoom.id)
+      //     .then((response) => {
+      //         this.usersOnRoom = response.data.usersOnRoom;
+      //         this.pluckusersOnRoom = response.data.pluckusersOnRoom;
+      //         console.log(
+      //             DateTime.now().toISOTime(),
+      //             "6. user on room",
+      //             this.pluckusersOnRoom
+      //         );
+      //     })
+      //     .catch((error) => {
+      //         console.log(error);
+      //     });
+    },
+    getMessages: function getMessages() {
+      var _this5 = this;
+
+      axios.get("/chat/eksesais/" + this.eksesaisdetail.id + "/messages", {
+        params: {
+          // chatrooms: this.chatRooms,
+          chatroomId: this.currentRoom.id
+        }
+      }).then(function (response) {
+        _this5.messages = response.data.mesejbawah;
+        _this5.messagesIXs = response.data.mesejatas; // console.log("2. messagebawah", this.messages);
+        // console.log("3. messageatas", this.messagesIXs);
+
+        _this5.getMessagesOfEachRoom(_this5.currentRoom.id); // this.playSound();
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    getMessagesOfEachRoom: function getMessagesOfEachRoom(room) {
+      // console.log('4. before', this.messageofeachroomatas);
+      this.messageofeachroomatas = [];
+      this.messageofeachroombawah = [];
+      this.messageofeachroomatas = this.messages.filter(function (value) {
+        return value.chat_room_id == room;
+      });
+      this.messageofeachroombawah = this.messagesIXs.filter(function (value) {
+        return value.chat_room_id == room;
+      }); // console.log('5. after', this.messageofeachroomatas);
+    },
+    pushtoMessage: function pushtoMessage(newmessage) {
+      if (newmessage.action == "IX") {
+        this.messagesIXs.unshift(newmessage);
+        this.messagesIXs.sort(function (a, b) {
+          return a.created_at - b.created_at;
+        });
+        console.log("IX", this.messagesIXs);
+      } else {
+        this.messages.unshift(newmessage);
+        this.messages.sort(function (a, b) {
+          return new Date(b.created_at) - new Date(a.created_at);
+        }).sort(function (a, b) {
+          return new Date(b.created_at) - new Date(a.created_at);
+        });
+        console.log("jadi la ni", this.messages);
+      }
+
+      this.getMessagesOfEachRoom(newmessage.chat_room_id);
+    },
+    clickIXbutton: function clickIXbutton(message) {
+      if (confirm("Are you sure to execute " + this.messagesIXs.find(function (element) {
+        return element.id === message.id;
+      }).message + "?") == true) {
+        this.updateIXMessage(message);
+      }
+    },
+    updateIXMessage: function updateIXMessage(message) {
+      var _this6 = this;
+
+      axios.post("/chat/eksesais/" + this.eksesaisdetail.id + "/" + this.currentRoom.id + "/" + message.id + "/messageId", {}).then(function (response) {
+        if (response.status == 200 || response.status == 201) {
+          var updatemessage = _this6.messagesIXs.find(function (element) {
+            return element.id === message.id;
+          });
+
+          var updatemessageindex = _this6.messagesIXs.findIndex(function (element) {
+            return element.id === message.id;
+          });
+
+          _this6.messagesIXs.splice(updatemessageindex, 1);
+
+          updatemessage.action = "-IX";
+
+          _this6.pushtoMessage(updatemessage);
+
+          _this6.pushtoMessage(response.data); // this.getMessages();
+
+        }
       })["catch"](function (error) {
         console.log(error);
       });
     },
     getClickMessage: function getClickMessage(test) {
       this.clickMessage = test;
-      console.log(this.clickMessage);
-    },
-    connect: function connect() {
-      if (this.currentRoom.id) {
-        var vm = this;
-        this.getMessages();
-      }
-    },
-    disconnect: function disconnect(room) {
-      window.Echo.leave("chat." + room.id);
+      console.log("clickmessage", this.clickMessage);
     },
     updateSeenMessage: function updateSeenMessage() {
-      var _this5 = this;
+      var _this7 = this;
 
       axios.post("/eksesais/" + this.eksesaisdetail.id + "/group/" + this.currentRoom.id + "/updateseenmessage", {}).then(function (response) {
         if (response.status == 200) {
-          _this5.currentRoom.pivot.newMessage = 0;
-          console.log(_this5.currentRoom);
+          _this7.currentRoom.pivot.newMessage = 0; // console.log("currentroom", this.currentRoom);
         }
       })["catch"](function (error) {
         console.log(error);
       });
     },
     getRooms: function getRooms() {
-      var _this6 = this;
+      var _this8 = this;
 
       axios.get("/chat/rooms/" + this.eksesaisdetail.id).then(function (response) {
-        _this6.chatRooms = response.data;
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    getRoomsFirst: function getRoomsFirst() {
-      var _this7 = this;
-
-      axios.get("/chat/rooms/" + this.eksesaisdetail.id).then(function (response) {
-        _this7.chatRooms = response.data;
-
-        _this7.setRoom(response.data[0]);
+        _this8.chatRooms = response.data;
       })["catch"](function (error) {
         console.log(error);
       });
     },
     setRoom: function setRoom(room) {
       this.currentRoom = room;
-      this.getUsersonRoom(); // this.getMessages();
-
+      this.getUsersonRoom(room.id);
+      this.getMessagesOfEachRoom(room.id);
       this.updateSeenMessage();
-      console.log(this.usersOnRoom);
-    },
-    getUsersonRoom: function getUsersonRoom() {
-      var _this8 = this;
-
-      axios.get("/room/users/" + this.currentRoom.id).then(function (response) {
-        _this8.usersOnRoom = response.data.usersOnRoom;
-        _this8.pluckusersOnRoom = response.data.pluckusersOnRoom;
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    getMessages: function getMessages() {
-      var _this9 = this;
-
-      axios.get("/chat/eksesais/" + this.eksesaisdetail.id + "/messages", {
-        params: {
-          chatrooms: this.chatRooms
-        }
-      }).then(function (response) {
-        _this9.messages = response.data.mesejbawah;
-        _this9.messagesIXs = response.data.mesejatas; // this.playSound();
-      })["catch"](function (error) {
-        console.log(error);
-      });
     } // playSound() {
     //     this.audio.play();
     // },
@@ -21767,12 +21856,17 @@ var __default__ = {
 
   },
   created: function created() {
-    this.getKapal();
-    this.getMessages();
-    this.getRoomsFirst();
-    this.getcallsign(); // console.log(DateTime.now().setZone("America/New_York").toISO());
+    console.log(luxon__WEBPACK_IMPORTED_MODULE_6__.DateTime.now().toISOTime(), "1. start");
+    this.getKapal(); // console.log( DateTime.now().toISOTime(), "2. getkapal", this.senaraikapals);
+
+    this.getcallsign(); // console.log( DateTime.now().toISOTime(), "3. getcallsign", this.callsigneksesais);
+    // console.log( DateTime.now().toISOTime(), "4. getroomfirst", this.chatRooms);
+
+    this.getAllRoomsWithUsers();
+    console.log('hostnamee: ', window.location.hostname);
   }
 };
+
 
 
 
@@ -21790,7 +21884,8 @@ var __default__ = {
       InputMessage: _inputMessage_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
       ChatRoomSelection: _chatRoomSelection_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
       Rightslide: _rightslide_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
-      Leftslide: _leftslide_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
+      Leftslide: _leftslide_vue__WEBPACK_IMPORTED_MODULE_5__["default"],
+      DateTime: luxon__WEBPACK_IMPORTED_MODULE_6__.DateTime
     };
     Object.defineProperty(__returned__, '__isScriptSetup', {
       enumerable: false,
@@ -21820,7 +21915,7 @@ var __default__ = {
     Input: _Jetstream_Input_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   emits: ["messagesent"],
-  props: ["room", "currenteksesais", "clickMessage3", "pluckusersOnRoom", "senaraikapals", "callsigneksesais"],
+  props: ["room", "currenteksesais", "clickMessage3", "senaraikapals", "callsigneksesais"],
   data: function data() {
     return {
       message: "",
@@ -21852,40 +21947,39 @@ var __default__ = {
     }
   },
   methods: {
-    getData: function getData() {
-      var _this2 = this;
-
-      this.search_data = [];
-      axios.get("/testasdasdasdafdsf", {
-        params: {
-          message: this.query
-        }
-      }).then(function (response) {
-        _this2.search_data = response.data.teadtasd;
-        console.log(_this2.search_data);
-      });
-    },
-    getName: function getName(name) {
-      this.query = name;
-      this.search_data = [];
-      console.log(this.query);
-    },
-    choosemessagetype: function choosemessagetype(e) {
-      if (e.target.value === "Quick Guide") {
-        this.quickguide = true;
-      }
-
-      if (e.target.value === "Free Text") {
-        this.quickguide = false;
-      }
-    },
+    // getData: function () {
+    //     this.search_data = [];
+    //     axios
+    //         .get("/testasdasdasdafdsf", {
+    //             params: {
+    //                 message: this.query,
+    //             },
+    //         })
+    //         .then((response) => {
+    //             this.search_data = response.data.teadtasd;
+    //             console.log(this.search_data);
+    //         });
+    // },
+    // getName: function (name) {
+    //     this.query = name;
+    //     this.search_data = [];
+    //     console.log(this.query);
+    // },
+    // choosemessagetype(e) {
+    //     if (e.target.value === "Quick Guide") {
+    //         this.quickguide = true;
+    //     }
+    //     if (e.target.value === "Free Text") {
+    //         this.quickguide = false;
+    //     }
+    // },
     refreshmessage: function refreshmessage() {
       this.message = "";
       this.sendercallsign = "";
       this.idkapalindividual = "";
     },
     sendMessage: function sendMessage(action) {
-      var _this3 = this;
+      var _this2 = this;
 
       if (this.Message == " ") {
         return;
@@ -21899,11 +21993,11 @@ var __default__ = {
           individual: false,
           sendercallsign: this.sendercallsign
         }).then(function (response) {
-          if (response.status == 200) {
-            _this3.message = "";
-            _this3.translatemessage = ""; // this.sendercallsign = ""
+          if (response.status == 200 || response.status == 201) {
+            _this2.message = "";
+            _this2.translatemessage = ""; // this.sendercallsign = ""
 
-            _this3.$emit("messagesent");
+            _this2.$emit("messagesent", response.data);
           }
         })["catch"](function (error) {
           console.log(error);
@@ -21917,11 +22011,11 @@ var __default__ = {
           individual: true,
           sendercallsign: this.sendercallsign
         }).then(function (response) {
-          if (response.status == 200) {
-            _this3.message = "";
-            _this3.translatemessage = " "; // this.sendercallsign = ""
+          if (response.status == 200 || response.status == 201) {
+            _this2.message = "";
+            _this2.translatemessage = " "; // this.sendercallsign = ""
 
-            _this3.$emit("messagesent");
+            _this2.$emit("messagesent", response.data);
           }
         })["catch"](function (error) {
           console.log(error);
@@ -21929,18 +22023,18 @@ var __default__ = {
       }
     },
     customsendMessage: function customsendMessage(action) {
-      var _this4 = this;
+      var _this3 = this;
 
       axios.post("/chat/eksesais/" + this.currenteksesais + "/" + this.room.id + "/message", {
         message: action,
         action: " ",
         pluckusersOnRoom: this.room.shortform
       }).then(function (response) {
-        if (response.status == 200) {
-          _this4.message = "";
-          _this4.translatemessage = " ";
+        if (response.status == 200 || response.status == 201) {
+          _this3.message = "";
+          _this3.translatemessage = " ";
 
-          _this4.$emit("messagesent");
+          _this3.$emit("messagesent", response.data);
         }
       })["catch"](function (error) {
         console.log(error);
@@ -26337,7 +26431,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       }, 8
       /* PROPS */
       , ["href"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Link"], {
-        href: _ctx.route('logout'),
+        href: '/logout',
         method: "post",
         as: "button",
         "class": "underline text-sm text-gray-600 hover:text-gray-900 ml-2"
@@ -26348,9 +26442,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         _: 1
         /* STABLE */
 
-      }, 8
-      /* PROPS */
-      , ["href"])])])], 40
+      })])])], 40
       /* PROPS, HYDRATE_EVENTS */
       , _hoisted_3)];
     }),
@@ -27030,7 +27122,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
       return _ctx.newRoom = $event;
     }),
-    "class": "p-3 mb-1 placeholder-slate-300 text-slate-600 relative bg-white bg-white rounded text-sm border shadow outline-none focus:outline-none focus:ring w-full"
+    "class": "p-3 mb-1 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm border shadow outline-none focus:outline-none focus:ring w-full"
   }, null, 8
   /* PROPS */
   , ["modelValue"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Label, {
@@ -27043,7 +27135,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
       return _ctx.shortform = $event;
     }),
-    "class": "p-3 mb-1 placeholder-slate-300 text-slate-600 relative bg-white bg-white rounded text-sm border shadow outline-none focus:outline-none focus:ring w-full"
+    "class": "p-3 mb-1 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm border shadow outline-none focus:outline-none focus:ring w-full"
   }, null, 8
   /* PROPS */
   , ["modelValue"]), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.senaraikapals, function (senaraikapal, index) {
@@ -27170,8 +27262,8 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["messageContainer"], {
-        messages: _ctx.messages,
-        messagesIXs: _ctx.messagesIXs,
+        messages: _ctx.messageofeachroomatas,
+        messagesIXs: _ctx.messageofeachroombawah,
         onClickmessage2: _cache[2] || (_cache[2] = function ($event) {
           return $options.getClickMessage($event);
         }),
@@ -27184,15 +27276,14 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         room: _ctx.currentRoom,
         currenteksesais: $props.eksesaisdetail.id,
         clickMessage3: _ctx.clickMessage,
-        pluckusersOnRoom: _ctx.pluckusersOnRoom,
         senaraikapals: _ctx.senaraikapals,
         callsigneksesais: _ctx.callsigneksesais,
         onMessagesent: _cache[4] || (_cache[4] = function ($event) {
-          return $options.getMessages();
+          return $options.pushtoMessage($event);
         })
       }, null, 8
       /* PROPS */
-      , ["room", "currenteksesais", "clickMessage3", "pluckusersOnRoom", "senaraikapals", "callsigneksesais"])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Rightslide"], {
+      , ["room", "currenteksesais", "clickMessage3", "senaraikapals", "callsigneksesais"])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Rightslide"], {
         "class": "absolute right-0 top-1/2",
         callsigneksesais: _ctx.callsigneksesais,
         senaraikapals: _ctx.senaraikapals
@@ -27348,7 +27439,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return _ctx.query = $event;
     }),
     onKeyup: _cache[5] || (_cache[5] = function ($event) {
-      return $options.getData();
+      return _ctx.getData();
     }),
     autocomplete: "off",
     "class": "shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
@@ -27364,7 +27455,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       },
       "class": "list-group-item block px-4 py-2 text-gray-800 hover:bg-indigo-500 hover:text-white border border-gray-300",
       onClick: function onClick($event) {
-        return $options.getName(data1.Meaning);
+        return _ctx.getName(data1.Meaning);
       }
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(data1.Meaning), 9
     /* TEXT, PROPS */
@@ -27625,7 +27716,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     key: 0,
     "class": "blink_me px-4 py-1 bg-yellow-500 rounded",
     onClick: _cache[1] || (_cache[1] = function ($event) {
-      return _ctx.$emit('clickIXbutton', $props.message.id);
+      return _ctx.$emit('clickIXbutton', $props.message);
     }),
     disabled: $props.message.user_id !== _ctx.$page.props.user.id
   }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.message.action), 9
@@ -31418,6 +31509,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "Channel": () => (/* binding */ Channel),
 /* harmony export */   "default": () => (/* binding */ Echo)
 /* harmony export */ });
+function _typeof(obj) {
+  "@babel/helpers - typeof";
+
+  return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+  }, _typeof(obj);
+}
+
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -32516,7 +32617,7 @@ var PusherConnector = /*#__PURE__*/function (_Connector) {
     value: function leave(name) {
       var _this2 = this;
 
-      var channels = [name, 'private-' + name, 'presence-' + name];
+      var channels = [name, 'private-' + name, 'private-encrypted-' + name, 'presence-' + name];
       channels.forEach(function (name, index) {
         _this2.leaveChannel(name);
       });
@@ -32952,6 +33053,10 @@ var Echo = /*#__PURE__*/function () {
       if (typeof jQuery === 'function') {
         this.registerjQueryAjaxSetup();
       }
+
+      if ((typeof Turbo === "undefined" ? "undefined" : _typeof(Turbo)) === 'object') {
+        this.registerTurboRequestInterceptor();
+      }
     }
     /**
      * Register a Vue HTTP interceptor to add the X-Socket-ID header.
@@ -33003,6 +33108,19 @@ var Echo = /*#__PURE__*/function () {
           }
         });
       }
+    }
+    /**
+     * Register the Turbo Request interceptor to add the X-Socket-ID header.
+     */
+
+  }, {
+    key: "registerTurboRequestInterceptor",
+    value: function registerTurboRequestInterceptor() {
+      var _this4 = this;
+
+      document.addEventListener('turbo:before-fetch-request', function (event) {
+        event.detail.fetchOptions.headers['X-Socket-Id'] = _this4.socketId();
+      });
     }
   }]);
 

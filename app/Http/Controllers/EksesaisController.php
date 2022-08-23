@@ -43,6 +43,14 @@ class EksesaisController extends Controller
         return response()->json(['callsigneksesais' => $callsigneksesais, 'callsigngroup' => $callsigngroup]);
     }
 
+    public function getusersonallroomineksesais($eksesaisId)
+    {
+
+        $user = User::find(Auth::id());
+        return $user->rooms()->with('users')->where('eksesais_id', $eksesaisId)->get();
+        // return Eksesais::find($eksesaisId)->rooms()->with('users')->get();
+     }
+
     /**
      * Show the form for creating a new resource.
      *

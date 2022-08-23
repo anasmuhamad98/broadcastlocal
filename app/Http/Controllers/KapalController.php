@@ -20,14 +20,14 @@ class KapalController extends Controller
     public function index()
     {
         return User::with(['callsign' => function ($query) {
-            $query->where('tarikh',  Carbon::now()->day);
+            $query->where('tarikh',  Carbon::now());
         }])->get();
     }
 
 
     public function senaraikapaldalameksesais($eksesaisId)
     {
-        return $kapaldalameksesais = Eksesais::find($eksesaisId)->users()->with('callsign')->get();
+        return  Eksesais::find($eksesaisId)->users()->with('callsign')->get();
 
     }
 

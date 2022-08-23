@@ -64,6 +64,7 @@ Route::middleware([
     Route::get('kapal/callsign', [KapalController::class, 'getcallsign']);
     Route::get('callsign/eksesais', [EksesaisController::class, 'getcallsigneksesais']);
     Route::get('eksesais/callsign/all', [EksesaisController::class, 'getcallsign']);
+    Route::get('eksesais/{id}/rooms/users', [EksesaisController::class, 'getusersonallroomineksesais']);
 });
 
 

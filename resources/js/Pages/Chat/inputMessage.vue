@@ -139,7 +139,6 @@ export default {
         "room",
         "currenteksesais",
         "clickMessage3",
-        "pluckusersOnRoom",
         "senaraikapals",
         "callsigneksesais",
     ],
@@ -175,32 +174,32 @@ export default {
         },
     },
     methods: {
-        getData: function () {
-            this.search_data = [];
-            axios
-                .get("/testasdasdasdafdsf", {
-                    params: {
-                        message: this.query,
-                    },
-                })
-                .then((response) => {
-                    this.search_data = response.data.teadtasd;
-                    console.log(this.search_data);
-                });
-        },
-        getName: function (name) {
-            this.query = name;
-            this.search_data = [];
-            console.log(this.query);
-        },
-        choosemessagetype(e) {
-            if (e.target.value === "Quick Guide") {
-                this.quickguide = true;
-            }
-            if (e.target.value === "Free Text") {
-                this.quickguide = false;
-            }
-        },
+        // getData: function () {
+        //     this.search_data = [];
+        //     axios
+        //         .get("/testasdasdasdafdsf", {
+        //             params: {
+        //                 message: this.query,
+        //             },
+        //         })
+        //         .then((response) => {
+        //             this.search_data = response.data.teadtasd;
+        //             console.log(this.search_data);
+        //         });
+        // },
+        // getName: function (name) {
+        //     this.query = name;
+        //     this.search_data = [];
+        //     console.log(this.query);
+        // },
+        // choosemessagetype(e) {
+        //     if (e.target.value === "Quick Guide") {
+        //         this.quickguide = true;
+        //     }
+        //     if (e.target.value === "Free Text") {
+        //         this.quickguide = false;
+        //     }
+        // },
         refreshmessage() {
             this.message = "";
             this.sendercallsign = "";
@@ -227,11 +226,11 @@ export default {
                         }
                     )
                     .then((response) => {
-                        if (response.status == 200) {
+                        if (response.status == 200 || response.status == 201) {
                             this.message = "";
                             this.translatemessage = "";
                             // this.sendercallsign = ""
-                            this.$emit("messagesent");
+                            this.$emit("messagesent", response.data);
                         }
                     })
                     .catch((error) => {
@@ -256,11 +255,11 @@ export default {
                         }
                     )
                     .then((response) => {
-                        if (response.status == 200) {
+                        if (response.status == 200 || response.status == 201) {
                             this.message = "";
                             this.translatemessage = " ";
                             // this.sendercallsign = ""
-                            this.$emit("messagesent");
+                            this.$emit("messagesent", response.data);
                         }
                     })
                     .catch((error) => {
@@ -283,10 +282,10 @@ export default {
                     }
                 )
                 .then((response) => {
-                    if (response.status == 200) {
+                    if (response.status == 200|| response.status == 201) {
                         this.message = "";
                         this.translatemessage = " ";
-                        this.$emit("messagesent");
+                        this.$emit("messagesent", response.data);
                     }
                 })
                 .catch((error) => {

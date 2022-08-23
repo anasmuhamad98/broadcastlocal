@@ -24,4 +24,9 @@ class ChatRoom extends Model
     {
         return $this->belongsToMany(User::class, 'chat_room_users')->withPivot('newMessage');
     }
+
+    // public function hasmanyusers()
+    // {
+    //     return $this->hasMany(User::class);
+    // }
 }

@@ -82,7 +82,7 @@
                         <Input
                             type="text"
                             v-model="newRoom"
-                            class="p-3 mb-1 placeholder-slate-300 text-slate-600 relative bg-white bg-white rounded text-sm border shadow outline-none focus:outline-none focus:ring w-full"
+                            class="p-3 mb-1 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm border shadow outline-none focus:outline-none focus:ring w-full"
                         />
                         <Label
                             for="shortform"
@@ -92,7 +92,7 @@
                         <Input
                             type="text"
                             v-model="shortform"
-                            class="p-3 mb-1 placeholder-slate-300 text-slate-600 relative bg-white bg-white rounded text-sm border shadow outline-none focus:outline-none focus:ring w-full"
+                            class="p-3 mb-1 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm border shadow outline-none focus:outline-none focus:ring w-full"
                         />
                         <div
                             v-for="(senaraikapal, index) in senaraikapals"

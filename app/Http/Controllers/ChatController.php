@@ -37,7 +37,7 @@ class ChatController extends Controller
     public function rooms($eksesaisId)
     {
         $user = User::find(Auth::id());
-        return $user->rooms()->where('eksesais_id', $eksesaisId)->where('isShow', 1)->get();
+        return $user->rooms()->with('users')->where('eksesais_id', $eksesaisId)->where('isShow', 1)->get();
         // return ChatRoom::where('eksesais_id', $eksesaisId)->get();
     }
 
@@ -118,7 +118,7 @@ class ChatController extends Controller
         $newMessage->eksesais_id = $eksesaisId;
         $newMessage->chat_room_id = $roomId;
         $newMessage->message = $request->message;
-        $newMessage->sender = $request->sendercallsign ?? $sender->callsign->callsign;
+        $newMessage->sender = $request->sendercallsign ?? $sender->callsign->callsign ?? 'NULL';
         $newMessage->receiver = $request->pluckusersOnRoom;
         $newMessage->action = $request->action;
         $newMessage->save();
@@ -128,6 +128,8 @@ class ChatController extends Controller
         ChatRoom::find($roomId)->users()->updateExistingPivot($users, $attributes);
 
         broadcast(new EventsNewChatMessage($newMessage))->toOthers();
+
+        return $newMessage;
         // return $newMessage;
         // event(new EventsNewChatMessage($newMessage));
         // event(new RealTimeMessage('Hello World'));
@@ -135,6 +137,7 @@ class ChatController extends Controller
 
     public function testets(Request $request)
     {
+        // return Eksesais::find(1)->rooms()->with('users')->get();
         // return $receiver = User::find(1)->with('callsign');
         // return ChatRoom::find(1)->users()->pluck('users.shortform');
         // $user = User::find(Auth::id());
@@ -186,6 +189,8 @@ class ChatController extends Controller
         ChatRoom::find($roomId)->users()->updateExistingPivot($users, $attributes);
 
         broadcast(new EventsNewChatMessage($newMessage))->toOthers();
+
+        return $newMessage;
         // $seenmessage->newMessage = 1;
 
         // $seenmessage->update();

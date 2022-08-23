@@ -36,7 +36,7 @@ import { DateTime } from "luxon";
         <button
             v-if="message.action == 'IX'"
             class="blink_me px-4 py-1 bg-yellow-500 rounded"
-            v-on:click="$emit('clickIXbutton', message.id)"
+            v-on:click="$emit('clickIXbutton', message)"
             :disabled="message.user_id !==  $page.props.user.id "
         >
             {{ message.action }}

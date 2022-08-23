@@ -21,4 +21,9 @@ class Eksesais extends Model
     {
         return $this->hasMany(CallsignEksesais::class);
     }
+
+    public function rooms()
+    {
+        return $this->hasMany(ChatRoom::class);
+    }
 }

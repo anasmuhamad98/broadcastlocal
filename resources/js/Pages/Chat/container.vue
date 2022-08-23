@@ -5,6 +5,8 @@ import InputMessage from "./inputMessage.vue";
 import ChatRoomSelection from "./chatRoomSelection.vue";
 import Rightslide from "./rightslide.vue";
 import Leftslide from "./leftslide.vue";
+
+import { DateTime } from "luxon";
 </script>
 
 <template>
@@ -37,10 +39,9 @@ import Leftslide from "./leftslide.vue";
                         :room="currentRoom"
                         :currenteksesais="eksesaisdetail.id"
                         :clickMessage3="clickMessage"
-                        :pluckusersOnRoom="pluckusersOnRoom"
                         :senaraikapals="senaraikapals"
                         :callsigneksesais="callsigneksesais"
-                        v-on:messagesent="getMessages()"
+                        v-on:messagesent="pushtoMessage($event)"
                     />
                 </div>
             </div>
@@ -86,14 +87,16 @@ export default {
             callsigneksesais: [],
             messageofeachroomatas: [],
             messageofeachroombawah: [],
+            allroomswithusers: [],
             audio: new Audio("/musics/tingting.mp3"),
         };
     },
     mounted() {
-        this.getRoomsFirst();
+        console.log(DateTime.now().toISOTime(), "check for mounted");
         window.Echo.private("eksesais." + this.eksesaisdetail.id)
             .listen("NewChatMessage", (e) => {
-                this.getMessages();
+                this.pushtoMessage(e.chatMessage);
+                // this.getMessages();
                 this.getRooms();
             })
             .listen("NewGroupChat", (e) => {
@@ -111,25 +114,189 @@ export default {
         window.Echo.leave("NewGroupChat");
     },
     methods: {
+        getKapal() {
+            axios
+                .get("/senaraikapal/" + this.eksesaisdetail.id)
+                .then((response) => {
+                    this.senaraikapals = response.data;
+                    console.log(
+                        DateTime.now().toISOTime(),
+                        "2. getkapal",
+                        this.senaraikapals
+                    );
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+
         getcallsign() {
             axios.get("/eksesais/callsign/all").then((response) => {
                 this.callsigneksesais = response.data;
+
+                console.log(
+                    DateTime.now().toISOTime(),
+                    "3. getcallsign",
+                    this.callsigneksesais
+                );
             });
         },
-        clickIXbutton(mesejid) {
+
+        getAllRoomsWithUsers() {
+            axios
+                .get("/eksesais/" + this.eksesaisdetail.id + "/rooms/users")
+                .then((response) => {
+                    this.allroomswithusers = response.data;
+                    console.log(
+                        DateTime.now().toISOTime(),
+                        "4. allroomswithusers",
+                        this.allroomswithusers
+                    );
+
+                    this.getRoomsFirst(this.allroomswithusers);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+
+        getRoomsFirst(allrooms) {
+            this.chatRooms = allrooms.filter(function (value) {
+                return value.isShow == 1;
+            });
+            console.log(
+                DateTime.now().toISOTime(),
+                "5. getroomfirst",
+                this.chatRooms
+            );
+            this.setRoomFirst(this.chatRooms[0]);
+            // axios
+            //     .get("/chat/rooms/" + this.eksesaisdetail.id)
+            //     .then((response) => {
+            //         this.chatRooms = response.data;
+            //         console.log(
+            //             DateTime.now().toISOTime(),
+            //             "5. getroomfirst",
+            //             this.chatRooms
+            //         );
+            //         this.setRoomFirst(response.data[0]);
+            //     })
+            //     .catch((error) => {
+            //         console.log(error);
+            //     });
+        },
+
+        setRoomFirst(room) {
+            this.currentRoom = room;
+            console.log(
+                DateTime.now().toISOTime(),
+                "6. setroom",
+                this.currentRoom
+            );
+
+            this.getUsersonRoom(room.id);
+            this.getMessages();
+            this.updateSeenMessage();
+        },
+
+        getUsersonRoom(roomId) {
+            this.usersOnRoom = this.allroomswithusers.find(
+                (element) => element.id === roomId
+            ).users;
+            console.log(
+                DateTime.now().toISOTime(),
+                "7. get users on room",
+                this.usersOnRoom
+            );
+            // axios
+            //     .get("/room/users/" + this.currentRoom.id)
+            //     .then((response) => {
+            //         this.usersOnRoom = response.data.usersOnRoom;
+            //         this.pluckusersOnRoom = response.data.pluckusersOnRoom;
+            //         console.log(
+            //             DateTime.now().toISOTime(),
+            //             "6. user on room",
+            //             this.pluckusersOnRoom
+            //         );
+            //     })
+            //     .catch((error) => {
+            //         console.log(error);
+            //     });
+        },
+
+        getMessages() {
+            axios
+                .get("/chat/eksesais/" + this.eksesaisdetail.id + "/messages", {
+                    params: {
+                        // chatrooms: this.chatRooms,
+                        chatroomId: this.currentRoom.id,
+                    },
+                })
+                .then((response) => {
+                    this.messages = response.data.mesejbawah;
+                    this.messagesIXs = response.data.mesejatas;
+                    // console.log("2. messagebawah", this.messages);
+                    // console.log("3. messageatas", this.messagesIXs);
+                    this.getMessagesOfEachRoom(this.currentRoom.id);
+                    // this.playSound();
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+
+        getMessagesOfEachRoom(room) {
+            // console.log('4. before', this.messageofeachroomatas);
+            this.messageofeachroomatas = [];
+            this.messageofeachroombawah = [];
+            this.messageofeachroomatas = this.messages.filter(function (value) {
+                return value.chat_room_id == room;
+            });
+            this.messageofeachroombawah = this.messagesIXs.filter(function (
+                value
+            ) {
+                return value.chat_room_id == room;
+            });
+
+            // console.log('5. after', this.messageofeachroomatas);
+        },
+
+        pushtoMessage(newmessage) {
+            if (newmessage.action == "IX") {
+                this.messagesIXs.unshift(newmessage);
+                this.messagesIXs.sort(function (a, b) {
+                    return a.created_at - b.created_at;
+                });
+                console.log("IX", this.messagesIXs);
+            } else {
+                this.messages.unshift(newmessage);
+                this.messages
+                    .sort(function (a, b) {
+                        return new Date(b.created_at) - new Date(a.created_at);
+                    })
+                    .sort(function (a, b) {
+                        return new Date(b.created_at) - new Date(a.created_at);
+                    });
+                console.log("jadi la ni", this.messages);
+            }
+
+            this.getMessagesOfEachRoom(newmessage.chat_room_id);
+        },
+
+        clickIXbutton(message) {
             if (
                 confirm(
                     "Are you sure to execute " +
                         this.messagesIXs.find(
-                            (element) => element.id === mesejid
+                            (element) => element.id === message.id
                         ).message +
                         "?"
                 ) == true
             ) {
-                this.updateIXMessage(mesejid);
+                this.updateIXMessage(message);
             }
         },
-        updateIXMessage(messageid) {
+        updateIXMessage(message) {
             axios
                 .post(
                     "/chat/eksesais/" +
@@ -137,24 +304,25 @@ export default {
                         "/" +
                         this.currentRoom.id +
                         "/" +
-                        messageid +
+                        message.id +
                         "/messageId",
                     {}
                 )
                 .then((response) => {
-                    if (response.status == 200) {
-                        this.getMessages();
+                    if (response.status == 200 || response.status == 201) {
+                        let updatemessage = this.messagesIXs.find(
+                            (element) => element.id === message.id
+                        );
+                        let updatemessageindex = this.messagesIXs.findIndex(
+                            (element) => element.id === message.id
+                        );
+                        this.messagesIXs.splice(updatemessageindex, 1);
+                        updatemessage.action = "-IX";
+
+                        this.pushtoMessage(updatemessage);
+                        this.pushtoMessage(response.data);
+                        // this.getMessages();
                     }
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        },
-        getKapal() {
-            axios
-                .get("/senaraikapal/" + this.eksesaisdetail.id)
-                .then((response) => {
-                    this.senaraikapals = response.data;
                 })
                 .catch((error) => {
                     console.log(error);
@@ -177,7 +345,7 @@ export default {
                 .then((response) => {
                     if (response.status == 200) {
                         this.currentRoom.pivot.newMessage = 0;
-                        console.log("currentroom", this.currentRoom);
+                        // console.log("currentroom", this.currentRoom);
                     }
                 })
                 .catch((error) => {
@@ -194,78 +362,14 @@ export default {
                     console.log(error);
                 });
         },
-        getRoomsFirst() {
-            axios
-                .get("/chat/rooms/" + this.eksesaisdetail.id)
-                .then((response) => {
-                    this.chatRooms = response.data;
-                    this.setRoomFirst(response.data[0]);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        },
-        setRoomFirst(room) {
-            this.currentRoom = room;
-            this.getUsersonRoom();
-            this.getMessages();
-            this.updateSeenMessage();
-        },
+
         setRoom(room) {
             this.currentRoom = room;
-            this.getUsersonRoom();
+            this.getUsersonRoom(room.id);
             this.getMessagesOfEachRoom(room.id);
             this.updateSeenMessage();
         },
-        getUsersonRoom() {
-            axios
-                .get("/room/users/" + this.currentRoom.id)
-                .then((response) => {
-                    this.usersOnRoom = response.data.usersOnRoom;
-                    this.pluckusersOnRoom = response.data.pluckusersOnRoom;
-                    console.log("user on room", this.usersOnRoom);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        },
-        getMessagesOfEachRoom(room) {
-            console.log('before', this.messageofeachroomatas);
-            this.messageofeachroomatas = [];
-            this.messageofeachroombawah = [];
-            this.messageofeachroomatas = this.messages.filter(function (
-                value,
-            ) {
-                return (value.chat_room_id == room);
-            });
-            this.messageofeachroombawah = this.messagesIXs.filter(function (
-                value,
-            ) {
-                return (value.chat_room_id == room);
-            });
 
-            console.log('after', this.messageofeachroomatas);
-        },
-        getMessages() {
-            axios
-                .get("/chat/eksesais/" + this.eksesaisdetail.id + "/messages", {
-                    params: {
-                        // chatrooms: this.chatRooms,
-                        chatroomId: this.currentRoom.id,
-                    },
-                })
-                .then((response) => {
-                    this.messages = response.data.mesejbawah;
-                    this.messagesIXs = response.data.mesejatas;
-                    console.log("messagebawah", this.messages);
-                    console.log("messageatas", this.messagesIXs);
-                    this.getMessagesOfEachRoom(this.currentRoom.id);
-                    // this.playSound();
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        },
         // playSound() {
         //     this.audio.play();
         // },
@@ -290,8 +394,15 @@ export default {
         // },
     },
     created() {
+        console.log(DateTime.now().toISOTime(), "1. start");
         this.getKapal();
+        // console.log( DateTime.now().toISOTime(), "2. getkapal", this.senaraikapals);
         this.getcallsign();
+        // console.log( DateTime.now().toISOTime(), "3. getcallsign", this.callsigneksesais);
+        // console.log( DateTime.now().toISOTime(), "4. getroomfirst", this.chatRooms);
+
+        this.getAllRoomsWithUsers();
+        console.log('hostnamee: ',window.location.hostname);
     },
 };
 </script>
