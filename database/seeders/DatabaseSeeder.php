@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\RakeCode;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -22,7 +23,9 @@ class DatabaseSeeder extends Seeder
             ListASeeder::class,
             ListBSeeder::class,
             ListCSeeder::class,
-            TableGrouperSeeder::class
+            TableGrouperSeeder::class,
+            TokenSeeder::class,
+            RakeCodeSeeder::class
         ]);
     }
 }

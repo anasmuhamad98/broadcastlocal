@@ -20,6 +20,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class ChatController extends Controller
@@ -27,9 +28,9 @@ class ChatController extends Controller
 
     public function index($eksesaisId)
     {
-        $eksesais = Eksesais::find($eksesaisId);
+        // $eksesais = Eksesais::find($eksesaisId);
         return Inertia::render('Chat/container', [
-            'eksesaisdetail' => $eksesais,
+            'eksesaisdetail' => $eksesaisId,
         ]);
         // return ChatMessage::where('eksesais_id', $eksesaisId)->where('chat_room_id', $roomId)->with('user')->orderBy('created_at', 'desc')->get();
     }
@@ -137,6 +138,10 @@ class ChatController extends Controller
 
     public function testets(Request $request)
     {
+        return Inertia::render('Chat/container', [
+            // 'eksesaisdetail' => $eksesais,
+        ]);
+        // return redirect('/eksesais');
         // return Eksesais::find(1)->rooms()->with('users')->get();
         // return $receiver = User::find(1)->with('callsign');
         // return ChatRoom::find(1)->users()->pluck('users.shortform');
@@ -148,8 +153,8 @@ class ChatController extends Controller
 
         // return $groupermeaning = Grouper::select('Grouper', 'Meaning')->where('Grouper', 'like', '%A%')->take(5)->get();
         // User::all();
-        $user = User::all();
-        return $user->toJson(JSON_PRETTY_PRINT);
+        // $user = User::all();
+        // return $user->toJson(JSON_PRETTY_PRINT);
         // return response()->json( User::all());
     }
 

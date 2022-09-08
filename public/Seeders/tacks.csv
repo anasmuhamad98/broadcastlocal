@@ -3,8 +3,7 @@ id,Grouper,Tack,Meaning,created_at,updated_at
 ,EMERG I,2,Aircraft,NULL,NULL
 ,EMERG I,3,Surface ship,NULL,NULL
 ,EMERG I,4,Missile Launching site/platform,NULL,NULL
-,EMERG J,1,"Disappearing radar contact
-",NULL,NULL
+,EMERG J,1,Disappearing radar contact,NULL,NULL
 ,EMERG K,1,Small battle units,NULL,NULL
 ,EMERG K,2,Saboteurs,NULL,NULL
 ,EMERG K,3,High speed surface craft,NULL,NULL
@@ -140,10 +139,10 @@ separated by TACK.",NULL,NULL
 ,L SCREEN,2,QQ,NULL,NULL
 ,L SCREEN,3,Unit indicated,NULL,NULL
 ,L SCREEN,4,Harbour reference point indicated following DESIG.,NULL,NULL
-,L SCREEN,5,Bearing Free_Text_Tack_1from harbour reference point indicated following DESIG. Distance Free_Text_Tack_2 miles.,NULL,NULL
+,L SCREEN,5,Bearing Free_Text_Tack_1 from harbour reference point indicated following DESIG. Distance Free_Text_Tack_2 miles.,NULL,NULL
 ,L SCREEN,6,Grid position indicated following DESIG.,NULL,NULL
 ,L SCREEN,7,Geographic position indicated following DESIG.,NULL,NULL
-,L SCREEN,8,Bearing Free_Text_Tack_1  from centre of the force or unit indicated. Range Free_Text_Tack_2 hundred yards.,NULL,NULL
+,L SCREEN,8,Bearing Free_Text_Tack_1 from centre of the force or unit indicated. Range Free_Text_Tack_2 hundred yards.,NULL,NULL
 ,T SCREEN,1,AAW,NULL,NULL
 ,T SCREEN,2,ASW,NULL,NULL
 ,T SCREEN,3,SW,NULL,NULL
@@ -206,10 +205,10 @@ separated by TACK.",NULL,NULL
 ,FLAG 1S,13,Marine life.,NULL,NULL
 ,FLAG 1S,14,Pinnacle (sea bottom),NULL,NULL
 ,FLAG 1S,15,Sonar jammer,NULL,NULL
-,FLAG 1T,1,From this unit or unit indicated (bearing __ range __ thousand yards).,NULL,NULL
+,FLAG 1T,1,From this unit or unit indicated (bearing Free_Text_Tack_1 range Free_Text_Tack_2 thousand yards).,NULL,NULL
 ,FLAG 1T,2,"From this unit on circle, radius Free_Text_Tack_1 thousand yards",NULL,NULL
 ,FLAG 1T,3,"From contact on circle, radius Free_Text_Tack_1 thousand yards.",NULL,NULL
-,FLAG 1T,4,In sectors Free_Text_Tack_1 to Free_Text_Tack_2 measured clockwise (on circle radius _ thousand yards).,NULL,NULL
+,FLAG 1T,4,In sectors Free_Text_Tack_1 to Free_Text_Tack_2 measured clockwise (on circle radius Free_Text_Tack_3 thousand yards).,NULL,NULL
 ,FLAG 1T,5,in sector Free_Text_Tack_1,NULL,NULL
 ,FLAG 1U,1,Fading,NULL,NULL
 ,FLAG 1U,2,Faint or difficult,NULL,NULL
@@ -224,7 +223,7 @@ separated by TACK.",NULL,NULL
 ,FLAG 1X,1,Or close to my PORT or STBD side as indicated,NULL,NULL
 ,FLAG 1X,2,Close astern,NULL,NULL
 ,FLAG 1Y,1,Am no longer attacking ship,NULL,NULL
-,FLAG  7L,1,Into grid position,NULL,NULL
+,FLAG 7L,1,Into grid position,NULL,NULL
 ,FLAG 7L,2,In accordance with plan previously ordered,NULL,NULL
 ,FLAG 7N,1,Distraction,NULL,NULL
 ,FLAG 7N,2,Confusion,NULL,NULL
@@ -258,13 +257,13 @@ separated by TACK.",NULL,NULL
 ,AK19,1,Bottomed contact (in position_) of ship indicated,NULL,NULL
 ,AK19,2,Contact,NULL,NULL
 ,AK19,3,Datum (Datum designator preceded by DESIG),NULL,NULL
-,AK19,4,Goblin (Goblin letter preceded by DESIG,NULL,NULL
+,AK19,4,Goblin (Goblin letter preceded by DESIG),NULL,NULL
 ,AK19,5,Racket (Racket letter preceded by DESIG),NULL,NULL
 ,AK19,6,Skunk (Skunk letter preceded by DESIG),NULL,NULL
 ,AK20,1,assumed command as,NULL,NULL
 ,AK20,2,is Free_Text_Tack_1,NULL,NULL
 ,AK24,1,Report bathythermograph reading,NULL,NULL
-,AK24,2,Assume bathythermograph guard duty. (Report readings every __ hours(s),NULL,NULL
+,AK24,2,Assume bathythermograph guard duty. (Report readings every Free_Text_Tack_1 hours(s),NULL,NULL
 ,AK24,3,I am making bathythermograph drop,NULL,NULL
 ,AK24,4,Bathythermograph drop completed,NULL,NULL
 ,AK24,5,Make bathythermograph drop and report reading,NULL,NULL
@@ -372,7 +371,7 @@ separated by TACK.",NULL,NULL
 ,AK56,6,To assist navigation.,NULL,NULL
 ,AK57,1,High speed,NULL,NULL
 ,AK57,2,Interference caused by you or unit indicated,NULL,NULL
-,AK57,3,Predicted sonar range estimated to be  Free_Text_Tack_1 hundreds of yards,NULL,NULL
+,AK57,3,Predicted sonar range estimated to be Free_Text_Tack_1 hundreds of yards,NULL,NULL
 ,AK57,4,Sonar equipment in poor material condition,NULL,NULL
 ,AK57,5,Weather conditions,NULL,NULL
 ,AK65,1,Maintain speed at least 10 knots,NULL,NULL
@@ -400,10 +399,11 @@ separated by TACK.",NULL,NULL
 ,AK83,2,Scene of Action Commander is Free_Text_Tack_1,NULL,NULL
 ,AK83,3,ETA datum/contact is Free_Text_Tack_1,NULL,NULL
 ,AK83,4,ETA at torpedo danger area is Free_Text_Tack_1,NULL,NULL
-,AK87,1,In sector between true bearings Free_Text_Tack_1  and Free_Text_Tack_2 and between distances Free_Text_Tack_3 and Free_Text_Tack_4 miles from uni/position.,NULL,NULL
+,AK85,1,Contact.,NULL,NULL
+,AK87,1,In sector between true bearings Free_Text_Tack_1 and Free_Text_Tack_2 and between distances Free_Text_Tack_3 and Free_Text_Tack_4 miles from uni/position.,NULL,NULL
 ,AK87,2,Within areas.,NULL,NULL
 ,AK88,1,"PLAN MERAH. Attack method, carry out plan Free_Text_Tack_1 , (support method, carry out plan__)",NULL,NULL
-,AK88,2,"PLAN HITAM.Lost contact action, carry out plan(s) Free_Text_Tack_1",NULL,NULL
+,AK88,2,"PLAN HITAM.Lost contact action, carry out plan(s) Free_Text_Tack_2",NULL,NULL
 ,AK89,1,At datum,NULL,NULL
 ,AK89,2,In position indicated,NULL,NULL
 ,AK91,1,ASW barrier patrol.,NULL,NULL
@@ -450,7 +450,7 @@ separated by TACK.",NULL,NULL
 (a) Radius of circile Free_Text_Tack_1 hundred of yards.
 (b) Direction of rotation Free_Text_Tack_2 (clockwise or counter clockwise)
 (c)Speed Free_Text_Tack_3",NULL,NULL
-,AK105,13S,SERANGGA  (a) Radius of attack zone Free_Text_Tack_1 hundred yards.,NULL,NULL
+,AK105,13S,SERANGGA (a) Radius of attack zone Free_Text_Tack_1 hundred yards.,NULL,NULL
 ,AK110,1,ESM,NULL,NULL
 ,AK110,2,Loop crossing,NULL,NULL
 ,AK110,3,Radar,NULL,NULL
@@ -485,7 +485,7 @@ separated by TACK.",NULL,NULL
 ,AP7,1,Confirmed,NULL,NULL
 ,AP7,2,Can be met on schedule (or at ___),NULL,NULL
 ,AP7,3,At time indicated,NULL,NULL
-,AP7,4,Delayed by (Free_Text_Tack_1 hours/Free_Text_Tack_2minutes),NULL,NULL
+,AP7,4,Delayed by (Free_Text_Tack_1 hours/Free_Text_Tack_2 minutes),NULL,NULL
 ,AP7,5,Advanced by (Free_Text_Tack_1 hours/Free_Text_Tack_2 minutes),NULL,NULL
 ,AP9,1,Airborne,NULL,NULL
 ,AP9,2,Waterborne,NULL,NULL
@@ -498,7 +498,7 @@ separated by TACK.",NULL,NULL
 ,AP11,6,Transport,NULL,NULL
 ,AP11,7,"Transport, inner",NULL,NULL
 ,AP11,8,"Transport, outer",NULL,NULL
-,AP12,1,Moving in to Free_Text_Tack_1 thousand of yard off (____) beach,NULL,NULL
+,AP12,1,Moving in to Free_Text_Tack_1 thousand of yard off (Free_Text_Tack_2) beach,NULL,NULL
 ,AP12,2,Taking station bearing Free_Text_Tack_1 distance Free_Text_Tack_2 miles from centre of (____) beach,NULL,NULL
 ,AP15,1,Advanced,NULL,NULL
 ,AP15,2,Retarded,NULL,NULL
@@ -570,7 +570,7 @@ separated by TACK.",NULL,NULL
 ,KM5,9,Shells,NULL,NULL
 ,KM5,10,Soft,NULL,NULL
 ,KM6,1,As required,NULL,NULL
-,KM6,2,To course,NULL,NULL
+,KM6,2,To course Free_Text_Tack_1,NULL,NULL
 ,KM9,1,Is clear,NULL,NULL
 ,KM9,2,Is foul,NULL,NULL
 ,KM9,3,Unable to kedge off,NULL,NULL
@@ -614,7 +614,7 @@ separated by TACK.",NULL,NULL
 ,KM49,2,Form column in order of sequence number.,,
 ,KM49,3,Form column in squickest sequence,,
 ,KM49,4,In accordance with previous instruction,,
-,KM49,5,Units are to proceed at ____minute interval,,
+,KM49,5,Units are to proceed at Free_Text_Tack_1 minute interval,,
 ,KM49,6,War state,,
 ,KM53,1,Zero hour (time of zero hour may be indicated),,
 ,KM53,2,Zero hour plus __ minutes,,
@@ -688,10 +688,10 @@ separated by TACK.",NULL,NULL
 ,KS20,12,Own aircraft,,
 ,KS20,13,Reconnaissance aircraf,,
 ,KS20,14,Strike aircraft,,
-,KS29,1,Amount of __ ammunition remaining is __ percent,,
+,KS29,1,Amount of __ ammunition remaining is Free_Text_Tack_1 percent,,
 ,KS29,2,Conserve ( ) ammunition.,,
 ,KS29,3,Have ( ) ammunition ready for immediate use,,
-,KS29,4,Number of rounds or units of __ ammunition remaining or onboard is __,,
+,KS29,4,Number of rounds or units of __ ammunition remaining or onboard is Free_Text_Tack_1,,
 ,KS31,1,Routine maintenance,,
 ,KS31,2,Urgent corrective maintenance,,
 ,KS32,1,Continuously,,
@@ -700,12 +700,12 @@ separated by TACK.",NULL,NULL
 ,KS33,2,Must stop for repairs.,,
 ,KS33,3,Only by dry docking.,,
 ,KS33,4,With shipyard help.,,
-,KS40,1,Aviation gasoline,,
-,KS40,2,Bumable oil,,
-,KS40,3,Diesel oil,,
-,KS40,4,Gasoline,,
-,KS40,5,Lubricating oil,,
-,KS40,6,Water,,
+,KS40,1,Aviation gasoline Free_Text_Tack_1,,
+,KS40,2,Bumable oil Free_Text_Tack_2,,
+,KS40,3,Diesel oil Free_Text_Tack_3,,
+,KS40,4,Gasoline Free_Text_Tack_4,,
+,KS40,5,Lubricating oil Free_Text_Tack_5,,
+,KS40,6,Water Free_Text_Tack_6,,
 ,KS43,1,Require tug to tow this ship or unit indicate,,
 ,KS43,2,Take this ship or unit indicated in tow,,
 ,KS43,3,This ship or unit indicated into shallow wateR,,
@@ -718,9 +718,9 @@ separated by TACK.",NULL,NULL
 ,KS47,4,Maximum fuel economy (single boiler operation pennitte),,
 ,KS47,5,Maximum speed,,
 ,KS47,6,Working cable/anchors,,
-,KS48,1,Remain at _____ hours notic,,
-,KS48,2,Remain at minutes notice,,
-,KS48,3,Until __,,
+,KS48,1,Remain at Free_Text_Tack_1 hours notice,,
+,KS48,2,Remain at Free_Text_Tack_1 minutes notice,,
+,KS48,3,Until Free_Text_Tack_1,,
 ,KS48,4,Until further notice,,
 ,KS50,1,Readiness for sea,,
 ,KS50,2,Steam being a new notice for,,
@@ -734,21 +734,21 @@ separated by TACK.",NULL,NULL
 ,LT3,1,Abandoned,,
 ,LT3,2,Cancelled,,
 ,LT3,3,Completed,,
-,LT3,4,Postponed (until ____),,
-,LT3,5,To be repeated now (or at ____).,,
-,LT3,6,To be resumed now (or at _).,,
-,LT3,7,To cease now (or at _).,,
-,LT3,8,To commence now (or at _).,,
+,LT3,4,Postponed (until Free_Text_Tack_1),,
+,LT3,5,To be repeated now (or at Free_Text_Tack_1).,,
+,LT3,6,To be resumed now (or at Free_Text_Tack_1).,,
+,LT3,7,To cease now (or at Free_Text_Tack_1).,,
+,LT3,8,To commence now (or at Free_Text_Tack_1).,,
 ,LT4,1,Radar.,,
 ,LT4,2,VHF.,,
 ,LT4,3,VIS.,,
 ,LT4,4,UHF,,
-,LT4,5,____miles,,
+,LT4,5,Free_Text_Tack_1 miles,,
 ,LT8,1,Completed,,
 ,LT8,2,To be carried out as a dummy run,,
 ,LT8,3,To be repeated,,
-,LT8,4,To cease now (or at __ ).,,
-,LT8,5,To commence now (or at __ ).,,
+,LT8,4,To cease now (or at Free_Text_Tack_1 ).,,
+,LT8,5,To commence now (or at Free_Text_Tack_1 ).,,
 ,LT10,1,Abandon target,,
 ,LT10,2,Pick up target,,
 ,LT10,3,Stream target sledge,,
@@ -776,7 +776,7 @@ separated by TACK.",NULL,NULL
 ,MM11,4,Missile misfire,,
 ,MM11,5,Missile hang fire on launce,,
 ,MM11,6,Bad loading,,
-,MM14,1,Range is __ thousands of yard,,
+,MM14,1,Range is Free_Text_Tack_1 thousands of yard,,
 ,MM14,2,Identified. Ready to observe,,
 ,MM14,3,"Identified. Am able to spot for you. Will pass reports on circuit or frequency
 indicated",,
@@ -832,7 +832,7 @@ indicated",,
 ,MU18,3,In ASW disposition with no screened unit (s),,
 ,MU18,4,In AAW disposition with no screened unit (s,,
 ,MU18,5,Surface action group,,
-,MU23,1,Amplifying repor,,
+,MU23,1,Amplifying report,,
 ,MU24,1,TT,,
 ,MU24,2,XX,,
 ,MU24,3,YY,,
@@ -865,8 +865,8 @@ indicated",,
 ,NB10,5,Surface burst,,
 ,NB12,1,In kilotons is __,,
 ,NB12,2,In megatons is __,,
-,PA8,1,____Fathom,,
-,PA8,2,____Meters,,
+,PA8,1,Free_Text_Tack_1 Fathom,,
+,PA8,2,Free_Text_Tack_1 Meters,,
 ,PA10,1,Sound fog signals.,,
 ,PA10,2,Stream fog buoy (at __ hundreds yards astern).,,
 ,PA13,1,Cannot be seen,,
@@ -877,6 +877,11 @@ indicated",,
 ,PA14,3,Red mast/obstruction.,,
 ,PA14,4,Shaded stern/blue stern,,
 ,PA14,5,Side.,,
+,NEGAT PA14,1,Navigation.,,
+,NEGAT PA14,2,Overtaking.,,
+,NEGAT PA14,3,Red mast/obstruction.,,
+,NEGAT PA14,4,Shaded stern/blue stern,,
+,NEGAT PA14,5,Side.,,
 ,PA15,1,Masthead,,
 ,PA15,2,Side (Port/Starboard as indicated),,
 ,PA15,3,Stern,,
@@ -934,9 +939,9 @@ indicated",,
 ,PA34,7,Completion of replenishment,,
 ,PA34,8,Departure,,
 ,PA34,9,Rejoining,,
-,PA35,1,Sinuators,,
-,PA35,2,Watches,,
-,PA35,3,"Zigzag clock. If a zigzag diagram is in force, this signal is to be executed at the time a turn is due to be made",,
+,PA35,1,Sinuators at Free_Text_Tack_1,,
+,PA35,2,Watches at time Free_Text_Tack_1,,
+,PA35,3,"Zigzag clock at time Free_Text_Tack_1. If a zigzag diagram is in force, this signal is to be executed at the time a turn is due to be made",,
 ,PE1,1,This circuit or circuit indicated,,
 ,PE1,2,Frequency of Free_Text_Tack_1 MHz,,
 ,PE1,3,In accordance with Table E,,
@@ -1092,7 +1097,7 @@ indicated",,
 ,PT26,4,Flight operations suspended (a time signal indicates estimated time of resumption),,
 ,PT26,5,Have __ helicopters to launch (and __ to recover),,
 ,PT26,6,Have completed operating helicopters,,
-,PT27,1,Alert ( minutes),,
+,PT27,1,Alert ( Free_Text_Tack_1 minutes),,
 ,PT27,2,Airborne,,
 ,PT27,3,Down for routine maintenance,,
 ,PT27,4,Down for repair,,
@@ -1104,7 +1109,7 @@ indicated",,
 ,PT30,6,Weather,,
 ,PT30,7,Personnel,,
 ,PT35,1,Alert State __ (numerals following DESIG),,
-,PT35,2,Stand down/release (until ___).,,
+,PT35,2,Stand down/release (until Free_Text_Tack_1).,,
 ,PT40,1,Fixed.,,
 ,PT40,2,Moving (course __ Speed ___).,,
 ,PT41,1,Antisubmarine,,
@@ -1179,23 +1184,30 @@ indicated",,
 ,RA6,5,Using mode (and code __ ),,
 ,RP6,1,Identified as a parachute mine,,
 ,RP6,2,Believed to be a mine,,
-,RP11,1,Drifting (in position __),,
-,RP11,2,Exploded (in position ___),,
-,RP11,3,Just awash (in position____),,
-,RP11,4,Of____ type,,
+,RP11,1,Drifting (in position Free_Text_Tack_1),,
+,RP11,2,Exploded (in position Free_Text_Tack_1),,
+,RP11,3,Just awash (in position Free_Text_Tack_1),,
+,RP11,4,Of Free_Text_Tack_1 type,,
 ,RP11,5,Sinking slowly On position____),,
 ,RP12,1,Found,,
 ,RP12,2,Reported,,
 ,RP15,1,Active,,
 ,RP15,2,Automatic and are dangerous to friendly ships,,
 ,RP15,3,Safe,,
-,RP18,1,Line number __ between positions __ and position __ .,,
-,RP18,2,Corners of the area mined are indicated by positions __,,
+,RP18,1,Line number Free_Text_Tack_1 between positions Free_Text_Tack_2 and position Free_Text_Tack_3 .,,
+,RP18,2,Corners of the area mined are indicated by positions Free_Text_Tack_1,,
+,RP22,1,Employing the spread line method.,,
+,RP22,2,In a continuous line. A single line is to be laid unless otherwise ordered,,
+,RP22,3,"In groups (__ number of mines per group, each group __ hundreds of feet apart). A single line of mines is to be laid unless otherwise ordered.",,
+,RP22,4,"In parallel lines (__ number of mines), lines __ yards apart.",,
+,RP22,5,"Irregularly, some singly, some in groups (line of mines is to be __ long, in direction ___). A single line of mines is to be laid unless otherwise ordered.",,
+,RP22,6,"Ships in column, laying from the rear ships.",,
+,RP22,7,Ships in single line abreast.,,
 ,RP24,1,Arming delays are to be set at__ (date-time group).,,
 ,RP24,2,Commence mining. Plan may be indicated,,
 ,RP24,3,Jammed. All mine rails (or__ number) are jammed,,
-,RP24,4,"Jettison all mines (Mines are to be made__)
-A. Active
+,RP24,4,"Jettison all mines (Mines are to be made__) 
+A. Active 
 B. Safe",,
 ,RP24,5,Lay mines (or __ type from Table R) (from position or in area indicated) plan number may be added,,
 ,RP24,6,Launching. Unit indicated launched first mine in the line __ seconds after time zero,,
@@ -1204,8 +1216,8 @@ B. Safe",,
 ,RP24,9,Mine Launching interval. Use mine launching lnterval of __ seconds (in line manner___),,
 ,RP24,10,Number of mines (and obstructers if applicable) in each line (or line number __ )is __ .,,
 ,RP24,11,Fit mines,,
-,RP24,12,"Setting of mine depth (or ___) is to be __ feet.
-A. Plummet.
+,RP24,12,"Setting of mine depth (or ___) is to be __ feet. 
+A. Plummet. 
 B. Obstructer.",,
 ,RP24,13,Spacing. Lay mines hundreds offeet apart in each line (or in line number__),,
 ,RP24,14,Spacing of mines is to be hundreds of yards (between line number __ and line number___ ).,,
@@ -1213,8 +1225,8 @@ B. Obstructer.",,
 ,RP36,1,Minesweeping (green),,
 ,RP36,2,Minesweeping station keeping,,
 ,RP37,1,Hunt.,,
-,RP39,1,An area of width __ hundreds of yards the centreline of which lines between positions __ and __ .,,
-,RP39,2,Area/channel number/Jetter __,,
+,RP39,1,An area of width Free_Text_Tack_1 hundreds of yards the centreline of which lines between positions Free_Text_Tack_2 and Free_Text_Tack_3 .,,
+,RP39,2,Area/channel number/letter __,,
 ,RP41,1,Position of mine,,
 ,RP41,2,Safe channel,,
 ,RP41,3,Swept/hunted channel,,
@@ -1278,7 +1290,7 @@ B. Obstructer.",,
 ,SE27,1,VHF radiotelephone,,
 ,SE27,2,UHF radiotelephone,,
 ,SE27,3,UHF radio teletype,,
-,SE27,4,_ MHz (or circuit designation(s) preceded by DESIG),,
+,SE27,4,Free_Text_Tack_1 MHz (or circuit designation(s) preceded by DESIG),,
 ,SE33,1,Policy One,,
 ,SE33,2,Policy Two,,
 ,SE33,3,Policy Three,,
@@ -1333,6 +1345,8 @@ B. Obstructer.",,
 ,TD20,3,Deteriorating,,
 ,TD20,4,Unconscious,,
 ,TD20,5,Dead,,
+,TD21,1,Bedding,,
+,TD21,2,Bunting,,
 ,TD22,1,Forecastle,,
 ,TD22,2,Waist,,
 ,TD22,3,Quarterdeck,,
@@ -1426,7 +1440,7 @@ B. Obstructer.",,
 ,FLAG 2I,1,At targets of opportunity,,
 ,FLAG 2I,2,At nearest enemy,,
 ,FLAG 2I,3,At FPB targets,,
-,FLAG 2J,1,To target bearing __ from this ship (or unit indicated),,
+,FLAG 2J,1,To target bearing Free_Text_Tack_1 from this ship (or unit indicated),,
 ,FLAG 2J,2,To right of target being engaged,,
 ,FLAG 2J,3,To left of target being engaged,,
 ,FLAG 2K,1,Missiles,,
@@ -1441,7 +1455,7 @@ B. Obstructer.",,
 ,FLAG 2O,2,When guns bear,,
 ,FLAG 2O,3,When ready,,
 ,FLAG 2O,4,At maximum gun range,,
-,FLAG 2O,5,When range closes to _thousand yards,,
+,FLAG 2O,5,When range closes to Free_Text_Tack_1 thousand yards,,
 ,FLAG 2O,6,When target is visible,,
 ,FLAG 2O,7,If target is identified as hostile,,
 ,FLAG 2O,8,If target commits a hostile act,,
@@ -1454,16 +1468,18 @@ B. Obstructer.",,
 ,FLAG 2P,7,Nearest enemy,,
 ,FLAG 2Q,1,I have ceased firing.,,
 ,FLAG 2Q,2,Target indicated or (bearing __ ) (range __ thousands of yards) from this unit or indicated has ceased firing.,,
+,FLAG 2S,1,Gun,,
+,FLAG 2S,2,Missile,,
 ,FLAG 2U,1,Impac,,
 ,FLAG 2U,2,Proximity,,
 ,FLAG 2U,3,Mixed impact and airburst,,
 ,FLAG 2V,1,Negligible,,
 ,FLAG 2V,2,To prevent ranging,,
 ,FLAG 2V,3,To prevent auto follow,,
-,FLAG 2X,1,Over ( __ hundreds of yards),,
-,FLAG 2X,2,Short (__ hundreds of yards,,
-,FLAG 2X,3,Right ( __ tens of yards),,
-,FLAG 2X,4,Left ( __ tens of yards),,
+,FLAG 2X,1,Over (Free_Text_Tack_1 hundreds of yards),,
+,FLAG 2X,2,Short (Free_Text_Tack_2 hundreds of yards),,
+,FLAG 2X,3,Right ( Free_Text_Tack_3 tens of yards),,
+,FLAG 2X,4,Left ( Free_Text_Tack_4 tens of yards),,
 ,FLAG 2X,5,Far over,,
 ,FLAG 2X,6,Far short,,
 ,FLAG 2X,7,Far right,,
@@ -1474,7 +1490,7 @@ B. Obstructer.",,
 ,FLAG 2Y,2,Locate suspected target,,
 ,TP1,1,Avoid action,,
 ,TP1,2,Commence action,,
-,TP1,3,Chase enemy (type of force may be indicated from Table F,,
+,TP1,3,Chase enemy (type of force may be indicated from Table F),,
 ,TP1,4,Withhold surface fire until identify is established.,,
 ,TP3,1,Attack from direction __ is being carried out by unit indicated,,
 ,TP3,2,Break off the attack,,
@@ -1490,13 +1506,13 @@ B. Obstructer.",,
 ,TP4,6,To effective torpedo rang,,
 ,TP4,7,To maximum effective gun range,,
 ,TP4,8,To maximum torpedo range,,
-,TP4,9,To __ thousand of yards,,
+,TP4,9,To Free_Text_Tack_1 thousand of yards,,
 ,TP4,10,To effective PONY/MUSTANG weapon range,,
-,TP6,1,In position __,,
-,TP6,2,On enemy bearing __,,
-,TP6,3,On enemy as indicated (from Table F),,
+,TP6,1,In position Free_Text_Tack_1,,
+,TP6,2,On enemy bearing Free_Text_Tack_1,,
+,TP6,3,On enemy as indicated Table_Group (from Table F),,
 ,TP6,4,On unit indicated,,
-,TP6,5,At __ time,,
+,TP6,5,At Free_Text_Tack_1 time,,
 ,TP7,1,As rapidly as possible,,
 ,TP7,2,Beyond effective range of enemy,,
 ,TP7,3,Beyond effective range of enemy secondary guns,,
@@ -1505,7 +1521,7 @@ B. Obstructer.",,
 ,TP7,6,To maximum range,,
 ,TP7,7,To maximum effective range,,
 ,TP7,8,To maximum torpedo range,,
-,TP7,9,To range __ thousands of yards,,
+,TP7,9,To range Free_Text_Tack_1 thousands of yards,,
 ,TP15,1,Confidence Level 1,,
 ,TP15,2,Confidence Level 2,,
 ,TP15,3,Confidence Level 3,,
@@ -1536,21 +1552,23 @@ B. Obstructer.",,
 ,FLAG 9A,7,From as close as possible,,
 ,FLAG 9A,8,Outside visibility range; firing by radar,,
 ,FLAG 9A,9,According to coordinated attack plan,,
-, FLAG 9H,1,Formation attack in close formation,,
-, FLAG 9H,2,Formation attack in open formation,,
-, FLAG 9H,3,Independent,,
-, FLAG 9H,4,Sector,,
-, FLAG 9H,5,Spread,,
-, FLAG 9N,1,Bow,,
-, FLAG 9N,2,Beam,,
-, FLAG 9N,3,Quarter,,
-, FLAG 9P,1,High,,
-, FLAG 9P,2,Intermediate,,
-, FLAG 9P,3,Low,,
+,FLAG 9H,1,Formation attack in close formation,,
+,FLAG 9H,2,Formation attack in open formation,,
+,FLAG 9H,3,Independent,,
+,FLAG 9H,4,Sector,,
+,FLAG 9H,5,Spread,,
+,FLAG 9N,1,Bow,,
+,FLAG 9N,2,Beam,,
+,FLAG 9N,3,Quarter,,
+,FLAG 9P,1,High,,
+,FLAG 9P,2,Intermediate,,
+,FLAG 9P,3,Low,,
 ,TP27,1,The northward of the enemy,,
 ,TP27,2,The southward of the enemy T,,
 ,TP27,3,The eastward of the enemy,,
 ,TP27,4,The westward of the enemy,,
+,TP30,1,Attack with torpedoes,,
+,TP30,2,Do not attack untill ordered,,
 ,TP35,1,Are in sight bearing _ .,,
 ,TP35,2,Are to be recovered,,
 ,TP35,3,Have sunk,,
@@ -1727,7 +1745,7 @@ B. Obstructer.",,
 ,TK73,3,Underwater telephone,,
 ,TK73,4,Very high frequency,,
 ,TK73,5,Visual signalling,,
-,TK73,6,__ miles,,
+,TK73,6,Free_Text_Tack_1 miles,,
 ,TK73,7,Data Link,,
 ,TK76,1,Enemy inflicted damage,,
 ,TK76,2,To attack enemy,,
@@ -1752,14 +1770,14 @@ B. Obstructer.",,
 ,TK88,8,Independently to assigned station,,
 ,TK88,9,On duty assigned,,
 ,TK88,10,Out of port,,
-,TK88,11,To____,,
+,TK88,11,To Free_Text_Tack_1,,
 ,TK88,12,To anchorage,,
 ,TK88,13,To attack,,
 ,TK88,14,To contact area,,
 ,TK88,15,To FPB laying - up position,,
 ,TK88,16,To FPB waiting position,,
 ,TK88,17,To foul weather anchorage,,
-,TK88,18,To por,,
+,TK88,18,To port,,
 ,TK88,19,To position (_____),,
 ,TK88,20,To pick-up/recover target,,
 ,TK88,21,To recover man overboard (from_),,
@@ -1851,11 +1869,11 @@ B. Obstructer.",,
 ,TK118,4,Radar,,
 ,TK118,5,Sonar,,
 ,TK118,6,Visual,,
-,TK123,1,Circle of radius __ miles with centre in present position (or at position __),,
-,TK123,2,"Quadrilateral drawn between following four positions __ , __ , _, _",,
+,TK123,1,Circle of radius Free_Text_Tack_1 miles with centre in present position (or at position __),,
+,TK123,2,"Quadrilateral drawn between following four positions Free_Text_Tack_1 , Free_Text_Tack_2 ,Free_Text_Tack_3, Free_Text_Tack_4",,
 ,TK123,3,Sector included between and with radius of miles from present position (or position___),,
-,TK123,4,Sector between____and __ between___miles and___ miles from position __,,
-,TK123,5,Rectangle of width __ miles and depth _ miles centred on position __,,
+,TK123,4,Sector between Free_Text_Tack_1 and Free_Text_Tack_2 between Free_Text_Tack_3 miles and Free_Text_Tack_4 miles from position Free_Text_Tack_5,,
+,TK123,5,Rectangle of width Free_Text_Tack_1 miles and depth Free_Text_Tack_2 miles centred on position Free_Text_Tack_3,,
 ,TK124,1,Expanding square,,
 ,TK124,2,Intercepting,,
 ,TK124,3,Rectangular,,
@@ -1863,7 +1881,7 @@ B. Obstructer.",,
 ,TK126,1,ASW barrier patrol,,
 ,TK126,2,Barrier line (limits may indicated by position signal followin,,
 ,TK126,3,Circular patrol around DATUM clear of ships engaged in the ASW actio,,
-,TK126,4,Cross-over patrol (short leg is __ miles). Perpendicular between short legs is __ miles,,
+,TK126,4,Cross-over patrol (short leg is __ miles). Perpendicular between short legs is Free_Text_Tack_1 miles,,
 ,TK126,5,Double line cross-over patro,,
 ,TK126,6,Endless chain ASW patro,,
 ,TK126,7,Fixed station patrol,,
@@ -1876,18 +1894,18 @@ B. Obstructer.",,
 ,TK133,3,Resume patrol,,
 ,TK133,4,Return to your station,,
 ,TK139,1,As previously directe,,
-,TK139,2,"As previously directed On line of bearing
-(a) Line of bearing to which ships are to spread
-(b) Order of ships spreading from left to right if other than the present sequence
-(c) Scouting axis
-(d) Distance apart of ships when spread
-(e) Guide while spreading, if other than Senior Officer
-(f) Course and speed of the unit guide while spreading
+,TK139,2,"As previously directed On line of bearing 
+(a) Line of bearing to which ships are to spread 
+(b) Order of ships spreading from left to right if other than the present sequence 
+(c) Scouting axis 
+(d) Distance apart of ships when spread 
+(e) Guide while spreading, if other than Senior Officer 
+(f) Course and speed of the unit guide while spreading 
 (g) Time by which the spread is to be completed",,
 ,TK148,1,All types available except projectile,,
 ,TK148,2,As little as possible,,
 ,TK148,3,Chemical,,
-,TK148,4,For approximately __ minutes,,
+,TK148,4,For approximately Free_Text_Tack_1 minutes,,
 ,TK148,5,Funnel,,
 ,TK148,6,Less smoke,,
 ,TK148,7,More smoke,,
@@ -1906,22 +1924,3 @@ B. Obstructer.",,
 ,TK154,2,Boat work,,
 ,TK154,3,Chemical warfare attack,,
 ,TK154,4,Dan laying,,
-,TK154,5,Diving,,
-,TK154,6,Entering port,,
-,TK154,7,Fuelling,,
-,TK154,8,Helicopter operations,,
-,TK154,9,Highline transfer,,
-,TK154,10,Influence minesweeping,,
-,TK154,11,Manoeuvring,,
-,TK154,12,Mechanical minesweeping,,
-,TK154,13,Mine hunting,,
-,TK154,14,Mine laying,,
-,TK154,15,Mine recovery,,
-,TK154,16,Precision gunfire exercise,,
-,TK154,17,Pressure mine countermeasure,,
-,TK154,18,Recovery of torpedoe,,
-,TK154,19,Replenishment,,
-,TK154,20,Sonar operation,,
-,TK154,21,Towing,,
-,TK154,22,Transfer by small boat,,
-,TK154,23,SAR,,

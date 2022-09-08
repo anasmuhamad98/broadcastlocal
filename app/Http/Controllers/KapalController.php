@@ -38,22 +38,32 @@ class KapalController extends Controller
         $callsign2s = $request->callsign2;
         foreach ($callsign1s as $index => $callsign1) {
             if ($callsign1 && $callsign2s[$index]) {
-                $callsigneksesais = new CallsignEksesais();
-                $callsigneksesais->tarikh = $request->tarikhhari;
-                $callsigneksesais->callsign1 = $callsign1;
-                $callsigneksesais->callsign2 = $callsign2s[$index];
-                $callsigneksesais->save();
+                // $callsigneksesais = new CallsignEksesais();
+                // $callsigneksesais->tarikh = $request->tarikhhari;
+                // $callsigneksesais->callsign1 = $callsign1;
+                // $callsigneksesais->callsign2 = $callsign2s[$index];
+                // $callsigneksesais->save();
+
+                CallsignEksesais::updateOrCreate(
+                    ['tarikh' => $request->tarikhhari, 'callsign1' => $callsign1],
+                    ['callsign2' => $callsign2s[$index]]
+                );
             }
         };
 
         $callsignkapals = $request->callsignkapal;
         foreach ($callsignkapals as $index => $callsignkapal) {
             if ($callsignkapal) {
-                $data = new Callsign();
-                $data->user_id =  $request->idKapal[$index];
-                $data->tarikh = $request->tarikhhari;
-                $data->callsign = $callsignkapal;
-                $data->save();
+                // $data = new Callsign();
+                // $data->user_id =  $request->idKapal[$index];
+                // $data->tarikh = $request->tarikhhari;
+                // $data->callsign = $callsignkapal;
+                // $data->save();
+
+                Callsign::updateOrCreate(
+                    ['user_id' => $request->idKapal[$index], 'tarikh' => $request->tarikhhari],
+                    ['callsign' =>$callsignkapal]
+                );
             }
         }
 

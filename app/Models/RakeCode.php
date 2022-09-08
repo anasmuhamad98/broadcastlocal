@@ -5,13 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Callsign extends Model
+class RakeCode extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'tarikh',
-        'callsign',
+        'Rake_Code',
+        'Meaning'
     ];
 }

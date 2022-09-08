@@ -30,10 +30,7 @@ Broadcast::channel('chat.{roomId}', function ($user, $roomId) {
 });
 
 Broadcast::channel('eksesais', function ($user) {
-    if(Auth::check()){
-        return ['id' => $user->id, 'name' => $user->name];
-    }
-    // return true;
+    return true;
 });
 
 Broadcast::channel('eksesais.{eksesaisId}', function ($user, $eksesaisId) {

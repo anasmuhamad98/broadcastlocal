@@ -37,7 +37,7 @@ import { DateTime } from "luxon";
                     />
                     <input-message
                         :room="currentRoom"
-                        :currenteksesais="eksesaisdetail.id"
+                        :currenteksesais="eksesaisdetail"
                         :clickMessage3="clickMessage"
                         :senaraikapals="senaraikapals"
                         :callsigneksesais="callsigneksesais"
@@ -55,10 +55,6 @@ import { DateTime } from "luxon";
         <audio ref="myAudio" hidden>
             <source src="/musics/tingting.mp3" type="audio/mpeg" /></audio
         ><br />
-
-        <button @click="enableLoop()" type="button">Enable loop</button>
-        <button @click="disableLoop()" type="button">Disable loop</button>
-        <button @click="checkLoop()" type="button">Check loop status</button>
     </AppLayout>
 </template>
 
@@ -93,11 +89,11 @@ export default {
     },
     mounted() {
         console.log(DateTime.now().toISOTime(), "check for mounted");
-        window.Echo.private("eksesais." + this.eksesaisdetail.id)
+        window.Echo.private("eksesais." + this.eksesaisdetail)
             .listen("NewChatMessage", (e) => {
                 this.pushtoMessage(e.chatMessage);
                 // this.getMessages();
-                this.getRooms();
+                // this.getRooms();
             })
             .listen("NewGroupChat", (e) => {
                 this.getRooms();
@@ -110,13 +106,13 @@ export default {
         //     });
     },
     unmounted() {
-        window.Echo.leave("eksesais." + this.eksesaisdetail.id);
+        window.Echo.leave("eksesais." + this.eksesaisdetail);
         window.Echo.leave("NewGroupChat");
     },
     methods: {
         getKapal() {
             axios
-                .get("/senaraikapal/" + this.eksesaisdetail.id)
+                .get("http://taccomm.mafc2.mil.my/api/senaraikapal/" + this.eksesaisdetail)
                 .then((response) => {
                     this.senaraikapals = response.data;
                     console.log(
@@ -131,7 +127,7 @@ export default {
         },
 
         getcallsign() {
-            axios.get("/eksesais/callsign/all").then((response) => {
+            axios.get("http://taccomm.mafc2.mil.my/api/eksesais/callsign/all").then((response) => {
                 this.callsigneksesais = response.data;
 
                 console.log(
@@ -144,7 +140,7 @@ export default {
 
         getAllRoomsWithUsers() {
             axios
-                .get("/eksesais/" + this.eksesaisdetail.id + "/rooms/users")
+                .get("http://taccomm.mafc2.mil.my/api/eksesais/" + this.eksesaisdetail + "/rooms/users")
                 .then((response) => {
                     this.allroomswithusers = response.data;
                     console.log(
@@ -226,7 +222,7 @@ export default {
 
         getMessages() {
             axios
-                .get("/chat/eksesais/" + this.eksesaisdetail.id + "/messages", {
+                .get("http://taccomm.mafc2.mil.my/api/chat/eksesais/" + this.eksesaisdetail + "/messages", {
                     params: {
                         // chatrooms: this.chatRooms,
                         chatroomId: this.currentRoom.id,
@@ -299,8 +295,8 @@ export default {
         updateIXMessage(message) {
             axios
                 .post(
-                    "/chat/eksesais/" +
-                        this.eksesaisdetail.id +
+                    "http://taccomm.mafc2.mil.my/api/chat/eksesais/" +
+                        this.eksesaisdetail +
                         "/" +
                         this.currentRoom.id +
                         "/" +
@@ -335,8 +331,8 @@ export default {
         updateSeenMessage() {
             axios
                 .post(
-                    "/eksesais/" +
-                        this.eksesaisdetail.id +
+                    "http://taccomm.mafc2.mil.my/api/eksesais/" +
+                        this.eksesaisdetail +
                         "/group/" +
                         this.currentRoom.id +
                         "/updateseenmessage",
@@ -354,7 +350,7 @@ export default {
         },
         getRooms() {
             axios
-                .get("/chat/rooms/" + this.eksesaisdetail.id)
+                .get("http://taccomm.mafc2.mil.my/api/chat/rooms/" + this.eksesaisdetail)
                 .then((response) => {
                     this.chatRooms = response.data;
                 })

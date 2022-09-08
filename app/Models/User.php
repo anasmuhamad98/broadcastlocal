@@ -37,7 +37,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password',
         'two_factor_confirmed_at',
         'email_verified_at',
         'current_team_id',
@@ -87,4 +86,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Callsign::class);
     }
+
+    // public function tokens(){
+
+    // }
 }

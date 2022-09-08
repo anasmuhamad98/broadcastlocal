@@ -7,6 +7,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,19 +20,32 @@ use App\Models\User;
 |
 */
 
-Route::get('/', function () {
 
-    return redirect('/eksesais');
-});
+
+Route::get('/', [EksesaisController::class, 'authuser']);
+// function () {
+
+//     $user = User::find(1);
+//     Auth::login($user);
+//     return redirect('/eksesais');
+// });
 
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    Route::get('/eksesais', [EksesaisController::class, 'index'])->name('eksesais');
+
+    Route::get('/eksesaisdata',  [EksesaisController::class, 'geteksesais']);
+
+    Route::get('/eksesais/{id}', [ChatController::class, 'index'])->name('eksesaischat');
+
 
     Route::get('/callsign', function () {
         return Inertia::render('Callsign');
@@ -41,11 +55,7 @@ Route::middleware([
         return Inertia::render('Chat/container');
     })->name('chat');
 
-    Route::get('/eksesais', function () {
-        return Inertia::render('Eksesais');
-    })->name('eksesais');
 
-    Route::get('/eksesais/{id}', [ChatController::class, 'index'])->name('eksesaischat');
     Route::get('chat/eksesais/{eksesaisId}/messages', [ChatController::class, 'messages'])->name('eksesaismessage');
     Route::get('/chat/rooms/{eksesaisId}', [ChatController::class, 'rooms']);
 
@@ -68,7 +78,7 @@ Route::middleware([
 });
 
 
-Route::get('/testasdasdasdafdsf', [ChatController::class, 'testets']);
+Route::post('/testasdasdasdafdsf', [ChatController::class, 'testets']);
 
 // Route::get('/test', function () {
 //     return view('welcome');
@@ -80,4 +90,3 @@ Route::middleware('auth:sanctum')->get('/chat/room/{roomId}/messages', [ChatCont
 // Route::middleware('auth:sanctum')->post('/chat/room/{roomId}/message', [ChatController::class, 'newMessage']);
 Route::get('grouper/ajax/meaning', [ChatController::class, 'chatmeaning']);
 
-Route::resource('/eksesaisdata', EksesaisController::class);

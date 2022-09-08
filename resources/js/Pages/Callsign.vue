@@ -142,7 +142,7 @@ import { DateTime } from "luxon";
                                 type="button"
                                 @click="savecallsign()"
                             >
-                                Tambah Eksesais
+                                Tambah Callsign
                             </button>
                         </div>
                     </div>
@@ -545,7 +545,7 @@ export default {
         },
         getcallsigneksesais() {
             axios
-                .get("/callsign/eksesais")
+                .get("http://taccomm.mafc2.mil.my/api/callsign/eksesais")
                 .then((response) => {
                     this.callsigneksesais = response.data.callsigneksesais;
                     this.callsignunit = response.data.callsigngroup;
@@ -560,7 +560,7 @@ export default {
         },
         getKapal() {
             axios
-                .get("/kapal/callsign")
+                .get("http://taccomm.mafc2.mil.my/api/kapal/callsign")
                 .then((response) => {
                     this.namakapals = response.data;
                     this.namakapals.forEach((namakapal) => {
@@ -576,7 +576,7 @@ export default {
         savecallsign() {
             console.log(this.getdate);
             axios
-                .post("/saveallcallsign", {
+                .post("http://taccomm.mafc2.mil.my/api/saveallcallsign", {
                     idKapal: this.idKapal,
                     callsignkapal: this.callsignkapal,
                     tarikhhari: this.getdate,

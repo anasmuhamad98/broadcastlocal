@@ -12,7 +12,7 @@ import DropdownLink from "../../../vendor/laravel/jetstream/stubs/inertia/resour
 <template>
     <AppLayout title="Dashboard">
         <template #header>
-            <h2
+        <h2
                 class="font-semibold text-xl text-gray-800 leading-tight relative"
             >
                 Eksesais
@@ -24,7 +24,6 @@ import DropdownLink from "../../../vendor/laravel/jetstream/stubs/inertia/resour
                     Tambah Eksesais
                 </button>
             </h2>
-            <button @click="playSound('/musics/tingting.mp3')">Play</button>
         </template>
         <div class="py-4">
             <div class="mx-auto sm:px-6 lg:px-8">
@@ -234,6 +233,7 @@ import DropdownLink from "../../../vendor/laravel/jetstream/stubs/inertia/resour
 </template>
 <script>
 export default {
+    props: ['token'],
     components: {
         Label,
         Input,
@@ -272,7 +272,7 @@ export default {
 
         getKapal() {
             axios
-                .get("/kapal/ajax")
+                .get("http://taccomm.mafc2.mil.my/api/kapal/ajax")
                 .then((response) => {
                     this.namakapals = response.data;
                 })
@@ -286,7 +286,7 @@ export default {
                 return;
             }
             axios
-                .post("/eksesaisdata", {
+                .post("http://taccomm.mafc2.mil.my/api/eksesaisdata", {
                     namaEksesais: this.namaEksesais,
                     senaraiKapalTerlibat: this.senaraiKapalTerlibat,
                     firstgroupname: this.firstgroupname,
@@ -314,7 +314,7 @@ export default {
 
         getEksesais() {
             axios
-                .get("/eksesaisdata")
+                .get("http://taccomm.mafc2.mil.my/api/eksesaisdata")
                 .then((response) => {
                     this.senaraieksesaises = response.data;
                 })

@@ -166,7 +166,6 @@
                         >
                             <label class="text-gray-700">
                                 <input
-                                    checked
                                     type="checkbox"
                                     v-model="senaraiKapalTerlibat"
                                     :value="senaraikapal.id"
@@ -247,7 +246,7 @@ export default {
             }
             axios
                 .post(
-                    "/chat/eksesais/" + this.eksesaisdetail.id + "/createroom",
+                    "http://taccomm.mafc2.mil.my/api/chat/eksesais/" + this.eksesaisdetail.id + "/createroom",
                     {
                         roomName: this.newRoom,
                         senaraiKapalTerlibat: this.senaraiKapalTerlibat,

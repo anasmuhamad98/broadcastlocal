@@ -212,7 +212,7 @@ export default {
             if (this.idkapalindividual == "") {
                 axios
                     .post(
-                        "/chat/eksesais/" +
+                        "http://taccomm.mafc2.mil.my/api/chat/eksesais/" +
                             this.currenteksesais +
                             "/" +
                             this.room.id +
@@ -241,7 +241,7 @@ export default {
             else {
                 axios
                     .post(
-                        "/chat/eksesais/" +
+                        "http://taccomm.mafc2.mil.my/chat/eksesais/" +
                             this.currenteksesais +
                             "/" +
                             this.room.id +
@@ -270,7 +270,7 @@ export default {
         customsendMessage(action) {
             axios
                 .post(
-                    "/chat/eksesais/" +
+                    "http://taccomm.mafc2.mil.my/api/chat/eksesais/" +
                         this.currenteksesais +
                         "/" +
                         this.room.id +

@@ -11,15 +11,39 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Inertia\Inertia;
 
 class EksesaisController extends Controller
 {
+
+    public function authuser()
+    {
+        if (!Auth::check()) {
+            $user = User::find(1);
+            Auth::login($user);
+
+        };
+        return redirect('/eksesais');
+    }
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
+    {
+        return Inertia::render('Eksesais');
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function geteksesais()
     {
         $user = User::find(Auth::id());
         return $user->eksesais;
@@ -49,7 +73,7 @@ class EksesaisController extends Controller
         $user = User::find(Auth::id());
         return $user->rooms()->with('users')->where('eksesais_id', $eksesaisId)->get();
         // return Eksesais::find($eksesaisId)->rooms()->with('users')->get();
-     }
+    }
 
     /**
      * Show the form for creating a new resource.

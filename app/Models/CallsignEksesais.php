@@ -10,6 +10,7 @@ class CallsignEksesais extends Model
     use HasFactory;
 
     protected $fillable = [
+        'tarikh',
         'eksesais_id',
         'callsign1',
         'callsign2',
