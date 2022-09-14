@@ -1,6 +1,6 @@
 <template>
     <div class="font-blod text-xl">
-        {{ eksesaisdetail.Nama }}: {{ selected.name }}
+        {{ eksesaisdetail.Nama}}
     </div>
 
     <div class="flex flex-wrap">

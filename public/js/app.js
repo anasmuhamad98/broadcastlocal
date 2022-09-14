@@ -21638,7 +21638,7 @@ var __default__ = {
       messageofeachroomatas: [],
       messageofeachroombawah: [],
       allroomswithusers: [],
-      audio: new Audio("/musics/tingting.mp3")
+      currenteksesaisdetail: []
     };
   },
   mounted: function mounted() {
@@ -21646,16 +21646,10 @@ var __default__ = {
 
     console.log(luxon__WEBPACK_IMPORTED_MODULE_6__.DateTime.now().toISOTime(), "check for mounted");
     window.Echo["private"]("eksesais." + this.eksesaisdetail).listen("NewChatMessage", function (e) {
-      _this.pushtoMessage(e.chatMessage); // this.getMessages();
-      // this.getRooms();
-
+      _this.pushtoMessage(e.chatMessage);
     }).listen("NewGroupChat", function (e) {
       _this.getRooms();
-    }); // window.Echo.private("eksesais." + this.eksesaisdetail.id +  "." )
-    //     .listen("NewChatMessage", (e) => {
-    //         this.getMessages();
-    //         this.getRooms();
-    //     });
+    });
   },
   unmounted: function unmounted() {
     window.Echo.leave("eksesais." + this.eksesaisdetail);
@@ -21697,20 +21691,7 @@ var __default__ = {
         return value.isShow == 1;
       });
       console.log(luxon__WEBPACK_IMPORTED_MODULE_6__.DateTime.now().toISOTime(), "5. getroomfirst", this.chatRooms);
-      this.setRoomFirst(this.chatRooms[0]); // axios
-      //     .get("/chat/rooms/" + this.eksesaisdetail.id)
-      //     .then((response) => {
-      //         this.chatRooms = response.data;
-      //         console.log(
-      //             DateTime.now().toISOTime(),
-      //             "5. getroomfirst",
-      //             this.chatRooms
-      //         );
-      //         this.setRoomFirst(response.data[0]);
-      //     })
-      //     .catch((error) => {
-      //         console.log(error);
-      //     });
+      this.setRoomFirst(this.chatRooms[0]);
     },
     setRoomFirst: function setRoomFirst(room) {
       this.currentRoom = room;
@@ -21723,20 +21704,7 @@ var __default__ = {
       this.usersOnRoom = this.allroomswithusers.find(function (element) {
         return element.id === roomId;
       }).users;
-      console.log(luxon__WEBPACK_IMPORTED_MODULE_6__.DateTime.now().toISOTime(), "7. get users on room", this.usersOnRoom); // axios
-      //     .get("/room/users/" + this.currentRoom.id)
-      //     .then((response) => {
-      //         this.usersOnRoom = response.data.usersOnRoom;
-      //         this.pluckusersOnRoom = response.data.pluckusersOnRoom;
-      //         console.log(
-      //             DateTime.now().toISOTime(),
-      //             "6. user on room",
-      //             this.pluckusersOnRoom
-      //         );
-      //     })
-      //     .catch((error) => {
-      //         console.log(error);
-      //     });
+      console.log(luxon__WEBPACK_IMPORTED_MODULE_6__.DateTime.now().toISOTime(), "7. get users on room", this.usersOnRoom);
     },
     getMessages: function getMessages() {
       var _this5 = this;
@@ -21774,8 +21742,22 @@ var __default__ = {
         this.messagesIXs.sort(function (a, b) {
           return a.created_at - b.created_at;
         });
-        console.log("IX", this.messagesIXs);
+        console.log("IX masuk", this.messagesIXs);
       } else {
+        if (newmessage.message.includes("STANDBY EXEC")) {
+          var IXmessageneedtoberemove = newmessage.message.replace(" STANDBY EXEC", "");
+          var updatemessage = this.messagesIXs.find(function (element) {
+            return element.message === IXmessageneedtoberemove;
+          });
+          var IXmessageneedtoberemoveindex = this.messagesIXs.findIndex(function (element) {
+            return element.message === IXmessageneedtoberemove;
+          });
+          this.messagesIXs.splice(IXmessageneedtoberemoveindex, 1);
+          updatemessage.action = "-IX";
+          this.pushtoMessage(updatemessage);
+          console.log(this.messagesIXs);
+        }
+
         this.messages.unshift(newmessage);
         this.messages.sort(function (a, b) {
           return new Date(b.created_at) - new Date(a.created_at);
@@ -21829,7 +21811,7 @@ var __default__ = {
 
       axios.post("http://taccomm.mafc2.mil.my/api/eksesais/" + this.eksesaisdetail + "/group/" + this.currentRoom.id + "/updateseenmessage", {}).then(function (response) {
         if (response.status == 200) {
-          _this7.currentRoom.pivot.newMessage = 0; // console.log("currentroom", this.currentRoom);
+          _this7.currentRoom.pivot.newMessage = 0;
         }
       })["catch"](function (error) {
         console.log(error);
@@ -21849,36 +21831,23 @@ var __default__ = {
       this.getUsersonRoom(room.id);
       this.getMessagesOfEachRoom(room.id);
       this.updateSeenMessage();
-    } // playSound() {
-    //     this.audio.play();
-    // },
-    // enableLoop() {
-    //     this.audio.loop = true;
-    //     this.audio.load();
-    //     this.$refs.myAudio.play();
-    //     this.$refs.myAudio.loop = true;
-    //     this.$refs.myAudio.load();
-    // },
-    // disableLoop() {
-    //     this.audio.loop = false;
-    //     this.audio.load();
-    //     this.$refs.myAudio.loop = false;
-    //     this.$refs.myAudio.load();
-    // },
-    // checkLoop() {
-    //     alert(this.audio.loop);
-    // },
+    },
+    geteksesaisdetail: function geteksesaisdetail() {
+      var _this9 = this;
 
+      axios.get("http://taccomm.mafc2.mil.my/api/eksesaisdetail/" + this.eksesaisdetail).then(function (response) {
+        _this9.currenteksesaisdetail = response.data;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
   },
   created: function created() {
     console.log(luxon__WEBPACK_IMPORTED_MODULE_6__.DateTime.now().toISOTime(), "1. start");
-    this.getKapal(); // console.log( DateTime.now().toISOTime(), "2. getkapal", this.senaraikapals);
-
-    this.getcallsign(); // console.log( DateTime.now().toISOTime(), "3. getcallsign", this.callsigneksesais);
-    // console.log( DateTime.now().toISOTime(), "4. getroomfirst", this.chatRooms);
-
+    this.geteksesaisdetail();
+    this.getKapal();
+    this.getcallsign();
     this.getAllRoomsWithUsers();
-    console.log('hostnamee: ', window.location.hostname);
   }
 };
 
@@ -21939,7 +21908,8 @@ var __default__ = {
       query: "",
       search_data: [],
       idkapalindividual: "",
-      sendercallsign: ""
+      sendercallsign: "",
+      disablebutton: false
     };
   },
   watch: {
@@ -21962,32 +21932,6 @@ var __default__ = {
     }
   },
   methods: {
-    // getData: function () {
-    //     this.search_data = [];
-    //     axios
-    //         .get("/testasdasdasdafdsf", {
-    //             params: {
-    //                 message: this.query,
-    //             },
-    //         })
-    //         .then((response) => {
-    //             this.search_data = response.data.teadtasd;
-    //             console.log(this.search_data);
-    //         });
-    // },
-    // getName: function (name) {
-    //     this.query = name;
-    //     this.search_data = [];
-    //     console.log(this.query);
-    // },
-    // choosemessagetype(e) {
-    //     if (e.target.value === "Quick Guide") {
-    //         this.quickguide = true;
-    //     }
-    //     if (e.target.value === "Free Text") {
-    //         this.quickguide = false;
-    //     }
-    // },
     refreshmessage: function refreshmessage() {
       this.message = "";
       this.sendercallsign = "";
@@ -21996,60 +21940,50 @@ var __default__ = {
     sendMessage: function sendMessage(action) {
       var _this2 = this;
 
+      if (action == "AR" || action == "K") {
+        this.message = action;
+        action = "";
+      }
+
       if (this.Message == " ") {
         return;
       }
 
+      var receiver = "";
+      var individualboolean = false;
+
       if (this.idkapalindividual == "") {
-        axios.post("http://taccomm.mafc2.mil.my/api/chat/eksesais/" + this.currenteksesais + "/" + this.room.id + "/message", {
-          message: this.message,
-          action: action,
-          pluckusersOnRoom: this.room.shortform,
-          individual: false,
-          sendercallsign: this.sendercallsign
-        }).then(function (response) {
-          if (response.status == 200 || response.status == 201) {
-            _this2.message = "";
-            _this2.translatemessage = ""; // this.sendercallsign = ""
+        receiver = this.room.shortform;
+      } else {
+        receiver = this.idkapalindividual;
+        console.log("asdasdasd", this.callsigneksesais, this.idkapalindividual);
 
-            _this2.$emit("messagesent", response.data);
-          }
-        })["catch"](function (error) {
-          console.log(error);
-        });
-      } // Individual chat
-      else {
-        axios.post("http://taccomm.mafc2.mil.my/chat/eksesais/" + this.currenteksesais + "/" + this.room.id + "/message", {
-          message: this.message,
-          action: action,
-          pluckusersOnRoom: this.idkapalindividual,
-          individual: true,
-          sendercallsign: this.sendercallsign
-        }).then(function (response) {
-          if (response.status == 200 || response.status == 201) {
-            _this2.message = "";
-            _this2.translatemessage = " "; // this.sendercallsign = ""
+        if (this.callsigneksesais.find(function (element) {
+          return element.callsign2 === _this2.idkapalindividual;
+        })) {
+          individualboolean = false;
+        } else {
+          individualboolean = true;
+        } // individualboolean = true;
 
-            _this2.$emit("messagesent", response.data);
-          }
-        })["catch"](function (error) {
-          console.log(error);
-        });
       }
-    },
-    customsendMessage: function customsendMessage(action) {
-      var _this3 = this;
 
+      this.disablebutton = true;
       axios.post("http://taccomm.mafc2.mil.my/api/chat/eksesais/" + this.currenteksesais + "/" + this.room.id + "/message", {
-        message: action,
-        action: " ",
-        pluckusersOnRoom: this.room.shortform
+        message: this.message,
+        action: action,
+        pluckusersOnRoom: receiver,
+        individual: individualboolean,
+        sendercallsign: this.sendercallsign
       }).then(function (response) {
         if (response.status == 200 || response.status == 201) {
-          _this3.message = "";
-          _this3.translatemessage = " ";
+          _this2.message = "";
+          _this2.translatemessage = ""; // this.sendercallsign = ""
 
-          _this3.$emit("messagesent", response.data);
+          _this2.$emit("messagesent", response.data);
+
+          console.log('button false');
+          _this2.disablebutton = false;
         }
       })["catch"](function (error) {
         console.log(error);
@@ -27095,7 +27029,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   var _component_Input = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Input");
 
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.eksesaisdetail.Nama) + ": " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.selected.name), 1
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($props.eksesaisdetail.Nama), 1
   /* TEXT */
   ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [_hoisted_3, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_4, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.usersOnRoom, function (senaraikapal, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", {
@@ -27269,7 +27203,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         key: 0,
         rooms: _ctx.chatRooms,
         currentRoom: _ctx.currentRoom,
-        eksesaisdetail: $props.eksesaisdetail,
+        eksesaisdetail: _ctx.currenteksesaisdetail,
         usersOnRoom: _ctx.usersOnRoom,
         senaraikapals: _ctx.senaraikapals,
         onRoomchanged: _cache[0] || (_cache[0] = function ($event) {
@@ -27348,7 +27282,7 @@ var _hoisted_2 = {
 
 var _hoisted_3 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
   value: ""
-}, "From", -1
+}, "Own Ship", -1
 /* HOISTED */
 );
 
@@ -27356,32 +27290,33 @@ var _hoisted_4 = ["value"];
 
 var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
   value: ""
-}, "To", -1
+}, "To All", -1
 /* HOISTED */
 );
 
 var _hoisted_6 = ["value"];
-var _hoisted_7 = {
+var _hoisted_7 = ["value"];
+var _hoisted_8 = {
   key: 1,
   style: {
     "border-top": "1px solid #e6e6e6"
   }
 };
-var _hoisted_8 = {
+var _hoisted_9 = {
   key: 0,
   "class": "panel-footer"
 };
-var _hoisted_9 = ["onClick"];
-var _hoisted_10 = {
+var _hoisted_10 = ["onClick"];
+var _hoisted_11 = {
   "class": "m-1"
 };
-var _hoisted_11 = {
+var _hoisted_12 = {
   style: {
     "border-top": "1px solid #e6e6e6"
   },
   "class": "grid"
 };
-var _hoisted_12 = {
+var _hoisted_13 = {
   rows: "3",
   style: {
     "min-height": "6rem",
@@ -27389,9 +27324,14 @@ var _hoisted_12 = {
   },
   "class": "shadow appearance-none border border-gray-500 rounded py-2 px-3 leading-tight focus:outline-none focus:shadow-outline"
 };
-var _hoisted_13 = {
+var _hoisted_14 = {
   "class": "relative p-3 pl-1 flex justify-end"
 };
+var _hoisted_15 = ["disabled"];
+var _hoisted_16 = ["disabled"];
+var _hoisted_17 = ["disabled"];
+var _hoisted_18 = ["disabled"];
+var _hoisted_19 = ["disabled"];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [_ctx.quickguide === false ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
@@ -27402,7 +27342,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
       key: index,
       value: callsign.callsign2
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(callsign.callsign1 + "-" + callsign.callsign2), 9
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(callsign.callsign2), 9
     /* TEXT, PROPS */
     , _hoisted_4);
   }), 128
@@ -27423,13 +27363,22 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return _ctx.idkapalindividual = $event;
     }),
     "class": "ml-1 shadow appearance-none border rounded w-auto py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
-  }, [_hoisted_5, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.senaraikapals, function (senaraikapal, index) {
+  }, [_hoisted_5, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.callsigneksesais, function (callsign, index) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
+      key: index,
+      value: callsign.callsign2
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(callsign.callsign2), 9
+    /* TEXT, PROPS */
+    , _hoisted_6);
+  }), 128
+  /* KEYED_FRAGMENT */
+  )), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.senaraikapals, function (senaraikapal, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
       key: index,
       value: senaraikapal.id
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(senaraikapal.shortform), 9
     /* TEXT, PROPS */
-    , _hoisted_6);
+    , _hoisted_7);
   }), 128
   /* KEYED_FRAGMENT */
   ))], 512
@@ -27439,7 +27388,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return $options.refreshmessage();
     }),
     "class": "ml-1 shadow appearance-none border rounded w-auto py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
-  }, " CLR "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <secondary-button\n                class=\"ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded\"\n                @click=\"refreshmessage()\"\n                >CLR</secondary-button\n            > "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <secondary-button class=\"ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded\" @click=\"refreshmessage()\"\n                >ADDRESSEE</secondary-button\n            > ")])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _ctx.quickguide ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+  }, " CLR "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <secondary-button\n                class=\"ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded\"\n                @click=\"refreshmessage()\"\n                >CLR</secondary-button\n            > "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <secondary-button class=\"ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded\" @click=\"refreshmessage()\"\n                >ADDRESSEE</secondary-button\n            > ")])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _ctx.quickguide ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     type: "text",
     placeholder: "Enter some of the keywords",
     "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
@@ -27452,7 +27401,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": "shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
   }, null, 544
   /* HYDRATE_EVENTS, NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, _ctx.query]]), _ctx.search_data.length ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_8, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.search_data, function (data1, index) {
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, _ctx.query]]), _ctx.search_data.length ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_9, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.search_data, function (data1, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("ul", {
       key: index,
       "class": "bg-gray-100 rounded-lg w-full overflow-visible"
@@ -27466,37 +27415,52 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       }
     }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(data1.Meaning), 9
     /* TEXT, PROPS */
-    , _hoisted_9)]);
+    , _hoisted_10)]);
   }), 128
   /* KEYED_FRAGMENT */
-  ))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.translatemessage), 1
+  ))])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.translatemessage), 1
   /* TEXT */
-  )])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div class=\"ml-1 absolute left-0\">\n            <select\n                @change=\"choosemessagetype\"\n                class=\"block appearance-none w-auto bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline\"\n            >\n                <option>Free Text</option>\n                <option>Quick Guide</option>\n            </select>\n        </div> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  )])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div class=\"ml-1 absolute left-0\">\n            <select\n                @change=\"choosemessagetype\"\n                class=\"block appearance-none w-auto bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline\"\n            >\n                <option>Free Text</option>\n                <option>Quick Guide</option>\n            </select>\n        </div> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     onClick: _cache[6] || (_cache[6] = function ($event) {
-      return $options.customsendMessage('K');
+      return $options.sendMessage('K');
     }),
+    disabled: _ctx.disablebutton,
     "class": "w-1/12 bg-gray-500 hover:bg-gray-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-gray-500 hover:border-transparent rounded"
-  }, " OVER "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  }, " OVER ", 8
+  /* PROPS */
+  , _hoisted_15), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     onClick: _cache[7] || (_cache[7] = function ($event) {
-      return $options.customsendMessage('AR');
+      return $options.sendMessage('AR');
     }),
+    disabled: _ctx.disablebutton,
     "class": "w-2/12 mx-2 bg-gray-500 hover:bg-gray-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-gray-500 hover:border-transparent rounded"
-  }, " Roger Out "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  }, " Roger Out ", 8
+  /* PROPS */
+  , _hoisted_16), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     onClick: _cache[8] || (_cache[8] = function ($event) {
       return $options.sendMessage('TIME');
     }),
+    disabled: _ctx.disablebutton,
     "class": "w-1/12 mx-2 bg-blue-500 hover:bg-blue-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-  }, " TIME "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  }, " TIME ", 8
+  /* PROPS */
+  , _hoisted_17), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     onClick: _cache[9] || (_cache[9] = function ($event) {
       return $options.sendMessage('IX');
     }),
+    disabled: _ctx.disablebutton,
     "class": "w-1/12 mx-2 bg-yellow-500 hover:bg-yellow-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-yellow-500 hover:border-transparent rounded"
-  }, " IX "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  }, " IX ", 8
+  /* PROPS */
+  , _hoisted_18), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     onClick: _cache[10] || (_cache[10] = function ($event) {
       return $options.sendMessage('RIX');
     }),
+    disabled: _ctx.disablebutton,
     "class": "w-1/12 bg-red-500 hover:bg-red-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-red-500 hover:border-transparent rounded"
-  }, " RIX ")])], 64
+  }, " RIX ", 8
+  /* PROPS */
+  , _hoisted_19)])], 64
   /* STABLE_FRAGMENT */
   );
 }
@@ -27905,7 +27869,7 @@ var _hoisted_1 = {
   "class": "font-semibold text-xl text-gray-800 leading-tight relative"
 };
 
-var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Eksesais ");
+var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Eksesais test ");
 
 var _hoisted_3 = {
   "class": "py-4"
@@ -27954,7 +27918,7 @@ var _hoisted_14 = {
   "class": "flex justify-center"
 };
 
-var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Lihat chat ");
+var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" TAC CHAT ");
 
 var _hoisted_16 = {
   key: 0,
@@ -29850,7 +29814,7 @@ window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 
 window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-window.axios.defaults.headers.common['Authorization'] = 'Bearer 1|1LPAgcKy0GhkdLyMhTSspojlr9kAANnXV9EWqqDb';
+window.axios.defaults.headers.common['Authorization'] = 'Bearer 38|HBbQkFursBhNH8mMoUMVdDVkFs73leUTnGRwgRDe';
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting

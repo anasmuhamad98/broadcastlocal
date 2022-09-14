@@ -9,7 +9,7 @@ window._ = require('lodash');
 window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-window.axios.defaults.headers.common['Authorization'] = 'Bearer 1|1LPAgcKy0GhkdLyMhTSspojlr9kAANnXV9EWqqDb' ;
+window.axios.defaults.headers.common['Authorization'] = 'Bearer 38|HBbQkFursBhNH8mMoUMVdDVkFs73leUTnGRwgRDe' ;
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

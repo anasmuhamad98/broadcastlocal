@@ -17,7 +17,7 @@ import { DateTime } from "luxon";
                     v-if="currentRoom.id"
                     :rooms="chatRooms"
                     :currentRoom="currentRoom"
-                    :eksesaisdetail="eksesaisdetail"
+                    :eksesaisdetail="currenteksesaisdetail"
                     :usersOnRoom="usersOnRoom"
                     :senaraikapals="senaraikapals"
                     v-on:roomchanged="setRoom($event)"
@@ -84,7 +84,7 @@ export default {
             messageofeachroomatas: [],
             messageofeachroombawah: [],
             allroomswithusers: [],
-            audio: new Audio("/musics/tingting.mp3"),
+            currenteksesaisdetail: [],
         };
     },
     mounted() {
@@ -92,18 +92,10 @@ export default {
         window.Echo.private("eksesais." + this.eksesaisdetail)
             .listen("NewChatMessage", (e) => {
                 this.pushtoMessage(e.chatMessage);
-                // this.getMessages();
-                // this.getRooms();
             })
             .listen("NewGroupChat", (e) => {
                 this.getRooms();
             });
-
-        // window.Echo.private("eksesais." + this.eksesaisdetail.id +  "." )
-        //     .listen("NewChatMessage", (e) => {
-        //         this.getMessages();
-        //         this.getRooms();
-        //     });
     },
     unmounted() {
         window.Echo.leave("eksesais." + this.eksesaisdetail);
@@ -112,7 +104,10 @@ export default {
     methods: {
         getKapal() {
             axios
-                .get("http://taccomm.mafc2.mil.my/api/senaraikapal/" + this.eksesaisdetail)
+                .get(
+                    "http://taccomm.mafc2.mil.my/api/senaraikapal/" +
+                        this.eksesaisdetail
+                )
                 .then((response) => {
                     this.senaraikapals = response.data;
                     console.log(
@@ -127,20 +122,26 @@ export default {
         },
 
         getcallsign() {
-            axios.get("http://taccomm.mafc2.mil.my/api/eksesais/callsign/all").then((response) => {
-                this.callsigneksesais = response.data;
+            axios
+                .get("http://taccomm.mafc2.mil.my/api/eksesais/callsign/all")
+                .then((response) => {
+                    this.callsigneksesais = response.data;
 
-                console.log(
-                    DateTime.now().toISOTime(),
-                    "3. getcallsign",
-                    this.callsigneksesais
-                );
-            });
+                    console.log(
+                        DateTime.now().toISOTime(),
+                        "3. getcallsign",
+                        this.callsigneksesais
+                    );
+                });
         },
 
         getAllRoomsWithUsers() {
             axios
-                .get("http://taccomm.mafc2.mil.my/api/eksesais/" + this.eksesaisdetail + "/rooms/users")
+                .get(
+                    "http://taccomm.mafc2.mil.my/api/eksesais/" +
+                        this.eksesaisdetail +
+                        "/rooms/users"
+                )
                 .then((response) => {
                     this.allroomswithusers = response.data;
                     console.log(
@@ -166,20 +167,6 @@ export default {
                 this.chatRooms
             );
             this.setRoomFirst(this.chatRooms[0]);
-            // axios
-            //     .get("/chat/rooms/" + this.eksesaisdetail.id)
-            //     .then((response) => {
-            //         this.chatRooms = response.data;
-            //         console.log(
-            //             DateTime.now().toISOTime(),
-            //             "5. getroomfirst",
-            //             this.chatRooms
-            //         );
-            //         this.setRoomFirst(response.data[0]);
-            //     })
-            //     .catch((error) => {
-            //         console.log(error);
-            //     });
         },
 
         setRoomFirst(room) {
@@ -204,30 +191,21 @@ export default {
                 "7. get users on room",
                 this.usersOnRoom
             );
-            // axios
-            //     .get("/room/users/" + this.currentRoom.id)
-            //     .then((response) => {
-            //         this.usersOnRoom = response.data.usersOnRoom;
-            //         this.pluckusersOnRoom = response.data.pluckusersOnRoom;
-            //         console.log(
-            //             DateTime.now().toISOTime(),
-            //             "6. user on room",
-            //             this.pluckusersOnRoom
-            //         );
-            //     })
-            //     .catch((error) => {
-            //         console.log(error);
-            //     });
         },
 
         getMessages() {
             axios
-                .get("http://taccomm.mafc2.mil.my/api/chat/eksesais/" + this.eksesaisdetail + "/messages", {
-                    params: {
-                        // chatrooms: this.chatRooms,
-                        chatroomId: this.currentRoom.id,
-                    },
-                })
+                .get(
+                    "http://taccomm.mafc2.mil.my/api/chat/eksesais/" +
+                        this.eksesaisdetail +
+                        "/messages",
+                    {
+                        params: {
+                            // chatrooms: this.chatRooms,
+                            chatroomId: this.currentRoom.id,
+                        },
+                    }
+                )
                 .then((response) => {
                     this.messages = response.data.mesejbawah;
                     this.messagesIXs = response.data.mesejatas;
@@ -263,8 +241,26 @@ export default {
                 this.messagesIXs.sort(function (a, b) {
                     return a.created_at - b.created_at;
                 });
-                console.log("IX", this.messagesIXs);
+                console.log("IX masuk", this.messagesIXs);
             } else {
+                if (newmessage.message.includes("STANDBY EXEC")) {
+                    let IXmessageneedtoberemove = newmessage.message.replace(
+                        " STANDBY EXEC",
+                        ""
+                    );
+                    let updatemessage = this.messagesIXs.find(
+                        (element) => element.message === IXmessageneedtoberemove
+                    );
+                    let IXmessageneedtoberemoveindex =
+                        this.messagesIXs.findIndex(
+                            (element) =>
+                                element.message === IXmessageneedtoberemove
+                        );
+                    this.messagesIXs.splice(IXmessageneedtoberemoveindex, 1);
+                    updatemessage.action = "-IX";
+                    this.pushtoMessage(updatemessage);
+                    console.log(this.messagesIXs);
+                }
                 this.messages.unshift(newmessage);
                 this.messages
                     .sort(function (a, b) {
@@ -341,7 +337,6 @@ export default {
                 .then((response) => {
                     if (response.status == 200) {
                         this.currentRoom.pivot.newMessage = 0;
-                        // console.log("currentroom", this.currentRoom);
                     }
                 })
                 .catch((error) => {
@@ -350,7 +345,10 @@ export default {
         },
         getRooms() {
             axios
-                .get("http://taccomm.mafc2.mil.my/api/chat/rooms/" + this.eksesaisdetail)
+                .get(
+                    "http://taccomm.mafc2.mil.my/api/chat/rooms/" +
+                        this.eksesaisdetail
+                )
                 .then((response) => {
                     this.chatRooms = response.data;
                 })
@@ -366,39 +364,26 @@ export default {
             this.updateSeenMessage();
         },
 
-        // playSound() {
-        //     this.audio.play();
-        // },
-
-        // enableLoop() {
-        //     this.audio.loop = true;
-        //     this.audio.load();
-        //     this.$refs.myAudio.play();
-        //     this.$refs.myAudio.loop = true;
-        //     this.$refs.myAudio.load();
-        // },
-
-        // disableLoop() {
-        //     this.audio.loop = false;
-        //     this.audio.load();
-        //     this.$refs.myAudio.loop = false;
-        //     this.$refs.myAudio.load();
-        // },
-
-        // checkLoop() {
-        //     alert(this.audio.loop);
-        // },
+        geteksesaisdetail() {
+            axios
+                .get(
+                    "http://taccomm.mafc2.mil.my/api/eksesaisdetail/" +
+                        this.eksesaisdetail
+                )
+                .then((response) => {
+                    this.currenteksesaisdetail = response.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
     },
     created() {
         console.log(DateTime.now().toISOTime(), "1. start");
+        this.geteksesaisdetail();
         this.getKapal();
-        // console.log( DateTime.now().toISOTime(), "2. getkapal", this.senaraikapals);
         this.getcallsign();
-        // console.log( DateTime.now().toISOTime(), "3. getcallsign", this.callsigneksesais);
-        // console.log( DateTime.now().toISOTime(), "4. getroomfirst", this.chatRooms);
-
         this.getAllRoomsWithUsers();
-        console.log('hostnamee: ',window.location.hostname);
     },
 };
 </script>

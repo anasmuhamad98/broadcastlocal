@@ -15,7 +15,7 @@ import DropdownLink from "../../../vendor/laravel/jetstream/stubs/inertia/resour
         <h2
                 class="font-semibold text-xl text-gray-800 leading-tight relative"
             >
-                Eksesais
+                Eksesais test
                 <button
                     class="absolute right-0 bg-gray-500 text-white active:bg-gray-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
@@ -73,7 +73,7 @@ import DropdownLink from "../../../vendor/laravel/jetstream/stubs/inertia/resour
                                                     })
                                                 "
                                             >
-                                                Lihat chat
+                                                TAC CHAT
                                             </DropdownLink>
                                             <!-- <router-view></router-view> -->
                                         </div>

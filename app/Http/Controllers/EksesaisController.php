@@ -20,9 +20,8 @@ class EksesaisController extends Controller
     public function authuser()
     {
         if (!Auth::check()) {
-            $user = User::find(1);
+            $user = User::find(38);
             Auth::login($user);
-
         };
         return redirect('/eksesais');
     }
@@ -75,13 +74,11 @@ class EksesaisController extends Controller
         // return Eksesais::find($eksesaisId)->rooms()->with('users')->get();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function eksesaisdetail($eksesaisId)
     {
+        $eksesaisdetail = Eksesais::find($eksesaisId);
+
+        return $eksesaisdetail;
     }
 
     /**

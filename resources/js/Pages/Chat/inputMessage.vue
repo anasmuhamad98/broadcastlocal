@@ -10,13 +10,13 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
                 v-model="sendercallsign"
                 class="mr-1 shadow appearance-none border rounded w-auto py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
             >
-                <option value="">From</option>
+                <option value="">Own Ship</option>
                 <option
                     v-for="(callsign, index) in callsigneksesais"
                     :key="index"
                     :value="callsign.callsign2"
                 >
-                    {{ callsign.callsign1 + "-" + callsign.callsign2 }}
+                    {{ callsign.callsign2 }}
                 </option>
             </select>
             <input
@@ -29,7 +29,14 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
                 v-model="idkapalindividual"
                 class="ml-1 shadow appearance-none border rounded w-auto py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
             >
-                <option value="">To</option>
+                <option value="">To All</option>
+                <option
+                    v-for="(callsign, index) in callsigneksesais"
+                    :key="index"
+                    :value="callsign.callsign2"
+                >
+                    {{ callsign.callsign2 }}
+                </option>
                 <option
                     v-for="(senaraikapal, index) in senaraikapals"
                     :key="index"
@@ -99,31 +106,31 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
             </select>
         </div> -->
         <button
-            @click="customsendMessage('K')"
+            @click="sendMessage('K')" :disabled="disablebutton"
             class="w-1/12 bg-gray-500 hover:bg-gray-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-gray-500 hover:border-transparent rounded"
         >
             OVER
         </button>
         <button
-            @click="customsendMessage('AR')"
+            @click="sendMessage('AR')" :disabled="disablebutton"
             class="w-2/12 mx-2 bg-gray-500 hover:bg-gray-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-gray-500 hover:border-transparent rounded"
         >
             Roger Out
         </button>
         <button
-            @click="sendMessage('TIME')"
+            @click="sendMessage('TIME')" :disabled="disablebutton"
             class="w-1/12 mx-2 bg-blue-500 hover:bg-blue-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-blue-500 hover:border-transparent rounded"
         >
             TIME
         </button>
         <button
-            @click="sendMessage('IX')"
+            @click="sendMessage('IX')" :disabled="disablebutton"
             class="w-1/12 mx-2 bg-yellow-500 hover:bg-yellow-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-yellow-500 hover:border-transparent rounded"
         >
             IX
         </button>
         <button
-            @click="sendMessage('RIX')"
+            @click="sendMessage('RIX')" :disabled="disablebutton"
             class="w-1/12 bg-red-500 hover:bg-red-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-red-500 hover:border-transparent rounded"
         >
             RIX
@@ -151,6 +158,7 @@ export default {
             search_data: [],
             idkapalindividual: "",
             sendercallsign: "",
+            disablebutton: false,
         };
     },
     watch: {
@@ -174,100 +182,44 @@ export default {
         },
     },
     methods: {
-        // getData: function () {
-        //     this.search_data = [];
-        //     axios
-        //         .get("/testasdasdasdafdsf", {
-        //             params: {
-        //                 message: this.query,
-        //             },
-        //         })
-        //         .then((response) => {
-        //             this.search_data = response.data.teadtasd;
-        //             console.log(this.search_data);
-        //         });
-        // },
-        // getName: function (name) {
-        //     this.query = name;
-        //     this.search_data = [];
-        //     console.log(this.query);
-        // },
-        // choosemessagetype(e) {
-        //     if (e.target.value === "Quick Guide") {
-        //         this.quickguide = true;
-        //     }
-        //     if (e.target.value === "Free Text") {
-        //         this.quickguide = false;
-        //     }
-        // },
         refreshmessage() {
             this.message = "";
             this.sendercallsign = "";
             this.idkapalindividual = "";
         },
         sendMessage(action) {
+            if (action == "AR" || action == "K") {
+                this.message = action;
+                action = "";
+            }
             if (this.Message == " ") {
                 return;
             }
+            let receiver = "";
+            let individualboolean = false;
             if (this.idkapalindividual == "") {
-                axios
-                    .post(
-                        "http://taccomm.mafc2.mil.my/api/chat/eksesais/" +
-                            this.currenteksesais +
-                            "/" +
-                            this.room.id +
-                            "/message",
-                        {
-                            message: this.message,
-                            action: action,
-                            pluckusersOnRoom: this.room.shortform,
-                            individual: false,
-                            sendercallsign: this.sendercallsign,
-                        }
+                receiver = this.room.shortform;
+            } else {
+                receiver = this.idkapalindividual;
+                console.log(
+                    "asdasdasd",
+                    this.callsigneksesais,
+                    this.idkapalindividual
+                );
+                if (
+                    this.callsigneksesais.find(
+                        (element) =>
+                            element.callsign2 === this.idkapalindividual
                     )
-                    .then((response) => {
-                        if (response.status == 200 || response.status == 201) {
-                            this.message = "";
-                            this.translatemessage = "";
-                            // this.sendercallsign = ""
-                            this.$emit("messagesent", response.data);
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
+                ) {
+                    individualboolean = false;
+                } else {
+                    individualboolean = true;
+                }
+                // individualboolean = true;
             }
-            // Individual chat
-            else {
-                axios
-                    .post(
-                        "http://taccomm.mafc2.mil.my/chat/eksesais/" +
-                            this.currenteksesais +
-                            "/" +
-                            this.room.id +
-                            "/message",
-                        {
-                            message: this.message,
-                            action: action,
-                            pluckusersOnRoom: this.idkapalindividual,
-                            individual: true,
-                            sendercallsign: this.sendercallsign,
-                        }
-                    )
-                    .then((response) => {
-                        if (response.status == 200 || response.status == 201) {
-                            this.message = "";
-                            this.translatemessage = " ";
-                            // this.sendercallsign = ""
-                            this.$emit("messagesent", response.data);
-                        }
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            }
-        },
-        customsendMessage(action) {
+
+            this.disablebutton = true;
             axios
                 .post(
                     "http://taccomm.mafc2.mil.my/api/chat/eksesais/" +
@@ -276,16 +228,21 @@ export default {
                         this.room.id +
                         "/message",
                     {
-                        message: action,
-                        action: " ",
-                        pluckusersOnRoom: this.room.shortform,
+                        message: this.message,
+                        action: action,
+                        pluckusersOnRoom: receiver,
+                        individual: individualboolean,
+                        sendercallsign: this.sendercallsign,
                     }
                 )
                 .then((response) => {
-                    if (response.status == 200|| response.status == 201) {
+                    if (response.status == 200 || response.status == 201) {
                         this.message = "";
-                        this.translatemessage = " ";
+                        this.translatemessage = "";
+                        // this.sendercallsign = ""
                         this.$emit("messagesent", response.data);
+                        console.log('button false');
+                        this.disablebutton = false;
                     }
                 })
                 .catch((error) => {

@@ -1,23 +1,6 @@
 # For more information: https://laravel.com/docs/sail
 version: '3'
 services:
-    app:
-        build:
-            args:
-                user: '${WWWUSER}'
-                uid: 1000
-            context: ./
-            dockerfile: Dockerfile.dev
-        working_dir: /var/www/
-        environment:
-            - COMPOSER_MEMORY_LIMIT=-1
-        depends_on:
-            - db
-        volumes:
-            - ./:/var/www
-        networks:
-            - sail
-
     laravel.test:
         build:
             context: ./vendor/laravel/sail/runtimes/8.1

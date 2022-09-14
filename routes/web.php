@@ -6,8 +6,6 @@ use App\Http\Controllers\KapalController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,6 +73,8 @@ Route::middleware([
     Route::get('callsign/eksesais', [EksesaisController::class, 'getcallsigneksesais']);
     Route::get('eksesais/callsign/all', [EksesaisController::class, 'getcallsign']);
     Route::get('eksesais/{id}/rooms/users', [EksesaisController::class, 'getusersonallroomineksesais']);
+
+    Route::get('eksesaisdetail/{eksesaisId}', [EksesaisController::class, 'eksesaisdetail']);
 });
 
 
