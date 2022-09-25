@@ -16,7 +16,7 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
                     :key="index"
                     :value="callsign.callsign2"
                 >
-                    {{ callsign.callsign2 }}
+                    {{ callsign.callsign1 }}
                 </option>
             </select>
             <input
@@ -29,13 +29,13 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
                 v-model="idkapalindividual"
                 class="ml-1 shadow appearance-none border rounded w-auto py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
             >
-                <option value="">To All</option>
+                <option value="">All Ship</option>
                 <option
                     v-for="(callsign, index) in callsigneksesais"
                     :key="index"
                     :value="callsign.callsign2"
                 >
-                    {{ callsign.callsign2 }}
+                    {{ callsign.callsign1 }}
                 </option>
                 <option
                     v-for="(senaraikapal, index) in senaraikapals"
@@ -49,7 +49,7 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
                 @click="refreshmessage()"
                 class="ml-1 shadow appearance-none border rounded w-auto py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
             >
-                CLR
+                C
             </button>
             <!-- <secondary-button
                 class="ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded"
@@ -106,31 +106,36 @@ import SecondaryButton from "../../../../vendor/laravel/jetstream/stubs/inertia/
             </select>
         </div> -->
         <button
-            @click="sendMessage('K')" :disabled="disablebutton"
+            @click="sendMessage('K')"
+            :disabled="disablebutton"
             class="w-1/12 bg-gray-500 hover:bg-gray-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-gray-500 hover:border-transparent rounded"
         >
             OVER
         </button>
         <button
-            @click="sendMessage('AR')" :disabled="disablebutton"
+            @click="sendMessage('AR')"
+            :disabled="disablebutton"
             class="w-2/12 mx-2 bg-gray-500 hover:bg-gray-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-gray-500 hover:border-transparent rounded"
         >
             Roger Out
         </button>
         <button
-            @click="sendMessage('TIME')" :disabled="disablebutton"
+            @click="sendMessage('TIME')"
+            :disabled="disablebutton"
             class="w-1/12 mx-2 bg-blue-500 hover:bg-blue-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-blue-500 hover:border-transparent rounded"
         >
             TIME
         </button>
         <button
-            @click="sendMessage('IX')" :disabled="disablebutton"
+            @click="sendMessage('IX')"
+            :disabled="disablebutton"
             class="w-1/12 mx-2 bg-yellow-500 hover:bg-yellow-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-yellow-500 hover:border-transparent rounded"
         >
             IX
         </button>
         <button
-            @click="sendMessage('RIX')" :disabled="disablebutton"
+            @click="sendMessage('RIX')"
+            :disabled="disablebutton"
             class="w-1/12 bg-red-500 hover:bg-red-300 text-gray-100 font-semibold hover:text-gray-700 py-2 px-4 border border-red-500 hover:border-transparent rounded"
         >
             RIX
@@ -198,14 +203,11 @@ export default {
             let receiver = "";
             let individualboolean = false;
             if (this.idkapalindividual == "") {
-                receiver = this.room.shortform;
+                receiver = this.callsigneksesais.find(
+                    (element) => element.callsign1 === "All Ship"
+                ).callsign2;
             } else {
                 receiver = this.idkapalindividual;
-                console.log(
-                    "asdasdasd",
-                    this.callsigneksesais,
-                    this.idkapalindividual
-                );
                 if (
                     this.callsigneksesais.find(
                         (element) =>
@@ -241,15 +243,17 @@ export default {
                         this.translatemessage = "";
                         // this.sendercallsign = ""
                         this.$emit("messagesent", response.data);
-                        console.log('button false');
+                        console.log("button false");
                         this.disablebutton = false;
                     }
                 })
                 .catch((error) => {
                     console.log(error);
+                    this.disablebutton = false;
                 });
         },
     },
-    created() {},
+    created() {
+    },
 };
 </script>

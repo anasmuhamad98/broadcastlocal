@@ -15,7 +15,7 @@ import DropdownLink from "../../../vendor/laravel/jetstream/stubs/inertia/resour
         <h2
                 class="font-semibold text-xl text-gray-800 leading-tight relative"
             >
-                Eksesais test
+                Eksesais
                 <button
                     class="absolute right-0 bg-gray-500 text-white active:bg-gray-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
@@ -134,12 +134,12 @@ import DropdownLink from "../../../vendor/laravel/jetstream/stubs/inertia/resour
                                         v-model="firstgroupname"
                                         class="mr-6 px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-2/5"
                                     />
-                                    <input
+                                    <!-- <input
                                         type="text"
                                         placeholder="M7"
                                         v-model="firstgroupcallsign"
                                         class="px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-1/12"
-                                    />
+                                    /> -->
                                     <!-- <Label
                                         value="Panggilan Taktikal"
                                         class="my-4 text-slate-500 text-lg leading-relaxed"

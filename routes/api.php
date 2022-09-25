@@ -21,7 +21,7 @@ use App\Http\Controllers\Api\EksesaisController;
 |
 */
 
-Route::post('login', [AuthController::class, 'loginUser']);
+Route::post('auth/login', [AuthController::class, 'loginUser']);
 
 Route::middleware([
     'auth:sanctum',

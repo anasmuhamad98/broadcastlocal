@@ -9,8 +9,7 @@ window._ = require('lodash');
 window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-window.axios.defaults.headers.common['Authorization'] = 'Bearer 38|HBbQkFursBhNH8mMoUMVdDVkFs73leUTnGRwgRDe' ;
-
+window.axios.defaults.headers.common['Authorization'] = 'Bearer 53|QjWHTYdJ4h8zbECxF3f7r96Vw38PE4UqWoYybH6A' ;
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
@@ -30,4 +29,6 @@ window.Echo = new Echo({
     wsPort: 6001,
     disableStats: true
 });
+
+
 

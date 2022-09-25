@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Events\NewEksesais;
 use App\Models\CallsignEksesais;
 use App\Models\ChatRoom;
@@ -11,40 +12,20 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
-use Inertia\Inertia;
+use Illuminate\Support\Collection;
 
 class EksesaisController extends Controller
 {
-
-    public function authuser()
-    {
-        if (!Auth::check()) {
-            $user = User::find(53);
-            Auth::login($user);
-        };
-        return redirect('/eksesais');
-    }
-
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('Eksesais');
-    }
 
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function geteksesais()
-    {
-        $user = User::find(Auth::id());
+	return  request()->user()->eksesais;
+        $user = User::find(50);
         return $user->eksesais;
         // $eksesaislist = Eksesais::with(['users' => function ($query) {
         //     $query->select('users.id')->where('users.id', Auth::id());
@@ -54,7 +35,6 @@ class EksesaisController extends Controller
 
     public function getcallsign(Request $request)
     {
-        new Carbon();
         return CallsignEksesais::whereDate('tarikh',  Carbon::now())->get();
         // $eksesais = Eksesais::find($eksesaisId);
         // return $eksesais->callsigns;
@@ -73,12 +53,11 @@ class EksesaisController extends Controller
         $user = User::find(Auth::id());
         return $user->rooms()->with('users')->where('eksesais_id', $eksesaisId)->get();
         // return Eksesais::find($eksesaisId)->rooms()->with('users')->get();
-    }
+     }
 
-    public function eksesaisdetail($eksesaisId)
+	public function eksesaisdetail($eksesaisId)
     {
         $eksesaisdetail = Eksesais::find($eksesaisId);
-
         return $eksesaisdetail;
     }
 
@@ -91,6 +70,7 @@ class EksesaisController extends Controller
     public function store(Request $request)
     {
         $senaraiKapalTerlibat = $request->senaraiKapalTerlibat;
+	$senaraiKapalTerlibat = array_merge($senaraiKapalTerlibat , [53]);
         $eksesais = new Eksesais;
         $eksesais->Nama = $request->namaEksesais;
         $eksesais->save();
@@ -102,7 +82,7 @@ class EksesaisController extends Controller
         $generalchatroom = new ChatRoom;
         $generalchatroom->eksesais_id = $eksesais->id;
         $generalchatroom->name = $request->firstgroupname;
-        $generalchatroom->shortform = $request->firstgroupcallsign ?? 'NULL';
+        $generalchatroom->shortform = $request->firstgroupcallsign;
         $generalchatroom->isShow = 1;
         $generalchatroom->save();
 
@@ -111,7 +91,7 @@ class EksesaisController extends Controller
 
         // broadcast(new EventsNewChatMessage($newMessage))->toOthers();
         broadcast(new NewEksesais())->toOthers();
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'user' => request()->user()]);
         // return response()->json([
         //     'data' => $namaEksesais,
         //     'asdasd' => $senaraiKapalTerlibat

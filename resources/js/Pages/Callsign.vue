@@ -61,6 +61,35 @@ import { DateTime } from "luxon";
                                 value="Panggilan Taktikal"
                                 class="my-4 text-slate-500 text-lg leading-relaxed"
                             />
+                            <label for="">All Ship : </label>
+                            <input
+                                type="text"
+                                placeholder="A1"
+                                v-model="allship"
+                                class="px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-1/12"
+                            />
+                            <label for="">OTC : </label>
+                            <input
+                                type="text"
+                                placeholder="A1"
+                                v-model="otc"
+                                class="px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-1/12"
+                            />
+                            <label for="">OCS : </label>
+                            <input
+                                type="text"
+                                placeholder="A1"
+                                v-model="ocs"
+                                class="px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-1/12"
+                            /><label for="">OCE : </label>
+                            <input
+                                type="text"
+                                placeholder="A1"
+                                v-model="oce"
+                                class="px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-1/12"
+                            />
+                            <br />
+                            <br />
                             <div
                                 v-for="index in numberofcallsign"
                                 :key="index"
@@ -243,7 +272,10 @@ import { DateTime } from "luxon";
                                                     (element) =>
                                                         element.tarikh ===
                                                             datenow
-                                            .plus({ days: 1 }).toSQLDate() &&
+                                                                .plus({
+                                                                    days: 1,
+                                                                })
+                                                                .toSQLDate() &&
                                                         element.callsign1 ===
                                                             unit.callsign1
                                                 )
@@ -253,7 +285,10 @@ import { DateTime } from "luxon";
                                                     (element) =>
                                                         element.tarikh ===
                                                             datenow
-                                            .plus({ days: 1 }).toSQLDate() &&
+                                                                .plus({
+                                                                    days: 1,
+                                                                })
+                                                                .toSQLDate() &&
                                                         element.callsign1 ===
                                                             unit.callsign1
                                                 ).callsign2
@@ -267,7 +302,10 @@ import { DateTime } from "luxon";
                                                     (element) =>
                                                         element.tarikh ===
                                                             datenow
-                                            .plus({ days: 2 }).toSQLDate() &&
+                                                                .plus({
+                                                                    days: 2,
+                                                                })
+                                                                .toSQLDate() &&
                                                         element.callsign1 ===
                                                             unit.callsign1
                                                 )
@@ -277,7 +315,10 @@ import { DateTime } from "luxon";
                                                     (element) =>
                                                         element.tarikh ===
                                                             datenow
-                                            .plus({ days: 2 }).toSQLDate() &&
+                                                                .plus({
+                                                                    days: 2,
+                                                                })
+                                                                .toSQLDate() &&
                                                         element.callsign1 ===
                                                             unit.callsign1
                                                 ).callsign2
@@ -291,7 +332,10 @@ import { DateTime } from "luxon";
                                                     (element) =>
                                                         element.tarikh ===
                                                             datenow
-                                            .plus({ days: 3 }).toSQLDate() &&
+                                                                .plus({
+                                                                    days: 3,
+                                                                })
+                                                                .toSQLDate() &&
                                                         element.callsign1 ===
                                                             unit.callsign1
                                                 )
@@ -301,7 +345,10 @@ import { DateTime } from "luxon";
                                                     (element) =>
                                                         element.tarikh ===
                                                             datenow
-                                            .plus({ days: 3 }).toSQLDate() &&
+                                                                .plus({
+                                                                    days: 3,
+                                                                })
+                                                                .toSQLDate() &&
                                                         element.callsign1 ===
                                                             unit.callsign1
                                                 ).callsign2
@@ -315,7 +362,10 @@ import { DateTime } from "luxon";
                                                     (element) =>
                                                         element.tarikh ===
                                                             datenow
-                                            .plus({ days: 4 }).toSQLDate() &&
+                                                                .plus({
+                                                                    days: 4,
+                                                                })
+                                                                .toSQLDate() &&
                                                         element.callsign1 ===
                                                             unit.callsign1
                                                 )
@@ -325,7 +375,10 @@ import { DateTime } from "luxon";
                                                     (element) =>
                                                         element.tarikh ===
                                                             datenow
-                                            .plus({ days: 4 }).toSQLDate() &&
+                                                                .plus({
+                                                                    days: 4,
+                                                                })
+                                                                .toSQLDate() &&
                                                         element.callsign1 ===
                                                             unit.callsign1
                                                 ).callsign2
@@ -414,7 +467,8 @@ import { DateTime } from "luxon";
                                                 (element) =>
                                                     element.tarikh ===
                                                     datenow
-                                            .plus({ days: 1 }).toSQLDate()
+                                                        .plus({ days: 1 })
+                                                        .toSQLDate()
                                             )
                                         "
                                     >
@@ -423,7 +477,8 @@ import { DateTime } from "luxon";
                                                 (element) =>
                                                     element.tarikh ===
                                                     datenow
-                                            .plus({ days: 1 }).toSQLDate()
+                                                        .plus({ days: 1 })
+                                                        .toSQLDate()
                                             ).callsign
                                         }}
                                     </td>
@@ -438,7 +493,8 @@ import { DateTime } from "luxon";
                                                 (element) =>
                                                     element.tarikh ===
                                                     datenow
-                                            .plus({ days: 2 }).toSQLDate()
+                                                        .plus({ days: 2 })
+                                                        .toSQLDate()
                                             )
                                         "
                                     >
@@ -447,7 +503,8 @@ import { DateTime } from "luxon";
                                                 (element) =>
                                                     element.tarikh ===
                                                     datenow
-                                            .plus({ days: 2 }).toSQLDate()
+                                                        .plus({ days: 2 })
+                                                        .toSQLDate()
                                             ).callsign
                                         }}
                                     </td>
@@ -462,7 +519,8 @@ import { DateTime } from "luxon";
                                                 (element) =>
                                                     element.tarikh ===
                                                     datenow
-                                            .plus({ days: 3 }).toSQLDate()
+                                                        .plus({ days: 3 })
+                                                        .toSQLDate()
                                             )
                                         "
                                     >
@@ -471,7 +529,8 @@ import { DateTime } from "luxon";
                                                 (element) =>
                                                     element.tarikh ===
                                                     datenow
-                                            .plus({ days: 3 }).toSQLDate()
+                                                        .plus({ days: 3 })
+                                                        .toSQLDate()
                                             ).callsign
                                         }}
                                     </td>
@@ -486,7 +545,8 @@ import { DateTime } from "luxon";
                                                 (element) =>
                                                     element.tarikh ===
                                                     datenow
-                                            .plus({ days: 4 }).toSQLDate()
+                                                        .plus({ days: 4 })
+                                                        .toSQLDate()
                                             )
                                         "
                                     >
@@ -495,7 +555,8 @@ import { DateTime } from "luxon";
                                                 (element) =>
                                                     element.tarikh ===
                                                     datenow
-                                            .plus({ days: 4 }).toSQLDate()
+                                                        .plus({ days: 4 })
+                                                        .toSQLDate()
                                             ).callsign
                                         }}
                                     </td>
@@ -526,6 +587,10 @@ export default {
             getdate: "",
             idKapal: [],
             numberofcallsign: 0,
+            allship: '',
+            otc: '',
+            ocs: '',
+            oce: '',
             callsignforeksesais: [],
             callsign2foreksesais: [],
             callsigneksesais: [],
@@ -575,6 +640,22 @@ export default {
         },
         savecallsign() {
             console.log(this.getdate);
+            if(this.allship !== ''){
+                this.callsignforeksesais.unshift('All Ship');
+                this.callsign2foreksesais.unshift(this.allship);
+            }
+            if(this.otc !== ''){
+                this.callsignforeksesais.unshift('OTC');
+                this.callsign2foreksesais.unshift(this.otc);
+            }
+            if(this.ocs !== ''){
+                this.callsignforeksesais.unshift('OCS');
+                this.callsign2foreksesais.unshift(this.ocs);
+            }
+            if(this.oce !== ''){
+                this.callsignforeksesais.unshift('OCE');
+                this.callsign2foreksesais.unshift(this.oce);
+            }
             axios
                 .post("http://taccomm.mafc2.mil.my/api/saveallcallsign", {
                     idKapal: this.idKapal,

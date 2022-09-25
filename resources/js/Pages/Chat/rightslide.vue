@@ -28,12 +28,6 @@
                     </tr>
                 </tbody>
             </table>
-            <!-- <div class="m-3"><input type="text" class="w-1/3" placeholder="CTO" /><input type="text"  class="w-1/3" placeholder="A1"/> <button
-                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-            >
-                +
-            </button></div> -->
-
             <table
                 class="text-white table-auto border-collapse border border-slate-400 w-4/5 m-auto mt-6"
             >

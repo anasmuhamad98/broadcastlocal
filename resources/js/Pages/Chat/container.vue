@@ -265,11 +265,7 @@ export default {
                 this.messages
                     .sort(function (a, b) {
                         return new Date(b.created_at) - new Date(a.created_at);
-                    })
-                    .sort(function (a, b) {
-                        return new Date(b.created_at) - new Date(a.created_at);
                     });
-                console.log("jadi la ni", this.messages);
             }
 
             this.getMessagesOfEachRoom(newmessage.chat_room_id);

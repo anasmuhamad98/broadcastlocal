@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\EksesaisController;
 use App\Http\Controllers\KapalController;
@@ -21,6 +22,9 @@ use Inertia\Inertia;
 
 
 Route::get('/', [EksesaisController::class, 'authuser']);
+Route::get('login', function(){
+    return redirect('/');
+});
 // function () {
 
 //     $user = User::find(1);
@@ -34,10 +38,9 @@ Route::middleware([
     'verified',
 ])->group(function () {
 
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-
+    Route::get('/dashboard', function(){
+        return redirect('/eksesais');
+    });
     Route::get('/eksesais', [EksesaisController::class, 'index'])->name('eksesais');
 
     Route::get('/eksesaisdata',  [EksesaisController::class, 'geteksesais']);
@@ -87,6 +90,11 @@ Route::post('/testasdasdasdafdsf', [ChatController::class, 'testets']);
 
 
 Route::middleware('auth:sanctum')->get('/chat/room/{roomId}/messages', [ChatController::class, 'messages']);
-// Route::middleware('auth:sanctum')->post('/chat/room/{roomId}/message', [ChatController::class, 'newMessage']);
 Route::get('grouper/ajax/meaning', [ChatController::class, 'chatmeaning']);
 
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->name('dashboard');
+
+
+Route::post('auth/login', [AuthController::class, 'loginUser']);

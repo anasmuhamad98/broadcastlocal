@@ -21,32 +21,32 @@ const form = useForm({
 });
 
 const submit = () => {
-    // form.transform(data => ({
-    //     ...data,
-    //     remember: form.remember ? 'on' : '',
-    // })).post('/login', {
-    //     onFinish: () => {form.reset('password');
-    // }});
-    axios
-                .post(
-                    "http://taccomm.mafc2.mil.my/api/auth/login" ,
-                    {
-                        email: form.email,
-                        password: form.password,
-                        remember: form.remember,
-                    }
-                )
-                .then((response) => {
-                    Auth.login(response.data.token,'lekir'); //set local storage
-                    console.log(response.data.token);
-                    console.log(window.localStorage.getItem('user'));
-                    this.$inertia.visit('/eksesais');
-                    // window.location.href = 'https://www.google.com';
-                })
-                .catch((error) => {
-                    console.log('x jadi');
-                    console.log(error);
-                });
+    form.transform(data => ({
+        ...data,
+        remember: form.remember ? 'on' : '',
+    })).post('/login', {
+        onFinish: () => form.reset('password'),
+    });
+    // axios
+    //             .post(
+    //                 "/auth/login" ,
+    //                 {
+    //                     email: form.email,
+    //                     password: form.password,
+    //                     remember: form.remember,
+    //                 }
+    //             )
+    //             .then((response) => {
+    //                 Auth.login(response.data.token,'lekir'); //set local storage
+    //                 console.log(response.data.token);
+    //                 console.log(window.localStorage.getItem('user'));
+    //                 this.$inertia.visit('/eksesais');
+    //                 // window.location.href = 'https://www.google.com';
+    //             })
+    //             .catch((error) => {
+    //                 console.log('x jadi');
+    //                 console.log(error);
+    //             });
 };
 </script>
 

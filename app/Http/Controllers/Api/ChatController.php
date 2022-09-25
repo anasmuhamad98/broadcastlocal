@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Events\NewChatMessage as EventsNewChatMessage;
 use App\Events\NewGroupChat;
 use App\Events\NewMessageNotification;
@@ -20,7 +21,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class ChatController extends Controller
@@ -28,9 +28,9 @@ class ChatController extends Controller
 
     public function index($eksesaisId)
     {
-        // $eksesais = Eksesais::find($eksesaisId);
+        $eksesais = Eksesais::find($eksesaisId);
         return Inertia::render('Chat/container', [
-            'eksesaisdetail' => $eksesaisId,
+            'eksesaisdetail' => $eksesais,
         ]);
         // return ChatMessage::where('eksesais_id', $eksesaisId)->where('chat_room_id', $roomId)->with('user')->orderBy('created_at', 'desc')->get();
     }
@@ -56,7 +56,7 @@ class ChatController extends Controller
         $newRoom->eksesais_id = $eksesaisId;
         $newRoom->name = $request->roomName;
         $newRoom->isShow = 1;
-        $newRoom->shortform = $request->shortform ?? 'NULL';
+        $newRoom->shortform = $request->shortform;
         $newRoom->save();
 
         $newRoom->users()->attach($senaraiKapalTerlibat);
@@ -96,6 +96,22 @@ class ChatController extends Controller
         $sender = User::find(Auth::id());
         if ($request->individual == true) {
             $receiver = User::find($request->pluckusersOnRoom);
+            $checkindividual = ChatRoom::where('eksesais_id', $eksesaisId)->where(function ($query) use ($sender, $receiver) {
+                $query->where('name', $receiver->name . '-' . $sender->name)->orWhere('name', $sender->name . '-' . $receiver->name);
+            })->first();
+
+            if ($checkindividual) {
+            } else {
+                $newRoom = new ChatRoom;
+                $newRoom->eksesais_id = $eksesaisId;
+                $newRoom->name = $receiver->name . '-' . $sender->name;
+                $newRoom->shortform = $receiver->shortform . '-' . $sender->shortform;
+                $newRoom->isShow = 0;
+                $newRoom->save();
+
+                $newRoom->users()->attach([$request->pluckusersOnRoom, Auth::id()]);
+                $roomId = $newRoom->id;
+            }
             $request->pluckusersOnRoom = $receiver->callsign->callsign;
         }
         $newMessage = new ChatMessage();
@@ -122,10 +138,6 @@ class ChatController extends Controller
 
     public function testets(Request $request)
     {
-        return Inertia::render('Chat/container', [
-            // 'eksesaisdetail' => $eksesais,
-        ]);
-        // return redirect('/eksesais');
         // return Eksesais::find(1)->rooms()->with('users')->get();
         // return $receiver = User::find(1)->with('callsign');
         // return ChatRoom::find(1)->users()->pluck('users.shortform');
@@ -137,8 +149,8 @@ class ChatController extends Controller
 
         // return $groupermeaning = Grouper::select('Grouper', 'Meaning')->where('Grouper', 'like', '%A%')->take(5)->get();
         // User::all();
-        // $user = User::all();
-        // return $user->toJson(JSON_PRETTY_PRINT);
+        $user = User::all();
+        return $user->toJson(JSON_PRETTY_PRINT);
         // return response()->json( User::all());
     }
 

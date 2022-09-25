@@ -24,8 +24,8 @@ class DatabaseSeeder extends Seeder
             ListBSeeder::class,
             ListCSeeder::class,
             TableGrouperSeeder::class,
-            TokenSeeder::class,
-            RakeCodeSeeder::class
+            RakeCodeSeeder::class,
+            // TokenSeeder::class,
         ]);
     }
 }

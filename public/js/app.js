@@ -20985,6 +20985,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Auth__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Auth */ "./resources/js/Pages/Auth/Auth.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_9__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -21002,8 +21008,6 @@ __webpack_require__.r(__webpack_exports__);
     status: String
   },
   setup: function setup(__props, _ref) {
-    var _this = this;
-
     var expose = _ref.expose;
     expose();
     var form = (0,_inertiajs_inertia_vue3__WEBPACK_IMPORTED_MODULE_0__.useForm)({
@@ -21013,28 +21017,34 @@ __webpack_require__.r(__webpack_exports__);
     });
 
     var submit = function submit() {
-      // form.transform(data => ({
-      //     ...data,
-      //     remember: form.remember ? 'on' : '',
-      // })).post('/login', {
-      //     onFinish: () => {form.reset('password');
-      // }});
-      axios__WEBPACK_IMPORTED_MODULE_9___default().post("http://taccomm.mafc2.mil.my/api/auth/login", {
-        email: form.email,
-        password: form.password,
-        remember: form.remember
-      }).then(function (response) {
-        _Auth__WEBPACK_IMPORTED_MODULE_8__["default"].login(response.data.token, 'lekir'); //set local storage
-
-        console.log(response.data.token);
-        console.log(window.localStorage.getItem('user'));
-
-        _this.$inertia.visit('/eksesais'); // window.location.href = 'https://www.google.com';
-
-      })["catch"](function (error) {
-        console.log('x jadi');
-        console.log(error);
-      });
+      form.transform(function (data) {
+        return _objectSpread(_objectSpread({}, data), {}, {
+          remember: form.remember ? 'on' : ''
+        });
+      }).post('/login', {
+        onFinish: function onFinish() {
+          return form.reset('password');
+        }
+      }); // axios
+      //             .post(
+      //                 "/auth/login" ,
+      //                 {
+      //                     email: form.email,
+      //                     password: form.password,
+      //                     remember: form.remember,
+      //                 }
+      //             )
+      //             .then((response) => {
+      //                 Auth.login(response.data.token,'lekir'); //set local storage
+      //                 console.log(response.data.token);
+      //                 console.log(window.localStorage.getItem('user'));
+      //                 this.$inertia.visit('/eksesais');
+      //                 // window.location.href = 'https://www.google.com';
+      //             })
+      //             .catch((error) => {
+      //                 console.log('x jadi');
+      //                 console.log(error);
+      //             });
     };
 
     var __returned__ = {
@@ -21412,6 +21422,10 @@ var __default__ = {
       getdate: "",
       idKapal: [],
       numberofcallsign: 0,
+      allship: '',
+      otc: '',
+      ocs: '',
+      oce: '',
       callsignforeksesais: [],
       callsign2foreksesais: [],
       callsigneksesais: [],
@@ -21459,6 +21473,27 @@ var __default__ = {
       var _this3 = this;
 
       console.log(this.getdate);
+
+      if (this.allship !== '') {
+        this.callsignforeksesais.unshift('All Ship');
+        this.callsign2foreksesais.unshift(this.allship);
+      }
+
+      if (this.otc !== '') {
+        this.callsignforeksesais.unshift('OTC');
+        this.callsign2foreksesais.unshift(this.otc);
+      }
+
+      if (this.ocs !== '') {
+        this.callsignforeksesais.unshift('OCS');
+        this.callsign2foreksesais.unshift(this.ocs);
+      }
+
+      if (this.oce !== '') {
+        this.callsignforeksesais.unshift('OCE');
+        this.callsign2foreksesais.unshift(this.oce);
+      }
+
       axios.post("http://taccomm.mafc2.mil.my/api/saveallcallsign", {
         idKapal: this.idKapal,
         callsignkapal: this.callsignkapal,
@@ -21761,10 +21796,7 @@ var __default__ = {
         this.messages.unshift(newmessage);
         this.messages.sort(function (a, b) {
           return new Date(b.created_at) - new Date(a.created_at);
-        }).sort(function (a, b) {
-          return new Date(b.created_at) - new Date(a.created_at);
         });
-        console.log("jadi la ni", this.messages);
       }
 
       this.getMessagesOfEachRoom(newmessage.chat_room_id);
@@ -21953,10 +21985,11 @@ var __default__ = {
       var individualboolean = false;
 
       if (this.idkapalindividual == "") {
-        receiver = this.room.shortform;
+        receiver = this.callsigneksesais.find(function (element) {
+          return element.callsign1 === "All Ship";
+        }).callsign2;
       } else {
         receiver = this.idkapalindividual;
-        console.log("asdasdasd", this.callsigneksesais, this.idkapalindividual);
 
         if (this.callsigneksesais.find(function (element) {
           return element.callsign2 === _this2.idkapalindividual;
@@ -21982,11 +22015,12 @@ var __default__ = {
 
           _this2.$emit("messagesent", response.data);
 
-          console.log('button false');
+          console.log("button false");
           _this2.disablebutton = false;
         }
       })["catch"](function (error) {
         console.log(error);
+        _this2.disablebutton = false;
       });
     }
   },
@@ -26469,98 +26503,112 @@ var _hoisted_11 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 /* HOISTED */
 );
 
-var _hoisted_12 = ["onUpdate:modelValue"];
-var _hoisted_13 = ["onUpdate:modelValue"];
-var _hoisted_14 = {
+var _hoisted_12 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+  "for": ""
+}, "All Ship : ", -1
+/* HOISTED */
+);
+
+var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+  "for": ""
+}, "OTC : ", -1
+/* HOISTED */
+);
+
+var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+  "for": ""
+}, "OCS : ", -1
+/* HOISTED */
+);
+
+var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", {
+  "for": ""
+}, "OCE : ", -1
+/* HOISTED */
+);
+
+var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("br", null, null, -1
+/* HOISTED */
+);
+
+var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("br", null, null, -1
+/* HOISTED */
+);
+
+var _hoisted_18 = ["onUpdate:modelValue"];
+var _hoisted_19 = ["onUpdate:modelValue"];
+var _hoisted_20 = {
   "class": "flex flex-row flex-wrap"
 };
-var _hoisted_15 = {
+var _hoisted_21 = {
   "class": "row mb-1"
 };
-var _hoisted_16 = {
+var _hoisted_22 = {
   "class": "col-lg-6"
 };
-var _hoisted_17 = {
+var _hoisted_23 = {
   "class": "text-gray-700"
 };
-var _hoisted_18 = {
+var _hoisted_24 = {
   "class": "mx-1"
 };
-var _hoisted_19 = {
+var _hoisted_25 = {
   "class": "col-lg-2"
 };
-var _hoisted_20 = ["onUpdate:modelValue"];
-var _hoisted_21 = ["onUpdate:modelValue"];
+var _hoisted_26 = ["onUpdate:modelValue"];
+var _hoisted_27 = ["onUpdate:modelValue"];
 
-var _hoisted_22 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("   ");
+var _hoisted_28 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("   ");
 
-var _hoisted_23 = {
+var _hoisted_29 = {
   "class": "flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b"
 };
-var _hoisted_24 = {
+var _hoisted_30 = {
   key: 1,
   "class": "opacity-25 fixed inset-0 z-40 bg-black"
 };
-var _hoisted_25 = {
+var _hoisted_31 = {
   "class": "py-4"
 };
-var _hoisted_26 = {
+var _hoisted_32 = {
   "class": "mx-auto sm:px-6 lg:px-8"
 };
-var _hoisted_27 = {
+var _hoisted_33 = {
   "class": "bg-white overflow-hidden shadow-xl sm:rounded-lg"
 };
-var _hoisted_28 = {
+var _hoisted_34 = {
   "class": "p-6 sm:px-20 bg-white border border-gray-200"
 };
-var _hoisted_29 = {
+var _hoisted_35 = {
   "class": "border border-gray-500 w-full"
 };
-var _hoisted_30 = {
+var _hoisted_36 = {
   "class": "border border-gray-500"
 };
 
-var _hoisted_31 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
+var _hoisted_37 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
   "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
 }, " Unit ", -1
 /* HOISTED */
 );
 
-var _hoisted_32 = {
+var _hoisted_38 = {
   "class": "px-6 py-2 text-md text-gray-500"
 };
-var _hoisted_33 = {
-  "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
-};
-var _hoisted_34 = {
-  "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
-};
-var _hoisted_35 = {
-  "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
-};
-var _hoisted_36 = {
-  "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
-};
-var _hoisted_37 = {
-  "class": "border border-gray-500"
-};
-var _hoisted_38 = {
-  "class": "border border-gray-500"
-};
 var _hoisted_39 = {
-  key: 0
+  "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
 };
 var _hoisted_40 = {
-  "class": "border border-gray-500"
+  "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
 };
 var _hoisted_41 = {
-  key: 0
+  "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
 };
 var _hoisted_42 = {
-  "class": "border border-gray-500"
+  "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
 };
 var _hoisted_43 = {
-  key: 0
+  "class": "border border-gray-500"
 };
 var _hoisted_44 = {
   "class": "border border-gray-500"
@@ -26574,79 +26622,97 @@ var _hoisted_46 = {
 var _hoisted_47 = {
   key: 0
 };
-
-var _hoisted_48 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("br", null, null, -1
-/* HOISTED */
-);
-
+var _hoisted_48 = {
+  "class": "border border-gray-500"
+};
 var _hoisted_49 = {
-  "class": "border border-gray-500 w-full"
+  key: 0
 };
 var _hoisted_50 = {
   "class": "border border-gray-500"
 };
+var _hoisted_51 = {
+  key: 0
+};
+var _hoisted_52 = {
+  "class": "border border-gray-500"
+};
+var _hoisted_53 = {
+  key: 0
+};
 
-var _hoisted_51 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
+var _hoisted_54 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("br", null, null, -1
+/* HOISTED */
+);
+
+var _hoisted_55 = {
+  "class": "border border-gray-500 w-full"
+};
+var _hoisted_56 = {
+  "class": "border border-gray-500"
+};
+
+var _hoisted_57 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
   "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
 }, " Nama Kapal ", -1
 /* HOISTED */
 );
 
-var _hoisted_52 = {
+var _hoisted_58 = {
   "class": "px-6 py-2 text-md text-gray-500"
 };
-var _hoisted_53 = {
-  "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
-};
-var _hoisted_54 = {
-  "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
-};
-var _hoisted_55 = {
-  "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
-};
-var _hoisted_56 = {
-  "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
-};
-var _hoisted_57 = {
-  "class": "border border-gray-500"
-};
-var _hoisted_58 = {
-  key: 0,
-  "class": "border border-gray-500"
-};
 var _hoisted_59 = {
-  key: 1,
-  "class": "border border-gray-500"
+  "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
 };
 var _hoisted_60 = {
-  key: 2,
-  "class": "border border-gray-500"
+  "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
 };
 var _hoisted_61 = {
-  key: 3,
-  "class": "border border-gray-500"
+  "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
 };
 var _hoisted_62 = {
-  key: 4,
-  "class": "border border-gray-500"
+  "class": "px-6 py-2 text-md text-gray-500 border border-gray-500"
 };
 var _hoisted_63 = {
-  key: 5,
   "class": "border border-gray-500"
 };
 var _hoisted_64 = {
-  key: 6,
+  key: 0,
   "class": "border border-gray-500"
 };
 var _hoisted_65 = {
-  key: 7,
+  key: 1,
   "class": "border border-gray-500"
 };
 var _hoisted_66 = {
-  key: 8,
+  key: 2,
   "class": "border border-gray-500"
 };
 var _hoisted_67 = {
+  key: 3,
+  "class": "border border-gray-500"
+};
+var _hoisted_68 = {
+  key: 4,
+  "class": "border border-gray-500"
+};
+var _hoisted_69 = {
+  key: 5,
+  "class": "border border-gray-500"
+};
+var _hoisted_70 = {
+  key: 6,
+  "class": "border border-gray-500"
+};
+var _hoisted_71 = {
+  key: 7,
+  "class": "border border-gray-500"
+};
+var _hoisted_72 = {
+  key: 8,
+  "class": "border border-gray-500"
+};
+var _hoisted_73 = {
   key: 9,
   "class": "border border-gray-500"
 };
@@ -26679,7 +26745,43 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.getdate]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Label"], {
         value: "Panggilan Taktikal",
         "class": "my-4 text-slate-500 text-lg leading-relaxed"
-      }), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.numberofcallsign, function (index) {
+      }), _hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+        type: "text",
+        placeholder: "A1",
+        "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
+          return $data.allship = $event;
+        }),
+        "class": "px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-1/12"
+      }, null, 512
+      /* NEED_PATCH */
+      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.allship]]), _hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+        type: "text",
+        placeholder: "A1",
+        "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
+          return $data.otc = $event;
+        }),
+        "class": "px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-1/12"
+      }, null, 512
+      /* NEED_PATCH */
+      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.otc]]), _hoisted_14, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+        type: "text",
+        placeholder: "A1",
+        "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
+          return $data.ocs = $event;
+        }),
+        "class": "px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-1/12"
+      }, null, 512
+      /* NEED_PATCH */
+      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.ocs]]), _hoisted_15, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+        type: "text",
+        placeholder: "A1",
+        "onUpdate:modelValue": _cache[6] || (_cache[6] = function ($event) {
+          return $data.oce = $event;
+        }),
+        "class": "px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-1/12"
+      }, null, 512
+      /* NEED_PATCH */
+      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.oce]]), _hoisted_16, _hoisted_17, ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.numberofcallsign, function (index) {
         return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
           key: index,
           "class": "mb-2"
@@ -26692,7 +26794,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           "class": "mr-6 px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-2/5"
         }, null, 8
         /* PROPS */
-        , _hoisted_12), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.callsignforeksesais[index]]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+        , _hoisted_18), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.callsignforeksesais[index]]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
           type: "text",
           placeholder: "A1",
           "onUpdate:modelValue": function onUpdateModelValue($event) {
@@ -26701,31 +26803,31 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           "class": "px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-1/12"
         }, null, 8
         /* PROPS */
-        , _hoisted_13), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.callsign2foreksesais[index]]])]);
+        , _hoisted_19), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.callsign2foreksesais[index]]])]);
       }), 128
       /* KEYED_FRAGMENT */
       )), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         "class": "mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
-        onClick: _cache[3] || (_cache[3] = function ($event) {
+        onClick: _cache[7] || (_cache[7] = function ($event) {
           return $options.addnumberofcallsign();
         })
       }, " Tambah Callsign "), $data.numberofcallsign !== 0 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("button", {
         key: 0,
         "class": "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
-        onClick: _cache[4] || (_cache[4] = function ($event) {
+        onClick: _cache[8] || (_cache[8] = function ($event) {
           return $options.removenumberofcallsign();
         })
       }, " Padam Callsign ")) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Label"], {
         "for": "email",
         value: "Senarai Kapal",
         "class": "my-4 text-slate-500 text-lg leading-relaxed"
-      }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.namakapals, function (namakapal, index) {
+      }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_20, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.namakapals, function (namakapal, index) {
         return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
           "class": "form-check w-1/6",
           key: index
-        }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("strong", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(namakapal.shortform), 1
+        }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_23, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", _hoisted_24, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("strong", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(namakapal.shortform), 1
         /* TEXT */
-        )])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+        )])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_25, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
           type: "text",
           name: "",
           id: "",
@@ -26735,7 +26837,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           }
         }, null, 8
         /* PROPS */
-        , _hoisted_20), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.idKapal[index]]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+        , _hoisted_26), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.idKapal[index]]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
           "class": "shadow appearance-none border rounded w-20 py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline",
           type: "text",
           "onUpdate:modelValue": function onUpdateModelValue($event) {
@@ -26743,80 +26845,80 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           }
         }, null, 8
         /* PROPS */
-        , _hoisted_21), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.callsignkapal[index]]]), _hoisted_22])])]);
+        , _hoisted_27), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.callsignkapal[index]]]), _hoisted_28])])]);
       }), 128
       /* KEYED_FRAGMENT */
-      ))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("footer"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+      ))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("footer"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_29, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         "class": "text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150",
         type: "button",
-        onClick: _cache[5] || (_cache[5] = function ($event) {
+        onClick: _cache[9] || (_cache[9] = function ($event) {
           return $options.savecallsign();
         })
-      }, " Tambah Callsign ")])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.showModal ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_24)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_25, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_26, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_28, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" get callsign of eksesais "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_29, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", _hoisted_30, [_hoisted_31, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_32, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.datenow.toFormat("d MMM")), 1
+      }, " Tambah Callsign ")])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.showModal ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_30)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_31, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_32, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_33, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_34, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" get callsign of eksesais "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_35, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", _hoisted_36, [_hoisted_37, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_38, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.datenow.toFormat("d MMM")), 1
       /* TEXT */
-      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_33, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.datenow.plus({
+      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_39, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.datenow.plus({
         days: 1
       }).toFormat("d MMM")), 1
       /* TEXT */
-      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_34, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.datenow.plus({
+      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_40, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.datenow.plus({
         days: 2
       }).toFormat("d MMM")), 1
       /* TEXT */
-      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_35, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.datenow.plus({
+      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_41, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.datenow.plus({
         days: 3
       }).toFormat("d MMM")), 1
       /* TEXT */
-      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_36, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.datenow.plus({
+      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_42, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.datenow.plus({
         days: 4
       }).toFormat("d MMM")), 1
       /* TEXT */
-      )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", _hoisted_37, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.callsignunit, function (unit, index) {
+      )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", _hoisted_43, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.callsignunit, function (unit, index) {
         return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", {
           key: index,
           "class": "text-center border border-gray-500"
         }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(unit.callsign1), 1
         /* TEXT */
-        ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_38, [$data.callsigneksesais.find(function (element) {
+        ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_44, [$data.callsigneksesais.find(function (element) {
           return element.tarikh === $data.datenow.toSQLDate() && element.callsign1 === unit.callsign1;
-        }) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_39, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.callsigneksesais.find(function (element) {
-          return element.tarikh === $data.datenow.toSQLDate() && element.callsign1 === unit.callsign1;
-        }).callsign2), 1
-        /* TEXT */
-        )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_40, [$data.callsigneksesais.find(function (element) {
-          return element.tarikh === $data.datenow.plus({
-            days: 1
-          }).toSQLDate() && element.callsign1 === unit.callsign1;
-        }) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_41, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.callsigneksesais.find(function (element) {
-          return element.tarikh === $data.datenow.plus({
-            days: 1
-          }).toSQLDate() && element.callsign1 === unit.callsign1;
-        }).callsign2), 1
-        /* TEXT */
-        )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_42, [$data.callsigneksesais.find(function (element) {
-          return element.tarikh === $data.datenow.plus({
-            days: 2
-          }).toSQLDate() && element.callsign1 === unit.callsign1;
-        }) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_43, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.callsigneksesais.find(function (element) {
-          return element.tarikh === $data.datenow.plus({
-            days: 2
-          }).toSQLDate() && element.callsign1 === unit.callsign1;
-        }).callsign2), 1
-        /* TEXT */
-        )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_44, [$data.callsigneksesais.find(function (element) {
-          return element.tarikh === $data.datenow.plus({
-            days: 3
-          }).toSQLDate() && element.callsign1 === unit.callsign1;
         }) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_45, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.callsigneksesais.find(function (element) {
-          return element.tarikh === $data.datenow.plus({
-            days: 3
-          }).toSQLDate() && element.callsign1 === unit.callsign1;
+          return element.tarikh === $data.datenow.toSQLDate() && element.callsign1 === unit.callsign1;
         }).callsign2), 1
         /* TEXT */
         )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_46, [$data.callsigneksesais.find(function (element) {
           return element.tarikh === $data.datenow.plus({
-            days: 4
+            days: 1
           }).toSQLDate() && element.callsign1 === unit.callsign1;
         }) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_47, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.callsigneksesais.find(function (element) {
+          return element.tarikh === $data.datenow.plus({
+            days: 1
+          }).toSQLDate() && element.callsign1 === unit.callsign1;
+        }).callsign2), 1
+        /* TEXT */
+        )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_48, [$data.callsigneksesais.find(function (element) {
+          return element.tarikh === $data.datenow.plus({
+            days: 2
+          }).toSQLDate() && element.callsign1 === unit.callsign1;
+        }) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_49, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.callsigneksesais.find(function (element) {
+          return element.tarikh === $data.datenow.plus({
+            days: 2
+          }).toSQLDate() && element.callsign1 === unit.callsign1;
+        }).callsign2), 1
+        /* TEXT */
+        )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_50, [$data.callsigneksesais.find(function (element) {
+          return element.tarikh === $data.datenow.plus({
+            days: 3
+          }).toSQLDate() && element.callsign1 === unit.callsign1;
+        }) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_51, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.callsigneksesais.find(function (element) {
+          return element.tarikh === $data.datenow.plus({
+            days: 3
+          }).toSQLDate() && element.callsign1 === unit.callsign1;
+        }).callsign2), 1
+        /* TEXT */
+        )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_52, [$data.callsigneksesais.find(function (element) {
+          return element.tarikh === $data.datenow.plus({
+            days: 4
+          }).toSQLDate() && element.callsign1 === unit.callsign1;
+        }) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_53, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.callsigneksesais.find(function (element) {
           return element.tarikh === $data.datenow.plus({
             days: 4
           }).toSQLDate() && element.callsign1 === unit.callsign1;
@@ -26825,17 +26927,17 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]);
       }), 128
       /* KEYED_FRAGMENT */
-      ))])]), _hoisted_48, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" get callsign of kapal "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_49, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", _hoisted_50, [_hoisted_51, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_52, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.moment().format("D MMM")), 1
+      ))])]), _hoisted_54, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" get callsign of kapal "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_55, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", _hoisted_56, [_hoisted_57, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_58, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.moment().format("D MMM")), 1
       /* TEXT */
-      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_53, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.moment().add(1, "days").format("D MMM")), 1
+      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_59, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.moment().add(1, "days").format("D MMM")), 1
       /* TEXT */
-      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_54, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.moment().add(2, "days").format("D MMM")), 1
+      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_60, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.moment().add(2, "days").format("D MMM")), 1
       /* TEXT */
-      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_55, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.moment().add(3, "days").format("D MMM")), 1
+      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_61, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.moment().add(3, "days").format("D MMM")), 1
       /* TEXT */
-      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_56, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.moment().add(4, "days").format("D MMM")), 1
+      ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_62, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($setup.moment().add(4, "days").format("D MMM")), 1
       /* TEXT */
-      )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", _hoisted_57, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.namakapals, function (namakapal, index) {
+      )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", _hoisted_63, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.namakapals, function (namakapal, index) {
         return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", {
           key: index,
           "class": "text-center border border-gray-500"
@@ -26843,51 +26945,51 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         /* TEXT */
         ), namakapal.callsigns.find(function (element) {
           return element.tarikh === $data.datenow.toSQLDate();
-        }) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_58, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(namakapal.callsigns.find(function (element) {
-          return element.tarikh === $data.datenow.toSQLDate();
-        }).callsign), 1
-        /* TEXT */
-        )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_59)), namakapal.callsigns.find(function (element) {
-          return element.tarikh === $data.datenow.plus({
-            days: 1
-          }).toSQLDate();
-        }) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_60, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(namakapal.callsigns.find(function (element) {
-          return element.tarikh === $data.datenow.plus({
-            days: 1
-          }).toSQLDate();
-        }).callsign), 1
-        /* TEXT */
-        )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_61)), namakapal.callsigns.find(function (element) {
-          return element.tarikh === $data.datenow.plus({
-            days: 2
-          }).toSQLDate();
-        }) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_62, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(namakapal.callsigns.find(function (element) {
-          return element.tarikh === $data.datenow.plus({
-            days: 2
-          }).toSQLDate();
-        }).callsign), 1
-        /* TEXT */
-        )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_63)), namakapal.callsigns.find(function (element) {
-          return element.tarikh === $data.datenow.plus({
-            days: 3
-          }).toSQLDate();
         }) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_64, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(namakapal.callsigns.find(function (element) {
-          return element.tarikh === $data.datenow.plus({
-            days: 3
-          }).toSQLDate();
+          return element.tarikh === $data.datenow.toSQLDate();
         }).callsign), 1
         /* TEXT */
         )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_65)), namakapal.callsigns.find(function (element) {
           return element.tarikh === $data.datenow.plus({
-            days: 4
+            days: 1
           }).toSQLDate();
         }) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_66, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(namakapal.callsigns.find(function (element) {
+          return element.tarikh === $data.datenow.plus({
+            days: 1
+          }).toSQLDate();
+        }).callsign), 1
+        /* TEXT */
+        )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_67)), namakapal.callsigns.find(function (element) {
+          return element.tarikh === $data.datenow.plus({
+            days: 2
+          }).toSQLDate();
+        }) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_68, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(namakapal.callsigns.find(function (element) {
+          return element.tarikh === $data.datenow.plus({
+            days: 2
+          }).toSQLDate();
+        }).callsign), 1
+        /* TEXT */
+        )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_69)), namakapal.callsigns.find(function (element) {
+          return element.tarikh === $data.datenow.plus({
+            days: 3
+          }).toSQLDate();
+        }) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_70, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(namakapal.callsigns.find(function (element) {
+          return element.tarikh === $data.datenow.plus({
+            days: 3
+          }).toSQLDate();
+        }).callsign), 1
+        /* TEXT */
+        )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_71)), namakapal.callsigns.find(function (element) {
+          return element.tarikh === $data.datenow.plus({
+            days: 4
+          }).toSQLDate();
+        }) ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_72, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(namakapal.callsigns.find(function (element) {
           return element.tarikh === $data.datenow.plus({
             days: 4
           }).toSQLDate();
         }).callsign), 1
         /* TEXT */
-        )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_67))]);
+        )) : ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("td", _hoisted_73))]);
       }), 128
       /* KEYED_FRAGMENT */
       ))])])])])])])];
@@ -27082,25 +27184,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     "class": "p-3 mb-1 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm border shadow outline-none focus:outline-none focus:ring w-full"
   }, null, 8
   /* PROPS */
-  , ["modelValue"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Label, {
-    "for": "shortform",
-    value: "Nama C/S",
-    "class": "my-1 text-slate-500 text-lg leading-relaxed"
-  }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Input, {
-    type: "text",
-    modelValue: _ctx.shortform,
-    "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
-      return _ctx.shortform = $event;
-    }),
-    "class": "p-3 mb-1 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm border shadow outline-none focus:outline-none focus:ring w-full"
-  }, null, 8
-  /* PROPS */
-  , ["modelValue"]), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.senaraikapals, function (senaraikapal, index) {
+  , ["modelValue"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <Label\n                            for=\"shortform\"\n                            value=\"Nama C/S\"\n                            class=\"my-1 text-slate-500 text-lg leading-relaxed\"\n                        />\n                        <Input\n                            type=\"text\"\n                            v-model=\"shortform\"\n                            class=\"p-3 mb-1 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm border shadow outline-none focus:outline-none focus:ring w-full\"\n                        /> "), ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.senaraikapals, function (senaraikapal, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", {
       key: index
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
       type: "checkbox",
-      "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
+      "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
         return _ctx.senaraiKapalTerlibat = $event;
       }),
       value: senaraikapal.id
@@ -27114,12 +27203,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   ))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("footer"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_20, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150",
     type: "button",
-    onClick: _cache[5] || (_cache[5] = function ($event) {
+    onClick: _cache[4] || (_cache[4] = function ($event) {
       return $options.saveGroup();
     })
   }, " Create Group ")])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _ctx.showModal ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_21)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" modaladdkapal "), _ctx.addkapalmodal ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("content"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_24, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("header"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_25, [_hoisted_26, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "p-1 ml-auto bg-transparent border-0 text-black opacity-70 float-right text-3xl leading-none font-semibold outline-none focus:outline-none",
-    onClick: _cache[6] || (_cache[6] = function ($event) {
+    onClick: _cache[5] || (_cache[5] = function ($event) {
       return $options.tooglemodaladdkapal();
     })
   }, _hoisted_28)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("body"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_29, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.senaraikapals, function (senaraikapal, index) {
@@ -27127,7 +27216,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       key: index
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_30, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
       type: "checkbox",
-      "onUpdate:modelValue": _cache[7] || (_cache[7] = function ($event) {
+      "onUpdate:modelValue": _cache[6] || (_cache[6] = function ($event) {
         return _ctx.senaraiKapalTerlibat = $event;
       }),
       value: senaraikapal.id
@@ -27141,7 +27230,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   ))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("footer"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_33, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     "class": "text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150",
     type: "button",
-    onClick: _cache[8] || (_cache[8] = function ($event) {
+    onClick: _cache[7] || (_cache[7] = function ($event) {
       return $options.saveGroup();
     })
   }, " Create Group ")])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _ctx.addkapalmodal ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_34)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])], 64
@@ -27290,7 +27379,7 @@ var _hoisted_4 = ["value"];
 
 var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("option", {
   value: ""
-}, "To All", -1
+}, "All Ship", -1
 /* HOISTED */
 );
 
@@ -27342,7 +27431,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
       key: index,
       value: callsign.callsign2
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(callsign.callsign2), 9
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(callsign.callsign1), 9
     /* TEXT, PROPS */
     , _hoisted_4);
   }), 128
@@ -27367,7 +27456,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
       key: index,
       value: callsign.callsign2
-    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(callsign.callsign2), 9
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(callsign.callsign1), 9
     /* TEXT, PROPS */
     , _hoisted_6);
   }), 128
@@ -27388,7 +27477,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       return $options.refreshmessage();
     }),
     "class": "ml-1 shadow appearance-none border rounded w-auto py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline"
-  }, " CLR "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <secondary-button\n                class=\"ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded\"\n                @click=\"refreshmessage()\"\n                >CLR</secondary-button\n            > "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <secondary-button class=\"ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded\" @click=\"refreshmessage()\"\n                >ADDRESSEE</secondary-button\n            > ")])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _ctx.quickguide ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+  }, " C "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <secondary-button\n                class=\"ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded\"\n                @click=\"refreshmessage()\"\n                >CLR</secondary-button\n            > "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <secondary-button class=\"ml-1 hover:bg-gray-700 text-gray-900 font-semibold hover:text-gray-100 py-2 px-4 border border-gray-900 hover:border-transparent rounded\" @click=\"refreshmessage()\"\n                >ADDRESSEE</secondary-button\n            > ")])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), _ctx.quickguide ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     type: "text",
     placeholder: "Enter some of the keywords",
     "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
@@ -27796,7 +27885,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     )]);
   }), 128
   /* KEYED_FRAGMENT */
-  ))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div class=\"m-3\"><input type=\"text\" class=\"w-1/3\" placeholder=\"CTO\" /><input type=\"text\"  class=\"w-1/3\" placeholder=\"A1\"/> <button\n                class=\"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full\"\n            >\n                +\n            </button></div> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_7, [_hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", _hoisted_9, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.senaraikapals, function (kapal, index) {
+  ))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_7, [_hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", _hoisted_9, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($props.senaraikapals, function (kapal, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", {
       key: index,
       "class": "text-center"
@@ -27869,7 +27958,7 @@ var _hoisted_1 = {
   "class": "font-semibold text-xl text-gray-800 leading-tight relative"
 };
 
-var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Eksesais test ");
+var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Eksesais ");
 
 var _hoisted_3 = {
   "class": "py-4"
@@ -28037,16 +28126,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         "class": "mr-6 px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-2/5"
       }, null, 512
       /* NEED_PATCH */
-      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.firstgroupname]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
-        type: "text",
-        placeholder: "M7",
-        "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
-          return $data.firstgroupcallsign = $event;
-        }),
-        "class": "px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-1/12"
-      }, null, 512
-      /* NEED_PATCH */
-      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.firstgroupcallsign]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <Label\n                                        value=\"Panggilan Taktikal\"\n                                        class=\"my-4 text-slate-500 text-lg leading-relaxed\"\n                                    />\n                                    <div\n                                        v-for=\"index in numberofcallsign\"\n                                        :key=\"index\"\n                                    >\n                                        <input\n                                            type=\"text\"\n                                            placeholder=\"CTO\"\n                                            v-model=\"callsignforeksesais[index]\"\n                                            class=\"px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-2/5\"\n                                        />\n                                        <input\n                                            type=\"text\"\n                                            placeholder=\"A1\"\n                                            v-model=\"\n                                                callsign2foreksesais[index]\n                                            \"\n                                            class=\"px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-2/5\"\n                                        />\n                                    </div>\n                                    <button\n                                        class=\"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded\"\n                                        @click=\"addnumberofcallsign()\"\n                                    >\n                                        add callsign\n                                    </button>\n\n                                    <button\n                                        v-if=\"numberofcallsign !== 0\"\n                                        class=\"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded\"\n                                        @click=\"removenumberofcallsign()\"\n                                    >\n                                        remove callsign\n                                    </button> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Label"], {
+      ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.firstgroupname]]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <input\n                                        type=\"text\"\n                                        placeholder=\"M7\"\n                                        v-model=\"firstgroupcallsign\"\n                                        class=\"px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-1/12\"\n                                    /> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <Label\n                                        value=\"Panggilan Taktikal\"\n                                        class=\"my-4 text-slate-500 text-lg leading-relaxed\"\n                                    />\n                                    <div\n                                        v-for=\"index in numberofcallsign\"\n                                        :key=\"index\"\n                                    >\n                                        <input\n                                            type=\"text\"\n                                            placeholder=\"CTO\"\n                                            v-model=\"callsignforeksesais[index]\"\n                                            class=\"px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-2/5\"\n                                        />\n                                        <input\n                                            type=\"text\"\n                                            placeholder=\"A1\"\n                                            v-model=\"\n                                                callsign2foreksesais[index]\n                                            \"\n                                            class=\"px-3 py-3 placeholder-slate-300 text-slate-600 relative bg-white rounded text-sm shadow border-current focus:outline-none focus:ring w-2/5\"\n                                        />\n                                    </div>\n                                    <button\n                                        class=\"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded\"\n                                        @click=\"addnumberofcallsign()\"\n                                    >\n                                        add callsign\n                                    </button>\n\n                                    <button\n                                        v-if=\"numberofcallsign !== 0\"\n                                        class=\"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded\"\n                                        @click=\"removenumberofcallsign()\"\n                                    >\n                                        remove callsign\n                                    </button> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)($setup["Label"], {
         "for": "kapal",
         value: "Senarai Kapal",
         "class": "my-4 text-slate-500 text-lg leading-relaxed"
@@ -28057,7 +28137,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", _hoisted_25, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
           "class": "form-check-input",
           type: "checkbox",
-          "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
+          "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
             return $data.senaraiKapalTerlibat = $event;
           }),
           value: namakapal.id
@@ -28071,7 +28151,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       ))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("footer"), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_29, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
         "class": "text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150",
         type: "button",
-        onClick: _cache[6] || (_cache[6] = function ($event) {
+        onClick: _cache[5] || (_cache[5] = function ($event) {
           return $options.saveEksesais();
         })
       }, " Tambah Eksesais ")])])])])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), $data.showModal ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_30)) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])];
@@ -29814,7 +29894,7 @@ window._ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 
 window.axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-window.axios.defaults.headers.common['Authorization'] = 'Bearer 38|HBbQkFursBhNH8mMoUMVdDVkFs73leUTnGRwgRDe';
+window.axios.defaults.headers.common['Authorization'] = 'Bearer 53|QjWHTYdJ4h8zbECxF3f7r96Vw38PE4UqWoYybH6A';
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
