@@ -95,8 +95,9 @@ class ChatController extends Controller
     {
         $sender = User::find(Auth::id());
         if ($request->individual == true) {
-            $receiver = User::find($request->pluckusersOnRoom);
-            $request->pluckusersOnRoom = $receiver->callsign->callsign;
+            $useronroom = $request->pluckusersOnRoom;
+            $receiver = User::find($useronroom);
+            $useronroom = $receiver->callsign->callsign;
         }
         $newMessage = new ChatMessage();
         $newMessage->user_id = Auth::id();
@@ -442,9 +443,5 @@ class ChatController extends Controller
         }
         return response()->json(['message' => $message]);
         // return $message;
-    }
-
-    public function quickguide()
-    {
     }
 }
